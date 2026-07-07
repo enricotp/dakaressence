@@ -151,6 +151,14 @@ export function CartDrawer() {
         </div>
 
         <div className="border-t border-border/60 px-6 py-5 space-y-3">
+          {cartCount > 0 && total > 0 && (
+            <div className="flex items-center justify-between text-sm">
+              <span className="uppercase tracking-[0.2em] text-muted-foreground">Total</span>
+              <span className="font-display text-xl font-semibold text-gold">
+                {formatBRL(total)}
+              </span>
+            </div>
+          )}
           <a
             href={waLink(mensagemPedido)}
             target="_blank"
