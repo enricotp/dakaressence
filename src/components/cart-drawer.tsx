@@ -45,17 +45,27 @@ export function CartDrawer() {
     return m;
   }, [perfumes]);
 
+  const total = useMemo(() => {
+    return Object.entries(cart).reduce((acc, [id, qtd]) => {
+      const item = perfumeById.get(id);
+      if (!item || item.p.preco == null) return acc;
+      return acc + item.p.preco * qtd;
+    }, 0);
+  }, [cart, perfumeById]);
+
   const mensagemPedido = useMemo(() => {
     const linhas = Object.entries(cart)
       .map(([id, qtd]) => {
         const item = perfumeById.get(id);
         if (!item) return null;
-        return `• ${qtd}x ${item.p.nome} (${item.codigo})`;
+        const preco = item.p.preco != null ? ` — ${formatBRL(item.p.preco * qtd)}` : "";
+        return `• ${qtd}x ${item.p.nome} (${item.codigo})${preco}`;
       })
       .filter(Boolean);
     if (linhas.length === 0) return "Olá! Gostaria de fazer um pedido.";
-    return `Olá! Gostaria de pedir:\n\n${linhas.join("\n")}\n\nPodemos fechar?`;
-  }, [cart, perfumeById]);
+    const totalLinha = total > 0 ? `\n\nTotal: ${formatBRL(total)}` : "";
+    return `Olá! Gostaria de pedir:\n\n${linhas.join("\n")}${totalLinha}\n\nPodemos fechar?`;
+  }, [cart, perfumeById, total]);
 
   if (!isOpen) return null;
 
@@ -103,22 +113,34 @@ export function CartDrawer() {
                         {item.codigo}
                       </span>
                       <span className="font-medium">{item.p.nome}</span>
-                      <div className="mt-auto flex items-center gap-2">
-                        <button
-                          type="button"
-                          onClick={() => remove(id)}
-                          className="h-7 w-7 rounded-full bg-background text-sm font-semibold transition hover:bg-gold hover:text-primary-foreground"
-                        >
-                          −
-                        </button>
-                        <span className="min-w-6 text-center text-sm">{qtd}</span>
-                        <button
-                          type="button"
-                          onClick={() => add(id)}
-                          className="h-7 w-7 rounded-full bg-background text-sm font-semibold transition hover:bg-gold hover:text-primary-foreground"
-                        >
-                          +
-                        </button>
+                      {item.p.preco != null && (
+                        <span className="text-xs text-muted-foreground">
+                          {formatBRL(item.p.preco)} cada
+                        </span>
+                      )}
+                      <div className="mt-auto flex items-center justify-between gap-2">
+                        <div className="flex items-center gap-2">
+                          <button
+                            type="button"
+                            onClick={() => remove(id)}
+                            className="h-7 w-7 rounded-full bg-background text-sm font-semibold transition hover:bg-gold hover:text-primary-foreground"
+                          >
+                            −
+                          </button>
+                          <span className="min-w-6 text-center text-sm">{qtd}</span>
+                          <button
+                            type="button"
+                            onClick={() => add(id)}
+                            className="h-7 w-7 rounded-full bg-background text-sm font-semibold transition hover:bg-gold hover:text-primary-foreground"
+                          >
+                            +
+                          </button>
+                        </div>
+                        {item.p.preco != null && (
+                          <span className="text-sm font-semibold text-gold">
+                            {formatBRL(item.p.preco * qtd)}
+                          </span>
+                        )}
                       </div>
                     </div>
                   </li>
