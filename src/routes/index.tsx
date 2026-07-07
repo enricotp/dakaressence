@@ -77,7 +77,7 @@ function Index() {
       <header className="sticky top-0 z-40 border-b border-border/60 bg-background/80 backdrop-blur">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5">
           <a href="#top" className="flex items-baseline gap-2">
-            <span className="font-display text-xl font-semibold tracking-tight">Essência</span>
+            <span className="font-display text-xl font-semibold tracking-tight">Dakar Essence</span>
             <span className="text-[10px] uppercase tracking-[0.25em] text-gold">Parfum</span>
           </a>
           <nav className="hidden items-center gap-8 text-sm text-muted-foreground md:flex">
