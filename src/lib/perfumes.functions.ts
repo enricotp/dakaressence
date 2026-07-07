@@ -130,6 +130,7 @@ export const getPerfumes = createServerFn({ method: "GET" }).handler(
         status,
         imagem: extractImage(page),
         descricao,
+        genero: inferirGenero(nome),
       };
     });
   },
