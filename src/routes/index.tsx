@@ -35,6 +35,7 @@ const waLink = (msg: string) =>
   `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
 
 function Index() {
+  const { data: perfumes } = useSuspenseQuery(perfumesQuery);
   return (
     <div className="min-h-screen bg-background text-foreground">
       {/* Nav */}
@@ -143,48 +144,59 @@ function Index() {
           </div>
 
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {perfumes.map((p) => (
-              <article
-                key={p.id}
-                className="group relative flex flex-col overflow-hidden rounded-2xl border border-border/60 bg-card transition hover:border-gold/50"
-              >
-                <div className="relative aspect-[4/5] overflow-hidden bg-background">
-                  <img
-                    src={p.imagem}
-                    alt={`${p.nome} — ${p.inspiracao}`}
-                    width={800}
-                    height={1000}
-                    loading="lazy"
-                    className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
-                  />
-                  <span className="absolute left-4 top-4 rounded-full bg-background/80 px-3 py-1 text-[10px] uppercase tracking-[0.2em] text-gold backdrop-blur">
-                    {p.id}
-                  </span>
-                </div>
-                <div className="flex flex-1 flex-col gap-4 p-6">
-                  <div>
-                    <h3 className="font-display text-xl font-semibold">{p.nome}</h3>
-                    <p className="mt-1 text-sm text-muted-foreground">{p.inspiracao}</p>
-                  </div>
-                  <div className="flex items-center justify-between text-xs uppercase tracking-wider text-muted-foreground">
-                    <span>{p.familia}</span>
-                    <span className="font-display text-base font-semibold text-gold">
-                      {p.preco}
+            {perfumes.map((p: Perfume, i: number) => {
+              const codigo = codigoDoPerfume(i);
+              const imagem = imagensRotativas[i % imagensRotativas.length];
+              const indisponivel = !p.emEstoque;
+              return (
+                <article
+                  key={p.id}
+                  className="group relative flex flex-col overflow-hidden rounded-2xl border border-border/60 bg-card transition hover:border-gold/50"
+                >
+                  <div className="relative aspect-[4/5] overflow-hidden bg-background">
+                    <img
+                      src={imagem}
+                      alt={p.nome}
+                      width={800}
+                      height={1000}
+                      loading="lazy"
+                      className={`h-full w-full object-cover transition duration-700 group-hover:scale-105 ${indisponivel ? "opacity-40" : ""}`}
+                    />
+                    <span className="absolute left-4 top-4 rounded-full bg-background/80 px-3 py-1 text-[10px] uppercase tracking-[0.2em] text-gold backdrop-blur">
+                      {codigo}
                     </span>
-                  </div>
-                  <a
-                    href={waLink(
-                      `Olá! Quero pedir o ${p.nome} (${p.inspiracao}) — ${p.preco}.`,
+                    {indisponivel && (
+                      <span className="absolute right-4 top-4 rounded-full bg-background/90 px-3 py-1 text-[10px] uppercase tracking-[0.2em] text-muted-foreground backdrop-blur">
+                        Esgotado
+                      </span>
                     )}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="mt-2 inline-flex items-center justify-center rounded-full bg-foreground/5 py-3 text-sm font-medium text-foreground transition group-hover:bg-gold group-hover:text-primary-foreground"
-                  >
-                    Pedir no WhatsApp
-                  </a>
-                </div>
-              </article>
-            ))}
+                  </div>
+                  <div className="flex flex-1 flex-col gap-4 p-6">
+                    <div>
+                      <h3 className="font-display text-xl font-semibold">{p.nome}</h3>
+                      <p className="mt-1 text-sm text-muted-foreground">{p.status || "Contratipo exclusivo"}</p>
+                    </div>
+                    <a
+                      href={
+                        indisponivel
+                          ? undefined
+                          : waLink(`Olá! Quero pedir o perfume ${p.nome} (${codigo}).`)
+                      }
+                      target={indisponivel ? undefined : "_blank"}
+                      rel="noreferrer"
+                      aria-disabled={indisponivel}
+                      className={`mt-auto inline-flex items-center justify-center rounded-full py-3 text-sm font-medium transition ${
+                        indisponivel
+                          ? "cursor-not-allowed bg-foreground/5 text-muted-foreground"
+                          : "bg-foreground/5 text-foreground group-hover:bg-gold group-hover:text-primary-foreground"
+                      }`}
+                    >
+                      {indisponivel ? "Indisponível" : "Pedir no WhatsApp"}
+                    </a>
+                  </div>
+                </article>
+              );
+            })}
           </div>
         </div>
       </section>
