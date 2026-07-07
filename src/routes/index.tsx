@@ -5,6 +5,8 @@ import heroImg from "@/assets/hero-perfume.jpg";
 import perfume1 from "@/assets/perfume-1.jpg";
 import perfume2 from "@/assets/perfume-2.jpg";
 import perfume3 from "@/assets/perfume-3.jpg";
+import logoBlack from "@/assets/dakar-essence-black.png.asset.json";
+import logoWhite from "@/assets/dakar-essence-white.png.asset.json";
 import { getPerfumes, type Perfume } from "@/lib/perfumes.functions";
 
 const perfumesQuery = queryOptions({
@@ -76,9 +78,9 @@ function Index() {
       {/* Nav */}
       <header className="sticky top-0 z-40 border-b border-border/60 bg-background/80 backdrop-blur">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5">
-          <a href="#top" className="flex items-baseline gap-2">
-            <span className="font-display text-xl font-semibold tracking-tight">Dakar Essence</span>
-            <span className="text-[10px] uppercase tracking-[0.25em] text-gold">Parfum</span>
+          <a href="#top" className="flex items-center" aria-label="Dakar Essence">
+            <img src={logoBlack.url} alt="Dakar Essence" className="h-10 w-auto dark:hidden" />
+            <img src={logoWhite.url} alt="Dakar Essence" className="hidden h-10 w-auto dark:block" />
           </a>
           <nav className="hidden items-center gap-8 text-sm text-muted-foreground md:flex">
             <a href="#catalogo" className="transition hover:text-foreground">Catálogo</a>
@@ -298,9 +300,9 @@ function Index() {
 
       <footer className="border-t border-border/60 py-10">
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-6 text-sm text-muted-foreground md:flex-row">
-          <div className="flex items-baseline gap-2">
-            <span className="font-display text-base font-semibold text-foreground">Dakar Essence</span>
-            <span className="text-[10px] uppercase tracking-[0.25em] text-gold">Parfum</span>
+          <div className="flex items-center">
+            <img src={logoBlack.url} alt="Dakar Essence" className="h-8 w-auto dark:hidden" />
+            <img src={logoWhite.url} alt="Dakar Essence" className="hidden h-8 w-auto dark:block" />
           </div>
           <p>© {new Date().getFullYear()} Dakar Essence. Todos os direitos reservados.</p>
         </div>
