@@ -311,6 +311,7 @@ function Index() {
             {[
               { q: "Como faço meu pedido?", a: "Adicione os perfumes ao carrinho, abra o carrinho e clique em Pedir no WhatsApp. A mensagem já vai pronta com o que você escolheu." },
               { q: "Qual a fixação?", a: "Em média 10 a 14 horas, com 30% de concentração." },
+              { q: "Do que são feitos os perfumes?", a: "Todos os perfumes são à base de óleo e linalol, com fixador importado." },
               { q: "Entregam para todo o Brasil?", a: "Por enquanto entregamos apenas para Sorocaba e região." },
             ].map((item) => (
               <details key={item.q} className="group py-6">
