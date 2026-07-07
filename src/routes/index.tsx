@@ -1,32 +1,35 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import heroImg from "@/assets/hero-perfume.jpg";
 import perfume1 from "@/assets/perfume-1.jpg";
 import perfume2 from "@/assets/perfume-2.jpg";
 import perfume3 from "@/assets/perfume-3.jpg";
+import { getPerfumes, type Perfume } from "@/lib/perfumes.functions";
+
+const perfumesQuery = queryOptions({
+  queryKey: ["perfumes"],
+  queryFn: () => getPerfumes(),
+  staleTime: 60_000,
+});
 
 export const Route = createFileRoute("/")({
   component: Index,
+  loader: ({ context }) => context.queryClient.ensureQueryData(perfumesQuery),
+  errorComponent: ({ error }) => (
+    <div className="mx-auto max-w-2xl px-6 py-24 text-center">
+      <h1 className="font-display text-3xl font-semibold">Não foi possível carregar o catálogo</h1>
+      <p className="mt-4 text-muted-foreground">{error.message}</p>
+    </div>
+  ),
+  notFoundComponent: () => <div className="p-8">Página não encontrada</div>,
 });
 
 const WHATSAPP_NUMBER = "5511999999999"; // troque pelo seu número (formato: 55 + DDD + número)
 
-type Perfume = {
-  id: string;
-  nome: string;
-  inspiracao: string;
-  familia: string;
-  preco: string;
-  imagem: string;
-};
+const imagensRotativas = [perfume1, perfume2, perfume3];
 
-const perfumes: Perfume[] = [
-  { id: "001", nome: "Nº 001", inspiracao: "Inspirado em Sauvage — Dior", familia: "Amadeirado Aromático", preco: "R$ 149", imagem: perfume1 },
-  { id: "002", nome: "Nº 002", inspiracao: "Inspirado em Bleu de Chanel", familia: "Cítrico Amadeirado", preco: "R$ 149", imagem: perfume2 },
-  { id: "003", nome: "Nº 003", inspiracao: "Inspirado em Baccarat Rouge 540", familia: "Âmbar Floral", preco: "R$ 189", imagem: perfume3 },
-  { id: "004", nome: "Nº 004", inspiracao: "Inspirado em La Vie Est Belle", familia: "Floral Gourmand", preco: "R$ 149", imagem: perfume1 },
-  { id: "005", nome: "Nº 005", inspiracao: "Inspirado em Good Girl — CH", familia: "Floral Oriental", preco: "R$ 159", imagem: perfume2 },
-  { id: "006", nome: "Nº 006", inspiracao: "Inspirado em 212 VIP Black", familia: "Amadeirado Doce", preco: "R$ 149", imagem: perfume3 },
-];
+const codigoDoPerfume = (index: number) =>
+  `Nº ${String(index + 1).padStart(3, "0")}`;
 
 const waLink = (msg: string) =>
   `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
