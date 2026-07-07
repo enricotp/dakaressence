@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import heroImg from "@/assets/hero-perfume.jpg";
@@ -175,7 +175,12 @@ function Index() {
                   key={p.id}
                   className="group relative flex flex-col overflow-hidden rounded-2xl border border-border/60 bg-card transition hover:border-gold/50"
                 >
-                  <div className="relative aspect-[4/5] overflow-hidden bg-background">
+                  <Link
+                    to="/perfume/$id"
+                    params={{ id: p.id }}
+                    className="relative aspect-[4/5] block overflow-hidden bg-background"
+                    aria-label={`Ver ${p.nome}`}
+                  >
                     <img
                       src={imagem}
                       alt={p.nome}
@@ -192,12 +197,16 @@ function Index() {
                         Esgotado
                       </span>
                     )}
-                  </div>
+                  </Link>
                   <div className="flex flex-1 flex-col gap-4 p-6">
                     <div>
-                      <h3 className="font-display text-xl font-semibold">{p.nome}</h3>
-                      <p className="mt-1 text-sm text-muted-foreground">
-                        {p.status || "Contratipo exclusivo"}
+                      <h3 className="font-display text-xl font-semibold">
+                        <Link to="/perfume/$id" params={{ id: p.id }} className="transition hover:text-gold">
+                          {p.nome}
+                        </Link>
+                      </h3>
+                      <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">
+                        {p.descricao || p.status || "Contratipo exclusivo"}
                       </p>
                     </div>
                     {indisponivel ? (
