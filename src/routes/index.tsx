@@ -37,6 +37,28 @@ function Index() {
   const [filtro, setFiltro] = useState<"todos" | "feminino" | "masculino">("todos");
   const perfumesFiltrados = filtro === "todos" ? perfumes : perfumes.filter((p) => p.genero === filtro);
 
+  const secoes = ["catalogo", "sobre", "faq"] as const;
+  type Secao = (typeof secoes)[number];
+  const [secaoAtiva, setSecaoAtiva] = useState<Secao>("catalogo");
+
+  useEffect(() => {
+    const els = secoes
+      .map((id) => document.getElementById(id))
+      .filter((el): el is HTMLElement => el !== null);
+    if (els.length === 0) return;
+    const obs = new IntersectionObserver(
+      (entries) => {
+        const visiveis = entries
+          .filter((e) => e.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
+        if (visiveis[0]) setSecaoAtiva(visiveis[0].target.id as Secao);
+      },
+      { rootMargin: "-40% 0px -50% 0px", threshold: [0, 0.25, 0.5, 1] },
+    );
+    els.forEach((el) => obs.observe(el));
+    return () => obs.disconnect();
+  }, []);
+
 
   return (
     <div className="min-h-screen bg-background text-foreground">
