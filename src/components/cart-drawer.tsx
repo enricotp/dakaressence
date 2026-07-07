@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useCart } from "@/lib/cart-context";
 import { getPerfumes, type Perfume } from "@/lib/perfumes.functions";
+import { formatBRL } from "@/lib/format";
 import perfume1 from "@/assets/perfume-1.jpg";
 import perfume2 from "@/assets/perfume-2.jpg";
 import perfume3 from "@/assets/perfume-3.jpg";

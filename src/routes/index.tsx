@@ -7,6 +7,7 @@ import perfume2 from "@/assets/perfume-2.jpg";
 import perfume3 from "@/assets/perfume-3.jpg";
 import logoWhite from "@/assets/dakar-essence-white.png.asset.json";
 import { getPerfumes } from "@/lib/perfumes.functions";
+import { formatBRL } from "@/lib/format";
 import { useCart } from "@/lib/cart-context";
 import { CartButton } from "@/components/cart-drawer";
 
@@ -223,6 +224,11 @@ function Index() {
                       <p className="mt-1 line-clamp-2 text-xs text-muted-foreground sm:text-sm">
                         {p.descricao || p.status || "Contratipo exclusivo"}
                       </p>
+                      {p.preco != null && (
+                        <p className="mt-2 text-sm font-semibold text-gold sm:text-base">
+                          {formatBRL(p.preco)}
+                        </p>
+                      )}
                     </div>
                     {indisponivel ? (
                       <button
