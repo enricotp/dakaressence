@@ -1,37 +1,41 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import heroImg from "@/assets/hero-perfume.jpg";
 import perfume1 from "@/assets/perfume-1.jpg";
 import perfume2 from "@/assets/perfume-2.jpg";
 import perfume3 from "@/assets/perfume-3.jpg";
+import { getPerfumes, type Perfume } from "@/lib/perfumes.functions";
+
+const perfumesQuery = queryOptions({
+  queryKey: ["perfumes"],
+  queryFn: () => getPerfumes(),
+  staleTime: 60_000,
+});
 
 export const Route = createFileRoute("/")({
   component: Index,
+  loader: ({ context }) => context.queryClient.ensureQueryData(perfumesQuery),
+  errorComponent: ({ error }) => (
+    <div className="mx-auto max-w-2xl px-6 py-24 text-center">
+      <h1 className="font-display text-3xl font-semibold">Não foi possível carregar o catálogo</h1>
+      <p className="mt-4 text-muted-foreground">{error.message}</p>
+    </div>
+  ),
+  notFoundComponent: () => <div className="p-8">Página não encontrada</div>,
 });
 
 const WHATSAPP_NUMBER = "5511999999999"; // troque pelo seu número (formato: 55 + DDD + número)
 
-type Perfume = {
-  id: string;
-  nome: string;
-  inspiracao: string;
-  familia: string;
-  preco: string;
-  imagem: string;
-};
+const imagensRotativas = [perfume1, perfume2, perfume3];
 
-const perfumes: Perfume[] = [
-  { id: "001", nome: "Nº 001", inspiracao: "Inspirado em Sauvage — Dior", familia: "Amadeirado Aromático", preco: "R$ 149", imagem: perfume1 },
-  { id: "002", nome: "Nº 002", inspiracao: "Inspirado em Bleu de Chanel", familia: "Cítrico Amadeirado", preco: "R$ 149", imagem: perfume2 },
-  { id: "003", nome: "Nº 003", inspiracao: "Inspirado em Baccarat Rouge 540", familia: "Âmbar Floral", preco: "R$ 189", imagem: perfume3 },
-  { id: "004", nome: "Nº 004", inspiracao: "Inspirado em La Vie Est Belle", familia: "Floral Gourmand", preco: "R$ 149", imagem: perfume1 },
-  { id: "005", nome: "Nº 005", inspiracao: "Inspirado em Good Girl — CH", familia: "Floral Oriental", preco: "R$ 159", imagem: perfume2 },
-  { id: "006", nome: "Nº 006", inspiracao: "Inspirado em 212 VIP Black", familia: "Amadeirado Doce", preco: "R$ 149", imagem: perfume3 },
-];
+const codigoDoPerfume = (index: number) =>
+  `Nº ${String(index + 1).padStart(3, "0")}`;
 
 const waLink = (msg: string) =>
   `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
 
 function Index() {
+  const { data: perfumes } = useSuspenseQuery(perfumesQuery);
   return (
     <div className="min-h-screen bg-background text-foreground">
       {/* Nav */}
@@ -140,48 +144,59 @@ function Index() {
           </div>
 
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {perfumes.map((p) => (
-              <article
-                key={p.id}
-                className="group relative flex flex-col overflow-hidden rounded-2xl border border-border/60 bg-card transition hover:border-gold/50"
-              >
-                <div className="relative aspect-[4/5] overflow-hidden bg-background">
-                  <img
-                    src={p.imagem}
-                    alt={`${p.nome} — ${p.inspiracao}`}
-                    width={800}
-                    height={1000}
-                    loading="lazy"
-                    className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
-                  />
-                  <span className="absolute left-4 top-4 rounded-full bg-background/80 px-3 py-1 text-[10px] uppercase tracking-[0.2em] text-gold backdrop-blur">
-                    {p.id}
-                  </span>
-                </div>
-                <div className="flex flex-1 flex-col gap-4 p-6">
-                  <div>
-                    <h3 className="font-display text-xl font-semibold">{p.nome}</h3>
-                    <p className="mt-1 text-sm text-muted-foreground">{p.inspiracao}</p>
-                  </div>
-                  <div className="flex items-center justify-between text-xs uppercase tracking-wider text-muted-foreground">
-                    <span>{p.familia}</span>
-                    <span className="font-display text-base font-semibold text-gold">
-                      {p.preco}
+            {perfumes.map((p: Perfume, i: number) => {
+              const codigo = codigoDoPerfume(i);
+              const imagem = imagensRotativas[i % imagensRotativas.length];
+              const indisponivel = !p.emEstoque;
+              return (
+                <article
+                  key={p.id}
+                  className="group relative flex flex-col overflow-hidden rounded-2xl border border-border/60 bg-card transition hover:border-gold/50"
+                >
+                  <div className="relative aspect-[4/5] overflow-hidden bg-background">
+                    <img
+                      src={imagem}
+                      alt={p.nome}
+                      width={800}
+                      height={1000}
+                      loading="lazy"
+                      className={`h-full w-full object-cover transition duration-700 group-hover:scale-105 ${indisponivel ? "opacity-40" : ""}`}
+                    />
+                    <span className="absolute left-4 top-4 rounded-full bg-background/80 px-3 py-1 text-[10px] uppercase tracking-[0.2em] text-gold backdrop-blur">
+                      {codigo}
                     </span>
-                  </div>
-                  <a
-                    href={waLink(
-                      `Olá! Quero pedir o ${p.nome} (${p.inspiracao}) — ${p.preco}.`,
+                    {indisponivel && (
+                      <span className="absolute right-4 top-4 rounded-full bg-background/90 px-3 py-1 text-[10px] uppercase tracking-[0.2em] text-muted-foreground backdrop-blur">
+                        Esgotado
+                      </span>
                     )}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="mt-2 inline-flex items-center justify-center rounded-full bg-foreground/5 py-3 text-sm font-medium text-foreground transition group-hover:bg-gold group-hover:text-primary-foreground"
-                  >
-                    Pedir no WhatsApp
-                  </a>
-                </div>
-              </article>
-            ))}
+                  </div>
+                  <div className="flex flex-1 flex-col gap-4 p-6">
+                    <div>
+                      <h3 className="font-display text-xl font-semibold">{p.nome}</h3>
+                      <p className="mt-1 text-sm text-muted-foreground">{p.status || "Contratipo exclusivo"}</p>
+                    </div>
+                    <a
+                      href={
+                        indisponivel
+                          ? undefined
+                          : waLink(`Olá! Quero pedir o perfume ${p.nome} (${codigo}).`)
+                      }
+                      target={indisponivel ? undefined : "_blank"}
+                      rel="noreferrer"
+                      aria-disabled={indisponivel}
+                      className={`mt-auto inline-flex items-center justify-center rounded-full py-3 text-sm font-medium transition ${
+                        indisponivel
+                          ? "cursor-not-allowed bg-foreground/5 text-muted-foreground"
+                          : "bg-foreground/5 text-foreground group-hover:bg-gold group-hover:text-primary-foreground"
+                      }`}
+                    >
+                      {indisponivel ? "Indisponível" : "Pedir no WhatsApp"}
+                    </a>
+                  </div>
+                </article>
+              );
+            })}
           </div>
         </div>
       </section>
