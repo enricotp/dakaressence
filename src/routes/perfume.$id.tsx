@@ -131,21 +131,12 @@ function PerfumeDetail() {
               </div>
             )}
 
-            <div className="flex flex-wrap gap-3">
-              <button
-                type="button"
-                onClick={open}
-                className="inline-flex items-center justify-center rounded-full border border-gold/40 bg-gold/10 px-6 py-3 text-sm font-medium text-gold transition hover:bg-gold hover:text-primary-foreground"
-              >
-                Ver carrinho
-              </button>
-              <Link
-                to="/"
-                className="inline-flex items-center justify-center rounded-full border border-border px-6 py-3 text-sm font-medium transition hover:border-gold hover:text-gold"
-              >
-                Voltar ao catálogo
-              </Link>
-            </div>
+            <Link
+              to="/"
+              className="inline-flex items-center justify-center rounded-full border border-border px-6 py-3 text-sm font-medium transition hover:border-gold hover:text-gold"
+            >
+              Voltar ao catálogo
+            </Link>
           </div>
         </div>
       </section>
