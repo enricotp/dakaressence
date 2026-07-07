@@ -331,6 +331,9 @@ function Index() {
             <img src={logoWhite.url} alt="Dakar Essence" className="h-16 w-auto" />
           </div>
           <p>© {new Date().getFullYear()} Dakar Essence. Todos os direitos reservados.</p>
+          <Link to="/calculadora" className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground/60 transition hover:text-gold">
+            calculadora
+          </Link>
         </div>
       </footer>
 
