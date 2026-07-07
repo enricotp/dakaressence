@@ -37,12 +37,13 @@ function Index() {
   const [filtro, setFiltro] = useState<"todos" | "feminino" | "masculino">("todos");
   const perfumesFiltrados = filtro === "todos" ? perfumes : perfumes.filter((p) => p.genero === filtro);
 
-  const secoes = ["catalogo", "sobre", "faq"] as const;
+  const secoes = ["home", "catalogo", "sobre", "faq"] as const;
   type Secao = (typeof secoes)[number];
-  const [secaoAtiva, setSecaoAtiva] = useState<Secao>("catalogo");
+  const [secaoAtiva, setSecaoAtiva] = useState<Secao>("home");
 
   useEffect(() => {
-    const els = secoes
+    const idParaSecao: Record<string, Secao> = { top: "home", catalogo: "catalogo", sobre: "sobre", faq: "faq" };
+    const els = Object.keys(idParaSecao)
       .map((id) => document.getElementById(id))
       .filter((el): el is HTMLElement => el !== null);
     if (els.length === 0) return;
@@ -51,7 +52,7 @@ function Index() {
         const visiveis = entries
           .filter((e) => e.isIntersecting)
           .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
-        if (visiveis[0]) setSecaoAtiva(visiveis[0].target.id as Secao);
+        if (visiveis[0]) setSecaoAtiva(idParaSecao[visiveis[0].target.id]);
       },
       { rootMargin: "-40% 0px -50% 0px", threshold: [0, 0.25, 0.5, 1] },
     );
@@ -72,21 +73,22 @@ function Index() {
             <div className="relative inline-flex rounded-full border border-border/60 bg-card p-1 text-sm">
               <span
                 aria-hidden
-                className="absolute top-1 bottom-1 w-1/3 rounded-full bg-gold transition-transform duration-300 ease-out"
+                className="absolute top-1 bottom-1 w-1/4 rounded-full bg-gold transition-transform duration-300 ease-out"
                 style={{
-                  transform: `translateX(${secaoAtiva === "catalogo" ? "0%" : secaoAtiva === "sobre" ? "100%" : "200%"})`,
+                  transform: `translateX(${secaoAtiva === "home" ? "0%" : secaoAtiva === "catalogo" ? "100%" : secaoAtiva === "sobre" ? "200%" : "300%"})`,
                 }}
               />
               {([
-                { id: "catalogo", label: "Catálogo" },
-                { id: "sobre", label: "Sobre" },
-                { id: "faq", label: "FAQ" },
+                { id: "top", secao: "home", label: "Home" },
+                { id: "catalogo", secao: "catalogo", label: "Catálogo" },
+                { id: "sobre", secao: "sobre", label: "Sobre" },
+                { id: "faq", secao: "faq", label: "FAQ" },
               ] as const).map((s) => (
                 <a
                   key={s.id}
                   href={`#${s.id}`}
                   className={`relative z-10 w-24 rounded-full px-4 py-2 text-center font-medium transition-colors ${
-                    secaoAtiva === s.id ? "text-primary-foreground" : "text-muted-foreground hover:text-foreground"
+                    secaoAtiva === s.secao ? "text-primary-foreground" : "text-muted-foreground hover:text-foreground"
                   }`}
                 >
                   {s.label}
@@ -94,6 +96,7 @@ function Index() {
               ))}
             </div>
           </nav>
+
           <CartButton />
 
         </div>
