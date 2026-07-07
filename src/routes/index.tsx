@@ -1,12 +1,13 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import { useMemo, useState } from "react";
 import heroImg from "@/assets/hero-perfume.jpg";
 import perfume1 from "@/assets/perfume-1.jpg";
 import perfume2 from "@/assets/perfume-2.jpg";
 import perfume3 from "@/assets/perfume-3.jpg";
 import logoWhite from "@/assets/dakar-essence-white.png.asset.json";
-import { getPerfumes, type Perfume } from "@/lib/perfumes.functions";
+import { getPerfumes } from "@/lib/perfumes.functions";
+import { useCart } from "@/lib/cart-context";
+import { CartButton } from "@/components/cart-drawer";
 
 const perfumesQuery = queryOptions({
   queryKey: ["perfumes"],
@@ -26,51 +27,13 @@ export const Route = createFileRoute("/")({
   notFoundComponent: () => <div className="p-8">Página não encontrada</div>,
 });
 
-const WHATSAPP_NUMBER = "5515997261852";
 const imagensRotativas = [perfume1, perfume2, perfume3];
 const codigoDoPerfume = (index: number) => `Nº ${String(index + 1).padStart(3, "0")}`;
-const waLink = (msg: string) =>
-  `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
 
 function Index() {
   const { data: perfumes } = useSuspenseQuery(perfumesQuery);
-  const [cart, setCart] = useState<Record<string, number>>({});
-  const [cartOpen, setCartOpen] = useState(false);
+  const { cart, cartCount, add, remove, open } = useCart();
 
-  const cartCount = useMemo(
-    () => Object.values(cart).reduce((a, b) => a + b, 0),
-    [cart],
-  );
-
-  const perfumeById = useMemo(() => {
-    const m = new Map<string, { p: Perfume; codigo: string }>();
-    perfumes.forEach((p, i) => m.set(p.id, { p, codigo: codigoDoPerfume(i) }));
-    return m;
-  }, [perfumes]);
-
-  const add = (id: string) =>
-    setCart((c) => ({ ...c, [id]: (c[id] ?? 0) + 1 }));
-  const remove = (id: string) =>
-    setCart((c) => {
-      const next = { ...c };
-      if (!next[id]) return c;
-      next[id] -= 1;
-      if (next[id] <= 0) delete next[id];
-      return next;
-    });
-  const clear = () => setCart({});
-
-  const mensagemPedido = useMemo(() => {
-    const linhas = Object.entries(cart)
-      .map(([id, qtd]) => {
-        const item = perfumeById.get(id);
-        if (!item) return null;
-        return `• ${qtd}x ${item.p.nome} (${item.codigo})`;
-      })
-      .filter(Boolean);
-    if (linhas.length === 0) return "Olá! Gostaria de fazer um pedido.";
-    return `Olá! Gostaria de pedir:\n\n${linhas.join("\n")}\n\nPodemos fechar?`;
-  }, [cart, perfumeById]);
 
   return (
     <div className="min-h-screen bg-background text-foreground">
