@@ -5,6 +5,8 @@ import heroImg from "@/assets/hero-perfume.jpg";
 import perfume1 from "@/assets/perfume-1.jpg";
 import perfume2 from "@/assets/perfume-2.jpg";
 import perfume3 from "@/assets/perfume-3.jpg";
+import logoBlack from "@/assets/dakar-essence-black.png.asset.json";
+import logoWhite from "@/assets/dakar-essence-white.png.asset.json";
 import { getPerfumes, type Perfume } from "@/lib/perfumes.functions";
 
 const perfumesQuery = queryOptions({
