@@ -300,8 +300,7 @@ function Index() {
       <footer className="border-t border-border/60 py-10">
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-6 text-sm text-muted-foreground md:flex-row">
           <div className="flex items-center">
-            <img src={logoBlack.url} alt="Dakar Essence" className="h-8 w-auto dark:hidden" />
-            <img src={logoWhite.url} alt="Dakar Essence" className="hidden h-8 w-auto dark:block" />
+            <img src={logoWhite.url} alt="Dakar Essence" className="h-8 w-auto" />
           </div>
           <p>© {new Date().getFullYear()} Dakar Essence. Todos os direitos reservados.</p>
         </div>
