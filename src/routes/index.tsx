@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import heroImg from "@/assets/hero-perfume.jpg";
 import perfume1 from "@/assets/perfume-1.jpg";
 import perfume2 from "@/assets/perfume-2.jpg";
@@ -37,6 +37,28 @@ function Index() {
   const [filtro, setFiltro] = useState<"todos" | "feminino" | "masculino">("todos");
   const perfumesFiltrados = filtro === "todos" ? perfumes : perfumes.filter((p) => p.genero === filtro);
 
+  const secoes = ["catalogo", "sobre", "faq"] as const;
+  type Secao = (typeof secoes)[number];
+  const [secaoAtiva, setSecaoAtiva] = useState<Secao>("catalogo");
+
+  useEffect(() => {
+    const els = secoes
+      .map((id) => document.getElementById(id))
+      .filter((el): el is HTMLElement => el !== null);
+    if (els.length === 0) return;
+    const obs = new IntersectionObserver(
+      (entries) => {
+        const visiveis = entries
+          .filter((e) => e.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
+        if (visiveis[0]) setSecaoAtiva(visiveis[0].target.id as Secao);
+      },
+      { rootMargin: "-40% 0px -50% 0px", threshold: [0, 0.25, 0.5, 1] },
+    );
+    els.forEach((el) => obs.observe(el));
+    return () => obs.disconnect();
+  }, []);
+
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -46,10 +68,31 @@ function Index() {
           <a href="#top" className="flex items-center" aria-label="Dakar Essence">
             <img src={logoWhite.url} alt="Dakar Essence" className="h-20 w-auto md:h-24" />
           </a>
-          <nav className="hidden items-center gap-8 text-sm text-muted-foreground md:flex">
-            <a href="#catalogo" className="transition hover:text-foreground">Catálogo</a>
-            <a href="#sobre" className="transition hover:text-foreground">Sobre</a>
-            <a href="#faq" className="transition hover:text-foreground">FAQ</a>
+          <nav className="hidden md:flex">
+            <div className="relative inline-flex rounded-full border border-border/60 bg-card p-1 text-sm">
+              <span
+                aria-hidden
+                className="absolute top-1 bottom-1 w-1/3 rounded-full bg-gold transition-transform duration-300 ease-out"
+                style={{
+                  transform: `translateX(${secaoAtiva === "catalogo" ? "0%" : secaoAtiva === "sobre" ? "100%" : "200%"})`,
+                }}
+              />
+              {([
+                { id: "catalogo", label: "Catálogo" },
+                { id: "sobre", label: "Sobre" },
+                { id: "faq", label: "FAQ" },
+              ] as const).map((s) => (
+                <a
+                  key={s.id}
+                  href={`#${s.id}`}
+                  className={`relative z-10 w-24 rounded-full px-4 py-2 text-center font-medium transition-colors ${
+                    secaoAtiva === s.id ? "text-primary-foreground" : "text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  {s.label}
+                </a>
+              ))}
+            </div>
           </nav>
           <CartButton />
 
@@ -272,9 +315,8 @@ function Index() {
           <div className="mt-12 divide-y divide-border/60">
             {[
               { q: "Como faço meu pedido?", a: "Adicione os perfumes ao carrinho, abra o carrinho e clique em Pedir no WhatsApp. A mensagem já vai pronta com o que você escolheu." },
-              { q: "O que é um perfume contratipo?", a: "É uma fragrância inspirada em perfumes famosos, feita com essências de alta qualidade." },
               { q: "Qual a fixação?", a: "Em média 10 a 14 horas, com 30% de concentração." },
-              { q: "Entregam para todo o Brasil?", a: "Sim, enviamos via Correios ou transportadora para todo o país." },
+              { q: "Entregam para todo o Brasil?", a: "Por enquanto entregamos apenas para Sorocaba e região." },
             ].map((item) => (
               <details key={item.q} className="group py-6">
                 <summary className="flex cursor-pointer items-center justify-between font-display text-lg font-medium">
