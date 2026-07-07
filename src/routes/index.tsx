@@ -315,9 +315,8 @@ function Index() {
           <div className="mt-12 divide-y divide-border/60">
             {[
               { q: "Como faço meu pedido?", a: "Adicione os perfumes ao carrinho, abra o carrinho e clique em Pedir no WhatsApp. A mensagem já vai pronta com o que você escolheu." },
-              { q: "O que é um perfume contratipo?", a: "É uma fragrância inspirada em perfumes famosos, feita com essências de alta qualidade." },
               { q: "Qual a fixação?", a: "Em média 10 a 14 horas, com 30% de concentração." },
-              { q: "Entregam para todo o Brasil?", a: "Sim, enviamos via Correios ou transportadora para todo o país." },
+              { q: "Entregam para todo o Brasil?", a: "Por enquanto entregamos apenas para Sorocaba e região." },
             ].map((item) => (
               <details key={item.q} className="group py-6">
                 <summary className="flex cursor-pointer items-center justify-between font-display text-lg font-medium">
