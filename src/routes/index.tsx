@@ -77,7 +77,7 @@ function Index() {
       <header className="sticky top-0 z-40 border-b border-border/60 bg-background/80 backdrop-blur">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5">
           <a href="#top" className="flex items-baseline gap-2">
-            <span className="font-display text-xl font-semibold tracking-tight">Essência</span>
+            <span className="font-display text-xl font-semibold tracking-tight">Dakar Essence</span>
             <span className="text-[10px] uppercase tracking-[0.25em] text-gold">Parfum</span>
           </a>
           <nav className="hidden items-center gap-8 text-sm text-muted-foreground md:flex">
@@ -299,10 +299,10 @@ function Index() {
       <footer className="border-t border-border/60 py-10">
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-6 text-sm text-muted-foreground md:flex-row">
           <div className="flex items-baseline gap-2">
-            <span className="font-display text-base font-semibold text-foreground">Essência</span>
+            <span className="font-display text-base font-semibold text-foreground">Dakar Essence</span>
             <span className="text-[10px] uppercase tracking-[0.25em] text-gold">Parfum</span>
           </div>
-          <p>© {new Date().getFullYear()} Essência. Todos os direitos reservados.</p>
+          <p>© {new Date().getFullYear()} Dakar Essence. Todos os direitos reservados.</p>
         </div>
       </footer>
 
