@@ -5,6 +5,7 @@ import perfume2 from "@/assets/perfume-2.jpg";
 import perfume3 from "@/assets/perfume-3.jpg";
 import logoWhite from "@/assets/dakar-essence-white.png.asset.json";
 import { getPerfumes } from "@/lib/perfumes.functions";
+import { formatBRL } from "@/lib/format";
 import { useCart } from "@/lib/cart-context";
 import { CartButton } from "@/components/cart-drawer";
 
@@ -87,6 +88,11 @@ function PerfumeDetail() {
           <h1 className="mt-3 font-display text-5xl font-semibold leading-tight md:text-6xl">
             {p.nome}
           </h1>
+          {p.preco != null && (
+            <p className="mt-4 font-display text-3xl font-semibold text-gold">
+              {formatBRL(p.preco)}
+            </p>
+          )}
           <p className="mt-6 text-lg leading-relaxed text-muted-foreground">
             {p.descricao || "Contratipo exclusivo, com alta concentração e fixação prolongada."}
           </p>

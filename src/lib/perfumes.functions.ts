@@ -13,6 +13,7 @@ export type Perfume = {
   imagem: string | null;
   descricao: string;
   genero: Genero;
+  preco: number | null;
 };
 
 const GENERO_MAP: Record<string, Genero> = {
@@ -64,6 +65,7 @@ type NotionPage = {
       files?: NotionFile[];
       url?: string | null;
       rich_text?: Array<{ plain_text: string }>;
+      number?: number | null;
     }
   >;
 };
@@ -123,6 +125,7 @@ export const getPerfumes = createServerFn({ method: "GET" }).handler(
       const emEstoque = status.includes("In Stock") || status.includes("Low");
       const descricao =
         page.properties["Descrição"]?.rich_text?.map((t) => t.plain_text).join("") ?? "";
+      const preco = page.properties["Preço"]?.number ?? null;
       return {
         id: page.id,
         nome,
@@ -131,6 +134,7 @@ export const getPerfumes = createServerFn({ method: "GET" }).handler(
         imagem: extractImage(page),
         descricao,
         genero: inferirGenero(nome),
+        preco,
       };
     });
   },
