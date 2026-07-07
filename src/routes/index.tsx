@@ -78,9 +78,9 @@ function Index() {
       {/* Nav */}
       <header className="sticky top-0 z-40 border-b border-border/60 bg-background/80 backdrop-blur">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5">
-          <a href="#top" className="flex items-baseline gap-2">
-            <span className="font-display text-xl font-semibold tracking-tight">Dakar Essence</span>
-            <span className="text-[10px] uppercase tracking-[0.25em] text-gold">Parfum</span>
+          <a href="#top" className="flex items-center" aria-label="Dakar Essence">
+            <img src={logoBlack.url} alt="Dakar Essence" className="h-10 w-auto dark:hidden" />
+            <img src={logoWhite.url} alt="Dakar Essence" className="hidden h-10 w-auto dark:block" />
           </a>
           <nav className="hidden items-center gap-8 text-sm text-muted-foreground md:flex">
             <a href="#catalogo" className="transition hover:text-foreground">Catálogo</a>
