@@ -118,6 +118,8 @@ function Index() {
             <p className="hidden max-w-sm text-sm text-muted-foreground md:block">
               Adicione ao carrinho e envie o pedido pelo WhatsApp.
             </p>
+          </div>
+
 
           {/* Filtro por gênero — segmented iOS-like */}
           <div className="mb-10 flex justify-center">
