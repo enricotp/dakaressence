@@ -101,52 +101,38 @@ function Index() {
 
       {/* Hero */}
       <section id="top" className="relative overflow-hidden">
-        <div className="mx-auto grid max-w-7xl gap-12 px-6 py-20 md:grid-cols-2 md:py-28 md:pb-32">
-          <div className="flex flex-col justify-center">
-            <span className="mb-6 inline-flex w-fit items-center gap-2 rounded-full border border-gold/30 bg-gold/5 px-3 py-1 text-[11px] uppercase tracking-[0.2em] text-gold">
-              <span className="h-1 w-1 rounded-full bg-gold" /> Coleção 2026
+        <div className="mx-auto max-w-4xl px-6 py-20 text-center md:py-28">
+          <span className="mb-6 inline-flex items-center gap-2 rounded-full border border-gold/30 bg-gold/5 px-3 py-1 text-[11px] uppercase tracking-[0.2em] text-gold">
+            <span className="h-1 w-1 rounded-full bg-gold" /> Coleção 2026
+          </span>
+          <h1 className="font-display text-5xl font-semibold leading-[1.05] tracking-tight md:text-7xl">
+            A mesma essência,{" "}
+            <span className="bg-gradient-to-r from-gold to-gold-soft bg-clip-text text-transparent">
+              metade do preço.
             </span>
-            <h1 className="font-display text-5xl font-semibold leading-[1.05] tracking-tight md:text-7xl">
-              A mesma essência,{" "}
-              <span className="bg-gradient-to-r from-gold to-gold-soft bg-clip-text text-transparent">
-                metade do preço.
-              </span>
-            </h1>
-            <p className="mt-6 max-w-lg text-lg leading-relaxed text-muted-foreground">
-              Perfumes contratipos com alta concentração e fixação premium.
-              Monte seu pedido e finalize direto no WhatsApp.
-            </p>
-            <div className="mt-10 flex flex-wrap gap-4">
-              <a
-                href="#catalogo"
-                className="inline-flex items-center justify-center rounded-full bg-gold px-6 py-3 text-sm font-semibold text-primary-foreground transition hover:brightness-110"
-              >
-                Ver catálogo
-              </a>
-              <button
-                type="button"
-                onClick={open}
-                className="inline-flex items-center justify-center rounded-full border border-border px-6 py-3 text-sm font-medium transition hover:border-gold hover:text-gold"
-              >
-                Meu carrinho ({cartCount})
-              </button>
-            </div>
-          </div>
-
-          <div className="relative">
-            <div className="absolute -inset-8 rounded-3xl bg-gradient-to-br from-gold/20 via-transparent to-transparent blur-3xl" />
-            <div className="relative overflow-hidden rounded-2xl border border-border/60">
-              <img
-                src={heroImg}
-                alt="Frasco de perfume dourado sobre mármore preto"
-                width={1600}
-                height={1200}
-                className="h-full w-full object-cover"
-              />
-            </div>
+          </h1>
+          <p className="mx-auto mt-6 max-w-lg text-lg leading-relaxed text-muted-foreground">
+            Perfumes contratipos com alta concentração e fixação premium.
+            Monte seu pedido e finalize direto no WhatsApp.
+          </p>
+          <div className="mt-10 flex flex-wrap justify-center gap-4">
+            <a
+              href="#catalogo"
+              className="inline-flex items-center justify-center rounded-full bg-gold px-6 py-3 text-sm font-semibold text-primary-foreground transition hover:brightness-110"
+            >
+              Ver catálogo
+            </a>
+            <button
+              type="button"
+              onClick={open}
+              className="inline-flex items-center justify-center rounded-full border border-border px-6 py-3 text-sm font-medium transition hover:border-gold hover:text-gold"
+            >
+              Meu carrinho ({cartCount})
+            </button>
           </div>
         </div>
       </section>
+
 
       {/* Catálogo */}
       <section id="catalogo" className="border-t border-border/60 py-24">
