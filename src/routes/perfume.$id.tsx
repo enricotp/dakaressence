@@ -38,7 +38,7 @@ export const Route = createFileRoute("/perfume/$id")({
 function PerfumeDetail() {
   const { id } = Route.useParams();
   const { data: perfumes } = useSuspenseQuery(perfumesQuery);
-  const { cart, add, remove, open } = useCart();
+  const { cart, add, remove } = useCart();
   const index = perfumes.findIndex((p) => p.id === id);
   if (index === -1) throw notFound();
   const p = perfumes[index];
