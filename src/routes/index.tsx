@@ -224,14 +224,14 @@ function Index() {
                       </span>
                     )}
                   </Link>
-                  <div className="flex flex-1 flex-col gap-4 p-6">
+                  <div className="flex flex-1 flex-col gap-3 p-4 sm:gap-4 sm:p-6">
                     <div>
-                      <h3 className="font-display text-xl font-semibold">
+                      <h3 className="font-display text-base font-semibold sm:text-xl">
                         <Link to="/perfume/$id" params={{ id: p.id }} className="transition hover:text-gold">
                           {p.nome}
                         </Link>
                       </h3>
-                      <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">
+                      <p className="mt-1 line-clamp-2 text-xs text-muted-foreground sm:text-sm">
                         {p.descricao || p.status || "Contratipo exclusivo"}
                       </p>
                     </div>
