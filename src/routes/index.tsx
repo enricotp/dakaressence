@@ -34,6 +34,8 @@ const codigoDoPerfume = (index: number) => `Nº ${String(index + 1).padStart(3, 
 function Index() {
   const { data: perfumes } = useSuspenseQuery(perfumesQuery);
   const { cart, cartCount, add, remove, open } = useCart();
+  const [filtro, setFiltro] = useState<"todos" | "feminino" | "masculino">("todos");
+  const perfumesFiltrados = filtro === "todos" ? perfumes : perfumes.filter((p) => p.genero === filtro);
 
 
   return (
