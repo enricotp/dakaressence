@@ -58,14 +58,12 @@ export function CartDrawer() {
       .map(([id, qtd]) => {
         const item = perfumeById.get(id);
         if (!item) return null;
-        const preco = item.p.preco != null ? ` — ${formatBRL(item.p.preco * qtd)}` : "";
-        return `• ${qtd}x ${item.p.nome} (${item.codigo})${preco}`;
+        return `• ${qtd}x ${item.p.nome} (${item.codigo})`;
       })
       .filter(Boolean);
     if (linhas.length === 0) return "Olá! Gostaria de fazer um pedido.";
-    const totalLinha = total > 0 ? `\n\nTotal: ${formatBRL(total)}` : "";
-    return `Olá! Gostaria de pedir:\n\n${linhas.join("\n")}${totalLinha}\n\nPodemos fechar?`;
-  }, [cart, perfumeById, total]);
+    return `Olá! Gostaria de pedir:\n\n${linhas.join("\n")}\n\nPodemos fechar?`;
+  }, [cart, perfumeById]);
 
   if (!isOpen) return null;
 
