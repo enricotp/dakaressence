@@ -7,18 +7,52 @@ export type Perfume = {
   id: string;
   nome: string;
   emEstoque: boolean;
-  status: string; // "✅ In Stock" | "⚠️ Low Stock" | "❌ Out of Stock"
+  status: string;
+  imagem: string | null;
 };
 
-type NotionQueryResponse = {
-  results: Array<{
-    id: string;
-    properties: {
-      "Product Name"?: { title: Array<{ plain_text: string }> };
-      "Available?"?: { formula: { string?: string } };
-    };
-  }>;
+type NotionFile =
+  | { type: "external"; external: { url: string }; name?: string }
+  | { type: "file"; file: { url: string }; name?: string };
+
+type NotionPage = {
+  id: string;
+  cover: NotionFile | null;
+  properties: Record<
+    string,
+    {
+      type: string;
+      title?: Array<{ plain_text: string }>;
+      formula?: { string?: string };
+      files?: NotionFile[];
+      url?: string | null;
+      rich_text?: Array<{ plain_text: string }>;
+    }
+  >;
 };
+
+type NotionQueryResponse = { results: NotionPage[] };
+
+function extractImage(page: NotionPage): string | null {
+  // 1. Page cover
+  if (page.cover) {
+    if (page.cover.type === "external") return page.cover.external.url;
+    if (page.cover.type === "file") return page.cover.file.url;
+  }
+  // 2. Any Files & media property (first item), commonly named "Imagem" or "Image"
+  for (const prop of Object.values(page.properties)) {
+    if (prop.type === "files" && prop.files && prop.files.length > 0) {
+      const f = prop.files[0];
+      if (f.type === "external") return f.external.url;
+      if (f.type === "file") return f.file.url;
+    }
+  }
+  // 3. URL property named "Imagem" / "Image"
+  for (const [name, prop] of Object.entries(page.properties)) {
+    if (prop.type === "url" && prop.url && /imag/i.test(name)) return prop.url;
+  }
+  return null;
+}
 
 export const getPerfumes = createServerFn({ method: "GET" }).handler(
   async (): Promise<Perfume[]> => {
@@ -50,7 +84,13 @@ export const getPerfumes = createServerFn({ method: "GET" }).handler(
         page.properties["Product Name"]?.title?.[0]?.plain_text ?? "Sem nome";
       const status = page.properties["Available?"]?.formula?.string ?? "";
       const emEstoque = status.includes("In Stock") || status.includes("Low");
-      return { id: page.id, nome, emEstoque, status };
+      return {
+        id: page.id,
+        nome,
+        emEstoque,
+        status,
+        imagem: extractImage(page),
+      };
     });
   },
 );

@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
+import { useMemo, useState } from "react";
 import heroImg from "@/assets/hero-perfume.jpg";
 import perfume1 from "@/assets/perfume-1.jpg";
 import perfume2 from "@/assets/perfume-2.jpg";
@@ -24,27 +25,59 @@ export const Route = createFileRoute("/")({
   notFoundComponent: () => <div className="p-8">Página não encontrada</div>,
 });
 
-const WHATSAPP_NUMBER = "5511999999999"; // troque pelo seu número (formato: 55 + DDD + número)
-
+const WHATSAPP_NUMBER = "5515997261852";
 const imagensRotativas = [perfume1, perfume2, perfume3];
-
-const codigoDoPerfume = (index: number) =>
-  `Nº ${String(index + 1).padStart(3, "0")}`;
-
+const codigoDoPerfume = (index: number) => `Nº ${String(index + 1).padStart(3, "0")}`;
 const waLink = (msg: string) =>
   `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
 
 function Index() {
   const { data: perfumes } = useSuspenseQuery(perfumesQuery);
+  const [cart, setCart] = useState<Record<string, number>>({});
+  const [cartOpen, setCartOpen] = useState(false);
+
+  const cartCount = useMemo(
+    () => Object.values(cart).reduce((a, b) => a + b, 0),
+    [cart],
+  );
+
+  const perfumeById = useMemo(() => {
+    const m = new Map<string, { p: Perfume; codigo: string }>();
+    perfumes.forEach((p, i) => m.set(p.id, { p, codigo: codigoDoPerfume(i) }));
+    return m;
+  }, [perfumes]);
+
+  const add = (id: string) =>
+    setCart((c) => ({ ...c, [id]: (c[id] ?? 0) + 1 }));
+  const remove = (id: string) =>
+    setCart((c) => {
+      const next = { ...c };
+      if (!next[id]) return c;
+      next[id] -= 1;
+      if (next[id] <= 0) delete next[id];
+      return next;
+    });
+  const clear = () => setCart({});
+
+  const mensagemPedido = useMemo(() => {
+    const linhas = Object.entries(cart)
+      .map(([id, qtd]) => {
+        const item = perfumeById.get(id);
+        if (!item) return null;
+        return `• ${qtd}x ${item.p.nome} (${item.codigo})`;
+      })
+      .filter(Boolean);
+    if (linhas.length === 0) return "Olá! Gostaria de fazer um pedido.";
+    return `Olá! Gostaria de pedir:\n\n${linhas.join("\n")}\n\nPodemos fechar?`;
+  }, [cart, perfumeById]);
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       {/* Nav */}
       <header className="sticky top-0 z-40 border-b border-border/60 bg-background/80 backdrop-blur">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5">
           <a href="#top" className="flex items-baseline gap-2">
-            <span className="font-display text-xl font-semibold tracking-tight text-foreground">
-              Essência
-            </span>
+            <span className="font-display text-xl font-semibold tracking-tight">Essência</span>
             <span className="text-[10px] uppercase tracking-[0.25em] text-gold">Parfum</span>
           </a>
           <nav className="hidden items-center gap-8 text-sm text-muted-foreground md:flex">
@@ -52,14 +85,18 @@ function Index() {
             <a href="#sobre" className="transition hover:text-foreground">Sobre</a>
             <a href="#faq" className="transition hover:text-foreground">FAQ</a>
           </nav>
-          <a
-            href={waLink("Olá! Gostaria de fazer um pedido.")}
-            target="_blank"
-            rel="noreferrer"
-            className="inline-flex items-center gap-2 rounded-full border border-gold/40 bg-gold/10 px-4 py-2 text-xs font-medium uppercase tracking-wider text-gold transition hover:bg-gold hover:text-primary-foreground"
+          <button
+            type="button"
+            onClick={() => setCartOpen(true)}
+            className="relative inline-flex items-center gap-2 rounded-full border border-gold/40 bg-gold/10 px-4 py-2 text-xs font-medium uppercase tracking-wider text-gold transition hover:bg-gold hover:text-primary-foreground"
           >
-            Pedir no WhatsApp
-          </a>
+            Carrinho
+            {cartCount > 0 && (
+              <span className="ml-1 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-gold px-1.5 text-[11px] font-semibold text-primary-foreground">
+                {cartCount}
+              </span>
+            )}
+          </button>
         </div>
       </header>
 
@@ -78,8 +115,7 @@ function Index() {
             </h1>
             <p className="mt-6 max-w-lg text-lg leading-relaxed text-muted-foreground">
               Perfumes contratipos com alta concentração e fixação premium.
-              Inspirados nas maiores fragrâncias do mundo, feitos com essências
-              importadas.
+              Monte seu pedido e finalize direto no WhatsApp.
             </p>
             <div className="mt-10 flex flex-wrap gap-4">
               <a
@@ -88,26 +124,13 @@ function Index() {
               >
                 Ver catálogo
               </a>
-              <a
-                href={waLink("Olá! Quero saber mais sobre os perfumes.")}
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex items-center justify-center rounded-full border border-border px-6 py-3 text-sm font-medium text-foreground transition hover:border-gold hover:text-gold"
+              <button
+                type="button"
+                onClick={() => setCartOpen(true)}
+                className="inline-flex items-center justify-center rounded-full border border-border px-6 py-3 text-sm font-medium transition hover:border-gold hover:text-gold"
               >
-                Falar no WhatsApp
-              </a>
-            </div>
-            <div className="mt-12 grid grid-cols-3 gap-6 border-t border-border/60 pt-8">
-              {[
-                ["+30%", "Concentração"],
-                ["12h+", "Fixação média"],
-                ["4.9★", "Avaliação"],
-              ].map(([v, l]) => (
-                <div key={l}>
-                  <div className="font-display text-2xl font-semibold text-gold">{v}</div>
-                  <div className="mt-1 text-xs uppercase tracking-wider text-muted-foreground">{l}</div>
-                </div>
-              ))}
+                Meu carrinho ({cartCount})
+              </button>
             </div>
           </div>
 
@@ -131,23 +154,22 @@ function Index() {
         <div className="mx-auto max-w-7xl px-6">
           <div className="mb-14 flex items-end justify-between">
             <div>
-              <span className="text-[11px] uppercase tracking-[0.25em] text-gold">
-                Catálogo
-              </span>
+              <span className="text-[11px] uppercase tracking-[0.25em] text-gold">Catálogo</span>
               <h2 className="mt-3 font-display text-4xl font-semibold md:text-5xl">
                 Nossas fragrâncias
               </h2>
             </div>
             <p className="hidden max-w-sm text-sm text-muted-foreground md:block">
-              Toque em qualquer perfume para pedir direto pelo WhatsApp.
+              Adicione ao carrinho e envie o pedido pelo WhatsApp.
             </p>
           </div>
 
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {perfumes.map((p: Perfume, i: number) => {
+            {perfumes.map((p, i) => {
               const codigo = codigoDoPerfume(i);
-              const imagem = imagensRotativas[i % imagensRotativas.length];
+              const imagem = p.imagem ?? imagensRotativas[i % imagensRotativas.length];
               const indisponivel = !p.emEstoque;
+              const qtd = cart[p.id] ?? 0;
               return (
                 <article
                   key={p.id}
@@ -174,25 +196,49 @@ function Index() {
                   <div className="flex flex-1 flex-col gap-4 p-6">
                     <div>
                       <h3 className="font-display text-xl font-semibold">{p.nome}</h3>
-                      <p className="mt-1 text-sm text-muted-foreground">{p.status || "Contratipo exclusivo"}</p>
+                      <p className="mt-1 text-sm text-muted-foreground">
+                        {p.status || "Contratipo exclusivo"}
+                      </p>
                     </div>
-                    <a
-                      href={
-                        indisponivel
-                          ? undefined
-                          : waLink(`Olá! Quero pedir o perfume ${p.nome} (${codigo}).`)
-                      }
-                      target={indisponivel ? undefined : "_blank"}
-                      rel="noreferrer"
-                      aria-disabled={indisponivel}
-                      className={`mt-auto inline-flex items-center justify-center rounded-full py-3 text-sm font-medium transition ${
-                        indisponivel
-                          ? "cursor-not-allowed bg-foreground/5 text-muted-foreground"
-                          : "bg-foreground/5 text-foreground group-hover:bg-gold group-hover:text-primary-foreground"
-                      }`}
-                    >
-                      {indisponivel ? "Indisponível" : "Pedir no WhatsApp"}
-                    </a>
+                    {indisponivel ? (
+                      <button
+                        type="button"
+                        disabled
+                        className="mt-auto inline-flex cursor-not-allowed items-center justify-center rounded-full bg-foreground/5 py-3 text-sm font-medium text-muted-foreground"
+                      >
+                        Indisponível
+                      </button>
+                    ) : qtd === 0 ? (
+                      <button
+                        type="button"
+                        onClick={() => add(p.id)}
+                        className="mt-auto inline-flex items-center justify-center rounded-full bg-foreground/5 py-3 text-sm font-medium transition group-hover:bg-gold group-hover:text-primary-foreground"
+                      >
+                        Adicionar ao carrinho
+                      </button>
+                    ) : (
+                      <div className="mt-auto flex items-center justify-between rounded-full bg-gold/10 p-1">
+                        <button
+                          type="button"
+                          onClick={() => remove(p.id)}
+                          className="h-9 w-9 rounded-full bg-background text-lg font-semibold text-foreground transition hover:bg-gold hover:text-primary-foreground"
+                          aria-label="Remover um"
+                        >
+                          −
+                        </button>
+                        <span className="text-sm font-semibold text-gold">
+                          {qtd} no carrinho
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => add(p.id)}
+                          className="h-9 w-9 rounded-full bg-background text-lg font-semibold text-foreground transition hover:bg-gold hover:text-primary-foreground"
+                          aria-label="Adicionar mais um"
+                        >
+                          +
+                        </button>
+                      </div>
+                    )}
                   </div>
                 </article>
               );
@@ -218,8 +264,7 @@ function Index() {
             </p>
             <p>
               Nosso compromisso é entregar a mesma experiência olfativa dos
-              perfumes originais, com transparência sobre o que é um contratipo
-              — sem cópias ilegais ou promessas vazias.
+              perfumes originais, com transparência sobre o que é um contratipo.
             </p>
           </div>
         </div>
@@ -234,22 +279,10 @@ function Index() {
           </h2>
           <div className="mt-12 divide-y divide-border/60">
             {[
-              {
-                q: "O que é um perfume contratipo?",
-                a: "É uma fragrância inspirada em perfumes famosos, feita com essências de alta qualidade, entregando aroma e fixação similares por um preço muito mais acessível.",
-              },
-              {
-                q: "Qual a fixação e projeção?",
-                a: "Em média 10 a 14 horas de fixação com projeção moderada a alta, graças aos 30% de concentração da essência.",
-              },
-              {
-                q: "Como faço meu pedido?",
-                a: "Clique em qualquer botão de WhatsApp. Você fala direto conosco, tira dúvidas e finaliza a compra pelo chat.",
-              },
-              {
-                q: "Fazem entrega para todo o Brasil?",
-                a: "Sim. Enviamos via Correios ou transportadora para todo o território nacional.",
-              },
+              { q: "Como faço meu pedido?", a: "Adicione os perfumes ao carrinho, abra o carrinho e clique em Pedir no WhatsApp. A mensagem já vai pronta com o que você escolheu." },
+              { q: "O que é um perfume contratipo?", a: "É uma fragrância inspirada em perfumes famosos, feita com essências de alta qualidade." },
+              { q: "Qual a fixação?", a: "Em média 10 a 14 horas, com 30% de concentração." },
+              { q: "Entregam para todo o Brasil?", a: "Sim, enviamos via Correios ou transportadora para todo o país." },
             ].map((item) => (
               <details key={item.q} className="group py-6">
                 <summary className="flex cursor-pointer items-center justify-between font-display text-lg font-medium">
@@ -263,26 +296,6 @@ function Index() {
         </div>
       </section>
 
-      {/* Footer CTA */}
-      <section className="border-t border-border/60 bg-gradient-to-b from-transparent to-gold/5 py-20">
-        <div className="mx-auto max-w-4xl px-6 text-center">
-          <h2 className="font-display text-4xl font-semibold md:text-5xl">
-            Pronto para escolher sua próxima assinatura olfativa?
-          </h2>
-          <p className="mt-4 text-muted-foreground">
-            Atendimento personalizado no WhatsApp para te ajudar a escolher.
-          </p>
-          <a
-            href={waLink("Olá! Quero ajuda para escolher meu perfume.")}
-            target="_blank"
-            rel="noreferrer"
-            className="mt-8 inline-flex items-center justify-center rounded-full bg-gold px-8 py-4 text-sm font-semibold text-primary-foreground transition hover:brightness-110"
-          >
-            Falar com um consultor
-          </a>
-        </div>
-      </section>
-
       <footer className="border-t border-border/60 py-10">
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-6 text-sm text-muted-foreground md:flex-row">
           <div className="flex items-baseline gap-2">
@@ -292,6 +305,107 @@ function Index() {
           <p>© {new Date().getFullYear()} Essência. Todos os direitos reservados.</p>
         </div>
       </footer>
+
+      {/* Cart drawer */}
+      {cartOpen && (
+        <div className="fixed inset-0 z-50 flex justify-end">
+          <button
+            type="button"
+            aria-label="Fechar carrinho"
+            onClick={() => setCartOpen(false)}
+            className="absolute inset-0 bg-background/70 backdrop-blur-sm"
+          />
+          <aside className="relative flex h-full w-full max-w-md flex-col border-l border-border/60 bg-card">
+            <div className="flex items-center justify-between border-b border-border/60 px-6 py-5">
+              <h3 className="font-display text-xl font-semibold">Seu carrinho</h3>
+              <button
+                type="button"
+                onClick={() => setCartOpen(false)}
+                className="text-2xl text-muted-foreground transition hover:text-foreground"
+                aria-label="Fechar"
+              >
+                ×
+              </button>
+            </div>
+
+            <div className="flex-1 overflow-y-auto px-6 py-4">
+              {cartCount === 0 ? (
+                <p className="mt-16 text-center text-sm text-muted-foreground">
+                  Seu carrinho está vazio.
+                </p>
+              ) : (
+                <ul className="space-y-4">
+                  {Object.entries(cart).map(([id, qtd]) => {
+                    const item = perfumeById.get(id);
+                    if (!item) return null;
+                    const img = item.p.imagem ?? imagensRotativas[0];
+                    return (
+                      <li key={id} className="flex gap-4 rounded-xl border border-border/60 p-3">
+                        <img
+                          src={img}
+                          alt={item.p.nome}
+                          className="h-16 w-16 rounded-lg object-cover"
+                        />
+                        <div className="flex flex-1 flex-col">
+                          <span className="text-[10px] uppercase tracking-[0.2em] text-gold">
+                            {item.codigo}
+                          </span>
+                          <span className="font-medium">{item.p.nome}</span>
+                          <div className="mt-auto flex items-center gap-2">
+                            <button
+                              type="button"
+                              onClick={() => remove(id)}
+                              className="h-7 w-7 rounded-full bg-background text-sm font-semibold transition hover:bg-gold hover:text-primary-foreground"
+                            >
+                              −
+                            </button>
+                            <span className="min-w-6 text-center text-sm">{qtd}</span>
+                            <button
+                              type="button"
+                              onClick={() => add(id)}
+                              className="h-7 w-7 rounded-full bg-background text-sm font-semibold transition hover:bg-gold hover:text-primary-foreground"
+                            >
+                              +
+                            </button>
+                          </div>
+                        </div>
+                      </li>
+                    );
+                  })}
+                </ul>
+              )}
+            </div>
+
+            <div className="space-y-3 border-t border-border/60 px-6 py-5">
+              <a
+                href={waLink(mensagemPedido)}
+                target="_blank"
+                rel="noreferrer"
+                aria-disabled={cartCount === 0}
+                onClick={(e) => {
+                  if (cartCount === 0) e.preventDefault();
+                }}
+                className={`flex w-full items-center justify-center rounded-full py-3 text-sm font-semibold transition ${
+                  cartCount === 0
+                    ? "cursor-not-allowed bg-foreground/5 text-muted-foreground"
+                    : "bg-gold text-primary-foreground hover:brightness-110"
+                }`}
+              >
+                Pedir no WhatsApp
+              </a>
+              {cartCount > 0 && (
+                <button
+                  type="button"
+                  onClick={clear}
+                  className="w-full text-center text-xs text-muted-foreground underline-offset-4 hover:underline"
+                >
+                  Esvaziar carrinho
+                </button>
+              )}
+            </div>
+          </aside>
+        </div>
+      )}
     </div>
   );
 }
