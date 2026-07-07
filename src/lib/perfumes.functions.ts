@@ -9,6 +9,7 @@ export type Perfume = {
   emEstoque: boolean;
   status: string;
   imagem: string | null;
+  descricao: string;
 };
 
 type NotionFile =
