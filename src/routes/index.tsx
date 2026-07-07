@@ -48,18 +48,8 @@ function Index() {
             <a href="#sobre" className="transition hover:text-foreground">Sobre</a>
             <a href="#faq" className="transition hover:text-foreground">FAQ</a>
           </nav>
-          <button
-            type="button"
-            onClick={() => setCartOpen(true)}
-            className="relative inline-flex items-center gap-2 rounded-full border border-gold/40 bg-gold/10 px-4 py-2 text-xs font-medium uppercase tracking-wider text-gold transition hover:bg-gold hover:text-primary-foreground"
-          >
-            Carrinho
-            {cartCount > 0 && (
-              <span className="ml-1 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-gold px-1.5 text-[11px] font-semibold text-primary-foreground">
-                {cartCount}
-              </span>
-            )}
-          </button>
+          <CartButton />
+
         </div>
       </header>
 
@@ -89,7 +79,7 @@ function Index() {
               </a>
               <button
                 type="button"
-                onClick={() => setCartOpen(true)}
+                onClick={open}
                 className="inline-flex items-center justify-center rounded-full border border-border px-6 py-3 text-sm font-medium transition hover:border-gold hover:text-gold"
               >
                 Meu carrinho ({cartCount})
