@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
+import { useState } from "react";
 import heroImg from "@/assets/hero-perfume.jpg";
 import perfume1 from "@/assets/perfume-1.jpg";
 import perfume2 from "@/assets/perfume-2.jpg";
@@ -33,6 +34,8 @@ const codigoDoPerfume = (index: number) => `Nº ${String(index + 1).padStart(3, 
 function Index() {
   const { data: perfumes } = useSuspenseQuery(perfumesQuery);
   const { cart, cartCount, add, remove, open } = useCart();
+  const [filtro, setFiltro] = useState<"todos" | "feminino" | "masculino">("todos");
+  const perfumesFiltrados = filtro === "todos" ? perfumes : perfumes.filter((p) => p.genero === filtro);
 
 
   return (
@@ -117,8 +120,35 @@ function Index() {
             </p>
           </div>
 
+
+          {/* Filtro por gênero — segmented iOS-like */}
+          <div className="mb-10 flex justify-center">
+            <div className="relative inline-flex rounded-full border border-border/60 bg-card p-1 text-sm">
+              <span
+                aria-hidden
+                className="absolute top-1 bottom-1 w-1/3 rounded-full bg-gold transition-transform duration-300 ease-out"
+                style={{
+                  transform: `translateX(${filtro === "feminino" ? "0%" : filtro === "todos" ? "100%" : "200%"})`,
+                }}
+              />
+              {(["feminino", "todos", "masculino"] as const).map((op) => (
+                <button
+                  key={op}
+                  type="button"
+                  onClick={() => setFiltro(op)}
+                  className={`relative z-10 w-28 rounded-full px-4 py-2 font-medium capitalize transition-colors ${
+                    filtro === op ? "text-primary-foreground" : "text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  {op}
+                </button>
+              ))}
+            </div>
+          </div>
+
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {perfumes.map((p, i) => {
+            {perfumesFiltrados.map((p) => {
+              const i = perfumes.indexOf(p);
               const codigo = codigoDoPerfume(i);
               const imagem = p.imagem ?? imagensRotativas[i % imagensRotativas.length];
               const indisponivel = !p.emEstoque;

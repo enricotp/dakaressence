@@ -3,6 +3,8 @@ import { createServerFn } from "@tanstack/react-start";
 const DATABASE_ID = "38858811-29ca-83c5-b57d-0102c05505b1";
 const GATEWAY = "https://connector-gateway.lovable.dev/notion/v1";
 
+export type Genero = "feminino" | "masculino";
+
 export type Perfume = {
   id: string;
   nome: string;
@@ -10,7 +12,41 @@ export type Perfume = {
   status: string;
   imagem: string | null;
   descricao: string;
+  genero: Genero;
 };
+
+const GENERO_MAP: Record<string, Genero> = {
+  angel: "feminino",
+  yara: "feminino",
+  "la vie est belle": "feminino",
+  "good girl": "feminino",
+  eclair: "feminino",
+  "éclair": "feminino",
+  scandal: "feminino",
+  "212 vip rose": "feminino",
+  "212 vip rosé": "feminino",
+  fantasy: "feminino",
+  "212 vip - this is a private party!": "feminino",
+  "212 vip – this is a private party!": "feminino",
+  "1 million": "masculino",
+  "al noble wazeer": "masculino",
+  "212 vip men": "masculino",
+  asad: "masculino",
+  "only the brave": "masculino",
+  "acqua di gio": "masculino",
+  "acqua di giò": "masculino",
+  "212 vip black - own the party nyc": "masculino",
+  "212 vip black – own the party nyc": "masculino",
+};
+
+function inferirGenero(nome: string): Genero {
+  const key = nome.trim().toLowerCase();
+  if (GENERO_MAP[key]) return GENERO_MAP[key];
+  for (const [k, v] of Object.entries(GENERO_MAP)) {
+    if (key.includes(k)) return v;
+  }
+  return "masculino";
+}
 
 type NotionFile =
   | { type: "external"; external: { url: string }; name?: string }
@@ -94,6 +130,7 @@ export const getPerfumes = createServerFn({ method: "GET" }).handler(
         status,
         imagem: extractImage(page),
         descricao,
+        genero: inferirGenero(nome),
       };
     });
   },
