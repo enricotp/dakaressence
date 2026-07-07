@@ -11,7 +11,7 @@ import { getPerfumes, type Perfume } from "@/lib/perfumes.functions";
 const perfumesQuery = queryOptions({
   queryKey: ["perfumes"],
   queryFn: () => getPerfumes(),
-  staleTime: 60_000,
+  staleTime: 0,
 });
 
 export const Route = createFileRoute("/")({
@@ -76,9 +76,9 @@ function Index() {
     <div className="min-h-screen bg-background text-foreground">
       {/* Nav */}
       <header className="sticky top-0 z-40 border-b border-border/60 bg-background/80 backdrop-blur">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5">
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
           <a href="#top" className="flex items-center" aria-label="Dakar Essence">
-            <img src={logoWhite.url} alt="Dakar Essence" className="h-10 w-auto" />
+            <img src={logoWhite.url} alt="Dakar Essence" className="h-20 w-auto md:h-24" />
           </a>
           <nav className="hidden items-center gap-8 text-sm text-muted-foreground md:flex">
             <a href="#catalogo" className="transition hover:text-foreground">Catálogo</a>
@@ -299,7 +299,7 @@ function Index() {
       <footer className="border-t border-border/60 py-10">
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-6 text-sm text-muted-foreground md:flex-row">
           <div className="flex items-center">
-            <img src={logoWhite.url} alt="Dakar Essence" className="h-8 w-auto" />
+            <img src={logoWhite.url} alt="Dakar Essence" className="h-16 w-auto" />
           </div>
           <p>© {new Date().getFullYear()} Dakar Essence. Todos os direitos reservados.</p>
         </div>
