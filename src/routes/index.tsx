@@ -68,10 +68,31 @@ function Index() {
           <a href="#top" className="flex items-center" aria-label="Dakar Essence">
             <img src={logoWhite.url} alt="Dakar Essence" className="h-20 w-auto md:h-24" />
           </a>
-          <nav className="hidden items-center gap-8 text-sm text-muted-foreground md:flex">
-            <a href="#catalogo" className="transition hover:text-foreground">Catálogo</a>
-            <a href="#sobre" className="transition hover:text-foreground">Sobre</a>
-            <a href="#faq" className="transition hover:text-foreground">FAQ</a>
+          <nav className="hidden md:flex">
+            <div className="relative inline-flex rounded-full border border-border/60 bg-card p-1 text-sm">
+              <span
+                aria-hidden
+                className="absolute top-1 bottom-1 w-1/3 rounded-full bg-gold transition-transform duration-300 ease-out"
+                style={{
+                  transform: `translateX(${secaoAtiva === "catalogo" ? "0%" : secaoAtiva === "sobre" ? "100%" : "200%"})`,
+                }}
+              />
+              {([
+                { id: "catalogo", label: "Catálogo" },
+                { id: "sobre", label: "Sobre" },
+                { id: "faq", label: "FAQ" },
+              ] as const).map((s) => (
+                <a
+                  key={s.id}
+                  href={`#${s.id}`}
+                  className={`relative z-10 w-24 rounded-full px-4 py-2 text-center font-medium transition-colors ${
+                    secaoAtiva === s.id ? "text-primary-foreground" : "text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  {s.label}
+                </a>
+              ))}
+            </div>
           </nav>
           <CartButton />
 
