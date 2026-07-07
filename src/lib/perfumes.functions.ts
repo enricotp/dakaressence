@@ -85,12 +85,15 @@ export const getPerfumes = createServerFn({ method: "GET" }).handler(
         page.properties["Product Name"]?.title?.[0]?.plain_text ?? "Sem nome";
       const status = page.properties["Available?"]?.formula?.string ?? "";
       const emEstoque = status.includes("In Stock") || status.includes("Low");
+      const descricao =
+        page.properties["Descrição"]?.rich_text?.map((t) => t.plain_text).join("") ?? "";
       return {
         id: page.id,
         nome,
         emEstoque,
         status,
         imagem: extractImage(page),
+        descricao,
       };
     });
   },
