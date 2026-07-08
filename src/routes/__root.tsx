@@ -89,18 +89,17 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         property: "og:description",
         content:
-          "Dakar Essence: perfumes contratipos com alta fixação e preço justo.",
+          "Dakar Essence: perfumes contratipos inspirados nas maiores fragrâncias do mundo. Alta fixação, alta concentração e preço justo.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "Dakar Essence — Perfumes Contratipos de Alta Fixação" },
-      { name: "twitter:description", content: "Dakar Essence: perfumes contratipos com alta fixação e preço justo." },
+      { name: "twitter:description", content: "Dakar Essence: perfumes contratipos inspirados nas maiores fragrâncias do mundo. Alta fixação, alta concentração e preço justo." },
       { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/5b84cb32-4283-4bf6-b72c-18c6b2ca1691/id-preview-9a1e29d7--b662b3e8-382b-4d60-b35b-242f46fc4ab1.lovable.app-1783444840103.png" },
       { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/5b84cb32-4283-4bf6-b72c-18c6b2ca1691/id-preview-9a1e29d7--b662b3e8-382b-4d60-b35b-242f46fc4ab1.lovable.app-1783444840103.png" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
-      { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
