@@ -214,7 +214,13 @@ function PedidosTab() {
 
   async function mudarStatus(p: Pedido, status: "Concluído" | "Cancelado" | "Pendente") {
     await atualizar({
-      data: { row: p.row, pedidoId: p.id, statusAtual: p.status, status },
+      data: {
+        row: p.row,
+        pedidoId: p.id,
+        statusAtual: p.status,
+        itensTexto: p.itens,
+        status,
+      },
     });
     qc.invalidateQueries({ queryKey: ["pedidos"] });
     qc.invalidateQueries({ queryKey: ["itens-vendidos"] });
