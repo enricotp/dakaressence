@@ -29,7 +29,7 @@ export type Pedido = {
   pagamento: string;
   parcelas: string;
   status: string;
-  row: number; // 1-indexed sheet row
+  row: number;
 };
 
 export const criarPedido = createServerFn({ method: "POST" })
@@ -142,29 +142,49 @@ export type ItemVendido = {
   statusPedido: string;
 };
 
+// Parse "• 2x Angel (Nº 001)" lines from a pedido.itens text field.
+function parseItensTexto(itens: string): Array<{ qtd: number; nome: string }> {
+  return itens
+    .split("\n")
+    .map((line) => {
+      const m = line.match(/(\d+)x\s+(.+?)(?:\s+\(Nº[^)]*\))?\s*$/);
+      if (!m) return null;
+      return { qtd: parseInt(m[1], 10) || 0, nome: m[2].trim() };
+    })
+    .filter((x): x is { qtd: number; nome: string } => x !== null && x.qtd > 0);
+}
+
+// Deriva a lista de itens vendidos combinando: (1) a segunda planilha, quando existir,
+// e (2) o campo "Itens" do pedido, parseado — para que pedidos antigos também apareçam.
 export const listarItensVendidos = createServerFn({ method: "GET" }).handler(
   async (): Promise<ItemVendido[]> => {
     const { requireAdmin } = await import("./admin.server");
     await requireAdmin();
-    const [itensRes, pedidosRes] = await Promise.all([
+
+    const [itensRes, pedidosRes, perfumesModule] = await Promise.all([
       fetch(`${GATEWAY}/spreadsheets/${ITEMS_SHEET_ID}/values/${ITEMS_SHEET_NAME}!A2:H10000`, {
         headers: sheetsHeaders(),
       }),
       fetch(`${GATEWAY}/spreadsheets/${SHEET_ID}/values/${SHEET_NAME}!A2:H10000`, {
         headers: sheetsHeaders(),
       }),
+      import("./perfumes.functions"),
     ]);
-    if (!itensRes.ok) throw new Error(`Sheets items read failed [${itensRes.status}]`);
-    const itensJson = (await itensRes.json()) as { values?: string[][] };
-    const pedidosJson = pedidosRes.ok
-      ? ((await pedidosRes.json()) as { values?: string[][] })
-      : { values: [] };
-    const statusPorPedido = new Map<string, string>();
-    (pedidosJson.values ?? []).forEach((r) => {
-      if (r[0]) statusPorPedido.set(r[0], r[7] ?? "");
-    });
+    const perfumes = await perfumesModule.getPerfumes();
+    const perfumePorNome = new Map(perfumes.map((p) => [p.nome.toLowerCase(), p]));
 
-    return (itensJson.values ?? [])
+    const pedidosRows = pedidosRes.ok
+      ? ((await pedidosRes.json()) as { values?: string[][] }).values ?? []
+      : [];
+
+    const itensRows = itensRes.ok
+      ? ((await itensRes.json()) as { values?: string[][] }).values ?? []
+      : [];
+
+    // Pedidos que já têm linhas na planilha de itens (não duplicar).
+    const pedidosComItens = new Set(itensRows.map((r) => r[1]).filter(Boolean));
+
+    const doSheet: ItemVendido[] = itensRows
       .map((r) => {
         const preco = parseFloat((r[4] ?? "0").toString().replace(/\./g, "").replace(",", "."));
         const sub = parseFloat((r[5] ?? "0").toString().replace(/\./g, "").replace(",", "."));
@@ -177,24 +197,48 @@ export const listarItensVendidos = createServerFn({ method: "GET" }).handler(
           subtotal: sub || 0,
           cliente: r[6] ?? "",
           perfumeId: r[7] ?? "",
-          statusPedido: statusPorPedido.get(r[1] ?? "") ?? "",
+          statusPedido: "",
         };
       })
       .filter((i) => i.pedidoId);
+
+    const derivados: ItemVendido[] = [];
+    for (const r of pedidosRows) {
+      const pedidoId = r[0] ?? "";
+      if (!pedidoId || pedidosComItens.has(pedidoId)) continue;
+      const dataFmt = r[1] ?? "";
+      const cliente = r[2] ?? "";
+      const status = r[7] ?? "";
+      const itens = parseItensTexto(r[3] ?? "");
+      for (const it of itens) {
+        const p = perfumePorNome.get(it.nome.toLowerCase());
+        const precoUnit = p?.preco ?? 0;
+        derivados.push({
+          data: dataFmt,
+          pedidoId,
+          perfume: it.nome,
+          qtd: it.qtd,
+          precoUnit,
+          subtotal: precoUnit * it.qtd,
+          cliente,
+          perfumeId: p?.id ?? "",
+          statusPedido: status,
+        });
+      }
+    }
+
+    // Preencher status nos que vieram da planilha de itens
+    const statusPorPedido = new Map<string, string>();
+    pedidosRows.forEach((r) => {
+      if (r[0]) statusPorPedido.set(r[0], r[7] ?? "");
+    });
+    doSheet.forEach((it) => {
+      it.statusPedido = statusPorPedido.get(it.pedidoId) ?? "";
+    });
+
+    return [...doSheet, ...derivados];
   },
 );
-
-async function itensDoPedido(pedidoId: string): Promise<Array<{ perfumeId: string; qtd: number }>> {
-  const res = await fetch(
-    `${GATEWAY}/spreadsheets/${ITEMS_SHEET_ID}/values/${ITEMS_SHEET_NAME}!A2:H10000`,
-    { headers: sheetsHeaders() },
-  );
-  if (!res.ok) return [];
-  const json = (await res.json()) as { values?: string[][] };
-  return (json.values ?? [])
-    .filter((r) => r[1] === pedidoId && r[7])
-    .map((r) => ({ perfumeId: r[7]!, qtd: parseInt(r[3] ?? "0", 10) || 0 }));
-}
 
 export const atualizarStatusPedido = createServerFn({ method: "POST" })
   .validator(
@@ -202,6 +246,7 @@ export const atualizarStatusPedido = createServerFn({ method: "POST" })
       row: number;
       pedidoId: string;
       statusAtual: string;
+      itensTexto: string;
       status: "Concluído" | "Cancelado" | "Pendente";
     }) => data,
   )
@@ -219,17 +264,41 @@ export const atualizarStatusPedido = createServerFn({ method: "POST" })
       throw new Error(`Sheets update failed [${res.status}]: ${text}`);
     }
 
-    // Baixa de estoque ao concluir (idempotente: só se não estava concluído antes)
+    // Baixa de estoque ao concluir (idempotente).
     if (data.status === "Concluído" && data.statusAtual !== "Concluído") {
-      const itens = await itensDoPedido(data.pedidoId);
-      const { baixarEstoque } = await import("./perfumes.functions");
-      await Promise.all(
-        itens.map((it) =>
-          baixarEstoque({ data: { id: it.perfumeId, qtd: it.qtd } }).catch((err) =>
-            console.error("baixarEstoque falhou:", err),
-          ),
-        ),
-      );
+      try {
+        const { getPerfumes, baixarEstoqueInterno } = await import("./perfumes.functions");
+        const perfumes = await getPerfumes();
+        const porNome = new Map(perfumes.map((p) => [p.nome.toLowerCase(), p]));
+        const itens = parseItensTextoLocal(data.itensTexto);
+        await Promise.all(
+          itens.map(async (it) => {
+            const p = porNome.get(it.nome.toLowerCase());
+            if (!p) {
+              console.error(`Perfume não encontrado para baixa: "${it.nome}"`);
+              return;
+            }
+            try {
+              await baixarEstoqueInterno(p.id, it.qtd);
+            } catch (err) {
+              console.error("baixarEstoque falhou:", err);
+            }
+          }),
+        );
+      } catch (err) {
+        console.error("Erro ao processar baixa de estoque:", err);
+      }
     }
     return { ok: true };
   });
+
+function parseItensTextoLocal(itens: string): Array<{ qtd: number; nome: string }> {
+  return itens
+    .split("\n")
+    .map((line) => {
+      const m = line.match(/(\d+)x\s+(.+?)(?:\s+\(Nº[^)]*\))?\s*$/);
+      if (!m) return null;
+      return { qtd: parseInt(m[1], 10) || 0, nome: m[2].trim() };
+    })
+    .filter((x): x is { qtd: number; nome: string } => x !== null && x.qtd > 0);
+}
