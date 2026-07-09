@@ -630,6 +630,7 @@ function KpiCard({ label, value }: { label: string; value: string }) {
 function PerfumesTab() {
   const listar = useServerFn(getPerfumes);
   const atualizar = useServerFn(atualizarPerfume);
+  const criar = useServerFn(criarPerfume);
   const qc = useQueryClient();
 
   const { data: perfumes = [], isLoading } = useQuery({
@@ -638,6 +639,7 @@ function PerfumesTab() {
   });
 
   const [editando, setEditando] = useState<string | null>(null);
+  const [criando, setCriando] = useState(false);
   const [volTab, setVolTab] = useState<"50ml" | "100ml">("50ml");
   const [busca, setBusca] = useState("");
   const [marca, setMarca] = useState<string>("todas");
