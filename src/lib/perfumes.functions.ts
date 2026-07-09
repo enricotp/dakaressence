@@ -290,6 +290,8 @@ export const criarPerfume = createServerFn({ method: "POST" })
       volume: Volume;
       marca?: string | null;
       imagemUrl?: string | null;
+      colecao?: Colecao;
+      genero?: Genero;
     }) => data,
   )
   .handler(async ({ data }) => {
@@ -306,6 +308,11 @@ export const criarPerfume = createServerFn({ method: "POST" })
     if (data.custo != null) properties["Custo"] = { number: data.custo };
     if (data.amount != null) properties["Amount"] = { number: data.amount };
     if (data.marca) properties["Marca"] = { select: { name: data.marca } };
+    if (data.colecao) properties["Coleção"] = { select: { name: data.colecao } };
+    if (data.genero)
+      properties["Gênero"] = {
+        select: { name: data.genero === "feminino" ? "Feminino" : "Masculino" },
+      };
 
     const body: Record<string, unknown> = {
       parent: { database_id: DATABASE_ID },
