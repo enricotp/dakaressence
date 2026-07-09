@@ -159,8 +159,21 @@ export const getPerfumes = createServerFn({ method: "GET" }).handler(
       const custo = page.properties["Custo"]?.number ?? null;
       const amount = page.properties["Amount"]?.number ?? null;
       const volumeRaw = page.properties["Volume"]?.select?.name ?? "50ml";
-      const volume: Volume = volumeRaw === "100ml" ? "100ml" : "50ml";
+      const volume: Volume = (["25ml", "50ml", "80ml", "100ml"] as const).includes(
+        volumeRaw as Volume,
+      )
+        ? (volumeRaw as Volume)
+        : "50ml";
       const marca = page.properties["Marca"]?.select?.name ?? null;
+      const generoRaw = page.properties["Gênero"]?.select?.name?.toLowerCase() ?? "";
+      const genero: Genero =
+        generoRaw === "feminino" || generoRaw === "masculino"
+          ? (generoRaw as Genero)
+          : inferirGenero(nome);
+      const colecaoRaw = page.properties["Coleção"]?.select?.name ?? "";
+      const colecao: Colecao = (COLECOES as string[]).includes(colecaoRaw)
+        ? (colecaoRaw as Colecao)
+        : "Signature";
       return {
         id: page.id,
         nome,
@@ -168,12 +181,13 @@ export const getPerfumes = createServerFn({ method: "GET" }).handler(
         status,
         imagem: extractImage(page),
         descricao,
-        genero: inferirGenero(nome),
+        genero,
         volume,
         marca,
         preco,
         custo,
         amount,
+        colecao,
       };
     });
   },
