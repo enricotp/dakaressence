@@ -133,6 +133,7 @@ export const getPerfumes = createServerFn({ method: "GET" }).handler(
       const amount = page.properties["Amount"]?.number ?? null;
       const volumeRaw = page.properties["Volume"]?.select?.name ?? "50ml";
       const volume: Volume = volumeRaw === "100ml" ? "100ml" : "50ml";
+      const marca = page.properties["Marca"]?.select?.name ?? null;
       return {
         id: page.id,
         nome,
@@ -142,6 +143,7 @@ export const getPerfumes = createServerFn({ method: "GET" }).handler(
         descricao,
         genero: inferirGenero(nome),
         volume,
+        marca,
         preco,
         custo,
         amount,
