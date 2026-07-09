@@ -485,7 +485,7 @@ function AnalyticsTab() {
       cur.receita += it.subtotal;
       m.set(it.perfume, cur);
     });
-    return Array.from(m.values()).sort((a, b) => b.qtd - a.qtd).slice(0, 10);
+    return Array.from(m.values()).sort((a, b) => b.qtd - a.qtd).slice(0, 15);
   }, [filtrados]);
 
   const totalVendas = porDia.reduce((a, b) => a + b.vendas, 0);
