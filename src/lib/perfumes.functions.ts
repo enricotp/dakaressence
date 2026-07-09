@@ -128,6 +128,8 @@ export const getPerfumes = createServerFn({ method: "GET" }).handler(
       const descricao =
         page.properties["Descrição"]?.rich_text?.map((t) => t.plain_text).join("") ?? "";
       const preco = page.properties["Preço"]?.number ?? null;
+      const custo = page.properties["Custo"]?.number ?? null;
+      const amount = page.properties["Amount"]?.number ?? null;
       return {
         id: page.id,
         nome,
@@ -137,7 +139,80 @@ export const getPerfumes = createServerFn({ method: "GET" }).handler(
         descricao,
         genero: inferirGenero(nome),
         preco,
+        custo,
+        amount,
       };
     });
   },
 );
+
+function notionHeaders() {
+  const lovableKey = process.env.LOVABLE_API_KEY;
+  const notionKey = process.env.NOTION_API_KEY;
+  if (!lovableKey || !notionKey) throw new Error("Notion connector não configurado");
+  return {
+    Authorization: `Bearer ${lovableKey}`,
+    "X-Connection-Api-Key": notionKey,
+    "Content-Type": "application/json",
+  };
+}
+
+export const atualizarPerfume = createServerFn({ method: "POST" })
+  .validator(
+    (data: {
+      id: string;
+      nome?: string;
+      descricao?: string;
+      preco?: number | null;
+      custo?: number | null;
+      amount?: number | null;
+      imagemUrl?: string | null;
+    }) => data,
+  )
+  .handler(async ({ data }) => {
+    const { requireAdmin } = await import("./admin.server");
+    await requireAdmin();
+
+    const properties: Record<string, unknown> = {};
+    if (data.nome !== undefined)
+      properties["Product Name"] = { title: [{ text: { content: data.nome } }] };
+    if (data.descricao !== undefined)
+      properties["Descrição"] = { rich_text: [{ text: { content: data.descricao } }] };
+    if (data.preco !== undefined) properties["Preço"] = { number: data.preco };
+    if (data.custo !== undefined) properties["Custo"] = { number: data.custo };
+    if (data.amount !== undefined) properties["Amount"] = { number: data.amount };
+
+    const body: Record<string, unknown> = { properties };
+    if (data.imagemUrl !== undefined && data.imagemUrl) {
+      body.cover = { type: "external", external: { url: data.imagemUrl } };
+    }
+
+    const res = await fetch(`${GATEWAY}/pages/${data.id}`, {
+      method: "PATCH",
+      headers: notionHeaders(),
+      body: JSON.stringify(body),
+    });
+    if (!res.ok) {
+      const text = await res.text();
+      throw new Error(`Notion update failed [${res.status}]: ${text}`);
+    }
+    return { ok: true };
+  });
+
+export const baixarEstoque = createServerFn({ method: "POST" })
+  .validator((data: { id: string; qtd: number }) => data)
+  .handler(async ({ data }) => {
+    const { requireAdmin } = await import("./admin.server");
+    await requireAdmin();
+    const getRes = await fetch(`${GATEWAY}/pages/${data.id}`, { headers: notionHeaders() });
+    if (!getRes.ok) return { ok: false };
+    const page = (await getRes.json()) as NotionPage;
+    const current = page.properties["Amount"]?.number ?? 0;
+    const next = Math.max(0, current - data.qtd);
+    const res = await fetch(`${GATEWAY}/pages/${data.id}`, {
+      method: "PATCH",
+      headers: notionHeaders(),
+      body: JSON.stringify({ properties: { Amount: { number: next } } }),
+    });
+    return { ok: res.ok, novoEstoque: next };
+  });
