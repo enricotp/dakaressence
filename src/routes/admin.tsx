@@ -117,7 +117,14 @@ function LoginForm({ onSuccess }: { onSuccess: () => void }) {
 
 function AdminPanel({ onLogout }: { onLogout: () => void }) {
   const logout = useServerFn(logoutAdmin);
+  const listarPerfs = useServerFn(getPerfumes);
   const [tab, setTab] = useState<Tab>("pedidos");
+
+  const { data: perfumesAll = [] } = useQuery({
+    queryKey: ["perfumes"],
+    queryFn: () => listarPerfs(),
+  });
+  const alertas = perfumesAll.filter((p) => estoqueAlerta(p) !== "ok").length;
 
   async function sair() {
     await logout();
@@ -140,13 +147,21 @@ function AdminPanel({ onLogout }: { onLogout: () => void }) {
               <button
                 key={k}
                 onClick={() => setTab(k)}
-                className={`rounded-full px-4 py-1.5 text-xs uppercase tracking-wider transition ${
+                className={`relative rounded-full px-4 py-1.5 text-xs uppercase tracking-wider transition ${
                   tab === k
                     ? "bg-gold text-primary-foreground"
                     : "text-muted-foreground hover:text-foreground"
                 }`}
               >
                 {label}
+                {k === "perfumes" && alertas > 0 && (
+                  <span
+                    title={`${alertas} perfume(s) com estoque baixo ou esgotado`}
+                    className="absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-500 px-1 text-[9px] font-bold text-white"
+                  >
+                    {alertas}
+                  </span>
+                )}
               </button>
             ))}
           </nav>
@@ -177,6 +192,44 @@ function AdminPanel({ onLogout }: { onLogout: () => void }) {
     </div>
   );
 }
+
+function estoqueAlerta(p: Perfume): "ok" | "low" | "out" {
+  const s = (p.status || "").toLowerCase();
+  if (s.includes("no stock") || s.includes("out") || (p.amount != null && p.amount <= 0))
+    return "out";
+  if (s.includes("low") || (p.amount != null && p.amount > 0 && p.amount <= 3)) return "low";
+  return "ok";
+}
+
+function EstoqueBadge({ nivel }: { nivel: "low" | "out" }) {
+  const cfg =
+    nivel === "out"
+      ? { cls: "bg-red-500/15 text-red-400 border-red-500/40", label: "Sem estoque" }
+      : { cls: "bg-yellow-500/15 text-yellow-400 border-yellow-500/40", label: "Estoque baixo" };
+  return (
+    <span
+      title={cfg.label}
+      className={`inline-flex items-center gap-1 rounded-full border px-1.5 py-0.5 text-[10px] uppercase tracking-wider ${cfg.cls}`}
+    >
+      <svg
+        viewBox="0 0 24 24"
+        className="h-3 w-3"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        aria-hidden
+      >
+        <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z" />
+        <line x1="12" y1="9" x2="12" y2="13" />
+        <line x1="12" y1="17" x2="12.01" y2="17" />
+      </svg>
+      {cfg.label}
+    </span>
+  );
+}
+
 
 /* ---------------- Pedidos ---------------- */
 
