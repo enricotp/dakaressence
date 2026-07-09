@@ -277,5 +277,5 @@ export const criarPerfume = createServerFn({ method: "POST" })
     }
     const created = (await res.json()) as { id: string };
     return { ok: true, id: created.id };
-}
+  });
 
