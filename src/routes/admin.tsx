@@ -1,13 +1,33 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import {
+  Bar,
+  BarChart,
+  CartesianGrid,
+  Cell,
+  Legend,
+  Line,
+  LineChart,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
 import { isAdmin, loginAdmin, logoutAdmin } from "@/lib/admin.functions";
 import {
   listarPedidos,
   atualizarStatusPedido,
+  listarItensVendidos,
   type Pedido,
+  type ItemVendido,
 } from "@/lib/orders.functions";
+import {
+  getPerfumes,
+  atualizarPerfume,
+  type Perfume,
+} from "@/lib/perfumes.functions";
 import { formatBRL } from "@/lib/format";
 
 export const Route = createFileRoute("/admin")({
@@ -19,6 +39,8 @@ export const Route = createFileRoute("/admin")({
     ],
   }),
 });
+
+type Tab = "pedidos" | "analytics" | "perfumes";
 
 function AdminPage() {
   const check = useServerFn(isAdmin);
@@ -80,9 +102,7 @@ function LoginForm({ onSuccess }: { onSuccess: () => void }) {
           autoComplete="current-password"
           className="mt-6 w-full rounded-lg border border-border/60 bg-background px-4 py-3 text-sm focus:border-gold focus:outline-none"
         />
-        {error && (
-          <p className="mt-3 text-xs text-destructive">Senha incorreta.</p>
-        )}
+        {error && <p className="mt-3 text-xs text-destructive">Senha incorreta.</p>}
         <button
           type="submit"
           disabled={loading || !password}
@@ -97,39 +117,7 @@ function LoginForm({ onSuccess }: { onSuccess: () => void }) {
 
 function AdminPanel({ onLogout }: { onLogout: () => void }) {
   const logout = useServerFn(logoutAdmin);
-  const listar = useServerFn(listarPedidos);
-  const atualizar = useServerFn(atualizarStatusPedido);
-  const qc = useQueryClient();
-
-  const [filtro, setFiltro] = useState<"todos" | "Pendente" | "Concluído" | "Cancelado">(
-    "Pendente",
-  );
-  const [busca, setBusca] = useState("");
-  const [dataFiltro, setDataFiltro] = useState("");
-
-  const { data: pedidos = [], isLoading } = useQuery({
-    queryKey: ["pedidos"],
-    queryFn: () => listar(),
-    refetchInterval: 15000,
-  });
-
-  const buscaNorm = busca.trim().toLowerCase();
-  // dataFiltro vem como YYYY-MM-DD; pedido.data está em pt-BR (DD/MM/YYYY HH:mm:ss)
-  const dataFiltroBR = dataFiltro
-    ? dataFiltro.split("-").reverse().join("/")
-    : "";
-
-  const filtrados = pedidos.filter((p: Pedido) => {
-    if (filtro !== "todos" && p.status !== filtro) return false;
-    if (buscaNorm && !p.id.toLowerCase().includes(buscaNorm) && !p.cliente.toLowerCase().includes(buscaNorm)) return false;
-    if (dataFiltroBR && !p.data.startsWith(dataFiltroBR)) return false;
-    return true;
-  });
-
-  async function mudarStatus(p: Pedido, status: "Concluído" | "Cancelado" | "Pendente") {
-    await atualizar({ data: { row: p.row, status } });
-    qc.invalidateQueries({ queryKey: ["pedidos"] });
-  }
+  const [tab, setTab] = useState<Tab>("pedidos");
 
   async function sair() {
     await logout();
@@ -139,11 +127,32 @@ function AdminPanel({ onLogout }: { onLogout: () => void }) {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <header className="sticky top-0 z-40 border-b border-border/60 bg-background/80 backdrop-blur">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
+        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-6 py-4">
           <h1 className="font-display text-xl font-semibold">Painel Dakar</h1>
+          <nav className="flex items-center gap-1">
+            {(
+              [
+                ["pedidos", "Pedidos"],
+                ["analytics", "Analytics"],
+                ["perfumes", "Perfumes"],
+              ] as const
+            ).map(([k, label]) => (
+              <button
+                key={k}
+                onClick={() => setTab(k)}
+                className={`rounded-full px-4 py-1.5 text-xs uppercase tracking-wider transition ${
+                  tab === k
+                    ? "bg-gold text-primary-foreground"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                {label}
+              </button>
+            ))}
+          </nav>
           <div className="flex items-center gap-3">
             <a
-              href={`https://docs.google.com/spreadsheets/d/1YDXLWaevUB9LnrQGImIV9iGBT9ayCbZYdkzaWkXZrWw/edit`}
+              href="https://docs.google.com/spreadsheets/d/1YDXLWaevUB9LnrQGImIV9iGBT9ayCbZYdkzaWkXZrWw/edit"
               target="_blank"
               rel="noreferrer"
               className="text-xs uppercase tracking-[0.2em] text-muted-foreground hover:text-gold"
@@ -161,116 +170,168 @@ function AdminPanel({ onLogout }: { onLogout: () => void }) {
       </header>
 
       <section className="mx-auto max-w-7xl px-6 py-10">
-        <div className="mb-6 flex flex-wrap items-center gap-2">
-          {(["Pendente", "Concluído", "Cancelado", "todos"] as const).map((f) => (
-            <button
-              key={f}
-              onClick={() => setFiltro(f)}
-              className={`rounded-full px-4 py-1.5 text-xs uppercase tracking-wider transition ${
-                filtro === f
-                  ? "bg-gold text-primary-foreground"
-                  : "border border-border/60 text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              {f === "todos" ? "Todos" : f} {filtro === f && `(${filtrados.length})`}
-            </button>
-          ))}
-        </div>
-
-        <div className="mb-6 flex flex-wrap items-center gap-3">
-          <input
-            type="text"
-            value={busca}
-            onChange={(e) => setBusca(e.target.value)}
-            placeholder="Buscar por nº do pedido ou cliente"
-            className="min-w-64 flex-1 rounded-lg border border-border/60 bg-background px-4 py-2 text-sm focus:border-gold focus:outline-none"
-          />
-          <input
-            type="date"
-            value={dataFiltro}
-            onChange={(e) => setDataFiltro(e.target.value)}
-            className="rounded-lg border border-border/60 bg-background px-4 py-2 text-sm focus:border-gold focus:outline-none"
-          />
-          {(busca || dataFiltro) && (
-            <button
-              onClick={() => { setBusca(""); setDataFiltro(""); }}
-              className="text-xs uppercase tracking-[0.2em] text-muted-foreground hover:text-foreground"
-            >
-              Limpar
-            </button>
-          )}
-        </div>
-
-        {isLoading ? (
-          <p className="text-sm text-muted-foreground">Carregando pedidos…</p>
-        ) : filtrados.length === 0 ? (
-          <p className="text-sm text-muted-foreground">Nenhum pedido nesta lista.</p>
-        ) : (
-          <ul className="space-y-3">
-            {filtrados
-              .slice()
-              .reverse()
-              .map((p) => (
-                <li
-                  key={p.id}
-                  className="rounded-2xl border border-border/60 bg-card p-5"
-                >
-                  <div className="flex flex-wrap items-start justify-between gap-4">
-                    <div className="min-w-0 flex-1">
-                      <div className="flex flex-wrap items-center gap-2">
-                        <span className="text-[10px] uppercase tracking-[0.2em] text-gold">
-                          {p.id}
-                        </span>
-                        <StatusBadge status={p.status} />
-                        <span className="text-xs text-muted-foreground">{p.data}</span>
-                      </div>
-                      <p className="mt-2 font-semibold">{p.cliente || "—"}</p>
-                      <pre className="mt-2 whitespace-pre-wrap font-sans text-sm text-muted-foreground">
-                        {p.itens}
-                      </pre>
-                      <p className="mt-3 text-xs text-muted-foreground">
-                        {p.pagamento}
-                        {p.parcelas && p.parcelas !== "-" ? ` · ${p.parcelas}` : ""}
-                      </p>
-                    </div>
-                    <div className="flex flex-col items-end gap-3">
-                      <span className="font-display text-2xl font-semibold text-gold">
-                        {formatBRL(p.total)}
-                      </span>
-                      <div className="flex gap-2">
-                        {p.status !== "Concluído" && (
-                          <button
-                            onClick={() => mudarStatus(p, "Concluído")}
-                            className="rounded-full bg-gold px-3 py-1.5 text-xs font-semibold text-primary-foreground hover:brightness-110"
-                          >
-                            Concluir
-                          </button>
-                        )}
-                        {p.status !== "Cancelado" && (
-                          <button
-                            onClick={() => mudarStatus(p, "Cancelado")}
-                            className="rounded-full border border-border/60 px-3 py-1.5 text-xs text-muted-foreground hover:text-destructive hover:border-destructive"
-                          >
-                            Cancelar
-                          </button>
-                        )}
-                        {p.status !== "Pendente" && (
-                          <button
-                            onClick={() => mudarStatus(p, "Pendente")}
-                            className="rounded-full border border-border/60 px-3 py-1.5 text-xs text-muted-foreground hover:text-foreground"
-                          >
-                            Reabrir
-                          </button>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                </li>
-              ))}
-          </ul>
-        )}
+        {tab === "pedidos" && <PedidosTab />}
+        {tab === "analytics" && <AnalyticsTab />}
+        {tab === "perfumes" && <PerfumesTab />}
       </section>
     </div>
+  );
+}
+
+/* ---------------- Pedidos ---------------- */
+
+function PedidosTab() {
+  const listar = useServerFn(listarPedidos);
+  const atualizar = useServerFn(atualizarStatusPedido);
+  const qc = useQueryClient();
+
+  const [filtro, setFiltro] = useState<"todos" | "Pendente" | "Concluído" | "Cancelado">(
+    "Pendente",
+  );
+  const [busca, setBusca] = useState("");
+  const [dataFiltro, setDataFiltro] = useState("");
+
+  const { data: pedidos = [], isLoading } = useQuery({
+    queryKey: ["pedidos"],
+    queryFn: () => listar(),
+    refetchInterval: 15000,
+  });
+
+  const buscaNorm = busca.trim().toLowerCase();
+  const dataFiltroBR = dataFiltro ? dataFiltro.split("-").reverse().join("/") : "";
+
+  const filtrados = pedidos.filter((p: Pedido) => {
+    if (filtro !== "todos" && p.status !== filtro) return false;
+    if (
+      buscaNorm &&
+      !p.id.toLowerCase().includes(buscaNorm) &&
+      !p.cliente.toLowerCase().includes(buscaNorm)
+    )
+      return false;
+    if (dataFiltroBR && !p.data.startsWith(dataFiltroBR)) return false;
+    return true;
+  });
+
+  async function mudarStatus(p: Pedido, status: "Concluído" | "Cancelado" | "Pendente") {
+    await atualizar({
+      data: { row: p.row, pedidoId: p.id, statusAtual: p.status, status },
+    });
+    qc.invalidateQueries({ queryKey: ["pedidos"] });
+    qc.invalidateQueries({ queryKey: ["itens-vendidos"] });
+    qc.invalidateQueries({ queryKey: ["perfumes"] });
+  }
+
+  return (
+    <>
+      <div className="mb-6 flex flex-wrap items-center gap-2">
+        {(["Pendente", "Concluído", "Cancelado", "todos"] as const).map((f) => (
+          <button
+            key={f}
+            onClick={() => setFiltro(f)}
+            className={`rounded-full px-4 py-1.5 text-xs uppercase tracking-wider transition ${
+              filtro === f
+                ? "bg-gold text-primary-foreground"
+                : "border border-border/60 text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            {f === "todos" ? "Todos" : f} {filtro === f && `(${filtrados.length})`}
+          </button>
+        ))}
+      </div>
+
+      <div className="mb-6 flex flex-wrap items-center gap-3">
+        <input
+          type="text"
+          value={busca}
+          onChange={(e) => setBusca(e.target.value)}
+          placeholder="Buscar por nº do pedido ou cliente"
+          className="min-w-64 flex-1 rounded-lg border border-border/60 bg-background px-4 py-2 text-sm focus:border-gold focus:outline-none"
+        />
+        <input
+          type="date"
+          value={dataFiltro}
+          onChange={(e) => setDataFiltro(e.target.value)}
+          className="rounded-lg border border-border/60 bg-background px-4 py-2 text-sm focus:border-gold focus:outline-none"
+        />
+        {(busca || dataFiltro) && (
+          <button
+            onClick={() => {
+              setBusca("");
+              setDataFiltro("");
+            }}
+            className="text-xs uppercase tracking-[0.2em] text-muted-foreground hover:text-foreground"
+          >
+            Limpar
+          </button>
+        )}
+      </div>
+
+      {isLoading ? (
+        <p className="text-sm text-muted-foreground">Carregando pedidos…</p>
+      ) : filtrados.length === 0 ? (
+        <p className="text-sm text-muted-foreground">Nenhum pedido nesta lista.</p>
+      ) : (
+        <ul className="space-y-3">
+          {filtrados
+            .slice()
+            .reverse()
+            .map((p) => (
+              <li key={p.id} className="rounded-2xl border border-border/60 bg-card p-5">
+                <div className="flex flex-wrap items-start justify-between gap-4">
+                  <div className="min-w-0 flex-1">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="text-[10px] uppercase tracking-[0.2em] text-gold">
+                        {p.id}
+                      </span>
+                      <StatusBadge status={p.status} />
+                      <span className="text-xs text-muted-foreground">{p.data}</span>
+                    </div>
+                    <p className="mt-2 font-semibold">{p.cliente || "—"}</p>
+                    <pre className="mt-2 whitespace-pre-wrap font-sans text-sm text-muted-foreground">
+                      {p.itens}
+                    </pre>
+                    <p className="mt-3 text-xs text-muted-foreground">
+                      {p.pagamento}
+                      {p.parcelas && p.parcelas !== "-" ? ` · ${p.parcelas}` : ""}
+                    </p>
+                  </div>
+                  <div className="flex flex-col items-end gap-3">
+                    <span className="font-display text-2xl font-semibold text-gold">
+                      {formatBRL(p.total)}
+                    </span>
+                    <div className="flex gap-2">
+                      {p.status !== "Concluído" && (
+                        <button
+                          onClick={() => mudarStatus(p, "Concluído")}
+                          className="rounded-full bg-gold px-3 py-1.5 text-xs font-semibold text-primary-foreground hover:brightness-110"
+                        >
+                          Concluir
+                        </button>
+                      )}
+                      {p.status !== "Cancelado" && (
+                        <button
+                          onClick={() => mudarStatus(p, "Cancelado")}
+                          className="rounded-full border border-border/60 px-3 py-1.5 text-xs text-muted-foreground hover:text-destructive hover:border-destructive"
+                        >
+                          Cancelar
+                        </button>
+                      )}
+                      {p.status !== "Pendente" && (
+                        <button
+                          onClick={() => mudarStatus(p, "Pendente")}
+                          className="rounded-full border border-border/60 px-3 py-1.5 text-xs text-muted-foreground hover:text-foreground"
+                        >
+                          Reabrir
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </li>
+            ))}
+        </ul>
+      )}
+    </>
   );
 }
 
@@ -282,8 +343,382 @@ function StatusBadge({ status }: { status: string }) {
   };
   const cls = map[status] ?? "bg-muted text-muted-foreground";
   return (
-    <span className={`rounded-full px-2 py-0.5 text-[10px] uppercase tracking-wider ${cls}`}>
+    <span
+      className={`rounded-full px-2 py-0.5 text-[10px] uppercase tracking-wider ${cls}`}
+    >
       {status || "—"}
     </span>
+  );
+}
+
+/* ---------------- Analytics ---------------- */
+
+function AnalyticsTab() {
+  const listar = useServerFn(listarItensVendidos);
+  const listarPerfs = useServerFn(getPerfumes);
+
+  const { data: itens = [], isLoading } = useQuery({
+    queryKey: ["itens-vendidos"],
+    queryFn: () => listar(),
+    refetchInterval: 30000,
+  });
+  const { data: perfumes = [] } = useQuery({
+    queryKey: ["perfumes"],
+    queryFn: () => listarPerfs(),
+  });
+
+  const [periodo, setPeriodo] = useState<7 | 30 | 90 | 365>(30);
+
+  const custoPorNome = useMemo(() => {
+    const m = new Map<string, number>();
+    perfumes.forEach((p) => m.set(p.nome, p.custo ?? 0));
+    return m;
+  }, [perfumes]);
+
+  // filtra últimos N dias, ignora cancelados
+  const filtrados = useMemo(() => {
+    const cutoff = new Date();
+    cutoff.setDate(cutoff.getDate() - periodo);
+    return itens.filter((it: ItemVendido) => {
+      if (it.statusPedido === "Cancelado") return false;
+      const [dia, mes, resto] = it.data.split("/");
+      if (!dia || !mes || !resto) return true;
+      const ano = resto.split(" ")[0] ?? "";
+      const dt = new Date(`${ano}-${mes}-${dia}`);
+      return dt >= cutoff;
+    });
+  }, [itens, periodo]);
+
+  const porDia = useMemo(() => {
+    const m = new Map<string, { data: string; vendas: number; lucro: number }>();
+    filtrados.forEach((it) => {
+      const dia = (it.data.split(" ")[0] ?? it.data).slice(0, 5); // DD/MM
+      const cur = m.get(dia) ?? { data: dia, vendas: 0, lucro: 0 };
+      cur.vendas += it.subtotal;
+      const custo = custoPorNome.get(it.perfume) ?? 0;
+      cur.lucro += (it.precoUnit - custo) * it.qtd;
+      m.set(dia, cur);
+    });
+    return Array.from(m.values()).sort((a, b) => {
+      const [da, ma] = a.data.split("/").map(Number);
+      const [db, mb] = b.data.split("/").map(Number);
+      return ma - mb || da - db;
+    });
+  }, [filtrados, custoPorNome]);
+
+  const porPerfume = useMemo(() => {
+    const m = new Map<string, { nome: string; qtd: number; receita: number }>();
+    filtrados.forEach((it) => {
+      const cur = m.get(it.perfume) ?? { nome: it.perfume, qtd: 0, receita: 0 };
+      cur.qtd += it.qtd;
+      cur.receita += it.subtotal;
+      m.set(it.perfume, cur);
+    });
+    return Array.from(m.values()).sort((a, b) => b.qtd - a.qtd).slice(0, 10);
+  }, [filtrados]);
+
+  const totalVendas = porDia.reduce((a, b) => a + b.vendas, 0);
+  const totalLucro = porDia.reduce((a, b) => a + b.lucro, 0);
+  const totalUnidades = filtrados.reduce((a, b) => a + b.qtd, 0);
+
+  if (isLoading) {
+    return <p className="text-sm text-muted-foreground">Carregando análise…</p>;
+  }
+
+  return (
+    <>
+      <div className="mb-6 flex flex-wrap items-center gap-2">
+        {([7, 30, 90, 365] as const).map((n) => (
+          <button
+            key={n}
+            onClick={() => setPeriodo(n)}
+            className={`rounded-full px-4 py-1.5 text-xs uppercase tracking-wider transition ${
+              periodo === n
+                ? "bg-gold text-primary-foreground"
+                : "border border-border/60 text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            {n === 365 ? "1 ano" : `${n} dias`}
+          </button>
+        ))}
+      </div>
+
+      <div className="mb-6 grid gap-3 sm:grid-cols-3">
+        <KpiCard label="Receita" value={formatBRL(totalVendas)} />
+        <KpiCard label="Lucro estimado" value={formatBRL(totalLucro)} />
+        <KpiCard label="Unidades vendidas" value={String(totalUnidades)} />
+      </div>
+
+      <div className="rounded-2xl border border-border/60 bg-card p-5">
+        <h3 className="mb-4 font-display text-lg">Vendas e lucro por dia</h3>
+        <div className="h-72 w-full">
+          <ResponsiveContainer>
+            <LineChart data={porDia}>
+              <CartesianGrid strokeDasharray="3 3" opacity={0.2} />
+              <XAxis dataKey="data" stroke="hsl(var(--muted-foreground))" fontSize={12} />
+              <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} />
+              <Tooltip
+                contentStyle={{
+                  background: "hsl(var(--card))",
+                  border: "1px solid hsl(var(--border))",
+                  borderRadius: 8,
+                }}
+                formatter={(v: number) => formatBRL(v)}
+              />
+              <Legend />
+              <Line type="monotone" dataKey="vendas" name="Receita" stroke="#D4AF37" strokeWidth={2} />
+              <Line type="monotone" dataKey="lucro" name="Lucro" stroke="#10b981" strokeWidth={2} />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
+
+      <div className="mt-6 rounded-2xl border border-border/60 bg-card p-5">
+        <h3 className="mb-4 font-display text-lg">Top perfumes (unidades)</h3>
+        <div className="h-80 w-full">
+          <ResponsiveContainer>
+            <BarChart data={porPerfume} layout="vertical" margin={{ left: 40 }}>
+              <CartesianGrid strokeDasharray="3 3" opacity={0.2} />
+              <XAxis type="number" stroke="hsl(var(--muted-foreground))" fontSize={12} />
+              <YAxis
+                type="category"
+                dataKey="nome"
+                stroke="hsl(var(--muted-foreground))"
+                fontSize={11}
+                width={140}
+              />
+              <Tooltip
+                contentStyle={{
+                  background: "hsl(var(--card))",
+                  border: "1px solid hsl(var(--border))",
+                  borderRadius: 8,
+                }}
+              />
+              <Bar dataKey="qtd" name="Unidades">
+                {porPerfume.map((_, i) => (
+                  <Cell key={i} fill="#D4AF37" />
+                ))}
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
+    </>
+  );
+}
+
+function KpiCard({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-2xl border border-border/60 bg-card p-5">
+      <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">{label}</p>
+      <p className="mt-2 font-display text-2xl font-semibold text-gold">{value}</p>
+    </div>
+  );
+}
+
+/* ---------------- Perfumes CRUD ---------------- */
+
+function PerfumesTab() {
+  const listar = useServerFn(getPerfumes);
+  const atualizar = useServerFn(atualizarPerfume);
+  const qc = useQueryClient();
+
+  const { data: perfumes = [], isLoading } = useQuery({
+    queryKey: ["perfumes"],
+    queryFn: () => listar(),
+  });
+
+  const [editando, setEditando] = useState<string | null>(null);
+
+  return (
+    <>
+      <h2 className="mb-4 font-display text-lg">Perfumes ({perfumes.length})</h2>
+      {isLoading ? (
+        <p className="text-sm text-muted-foreground">Carregando…</p>
+      ) : (
+        <ul className="grid gap-3 md:grid-cols-2">
+          {perfumes.map((p) => (
+            <li key={p.id} className="rounded-2xl border border-border/60 bg-card p-4">
+              {editando === p.id ? (
+                <EditForm
+                  perfume={p}
+                  onCancel={() => setEditando(null)}
+                  onSave={async (patch) => {
+                    await atualizar({ data: { id: p.id, ...patch } });
+                    await qc.invalidateQueries({ queryKey: ["perfumes"] });
+                    setEditando(null);
+                  }}
+                />
+              ) : (
+                <div className="flex gap-3">
+                  {p.imagem && (
+                    <img
+                      src={p.imagem}
+                      alt={p.nome}
+                      className="h-20 w-20 rounded-lg object-cover"
+                    />
+                  )}
+                  <div className="flex-1">
+                    <p className="font-semibold">{p.nome}</p>
+                    <p className="mt-1 text-xs text-muted-foreground line-clamp-2">
+                      {p.descricao || "Sem descrição"}
+                    </p>
+                    <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs">
+                      <span>
+                        Preço:{" "}
+                        <b className="text-gold">
+                          {p.preco != null ? formatBRL(p.preco) : "—"}
+                        </b>
+                      </span>
+                      <span>
+                        Custo:{" "}
+                        <b>{p.custo != null ? formatBRL(p.custo) : "—"}</b>
+                      </span>
+                      <span>
+                        Estoque: <b>{p.amount ?? "—"}</b>
+                      </span>
+                    </div>
+                    <button
+                      onClick={() => setEditando(p.id)}
+                      className="mt-3 rounded-full border border-border/60 px-3 py-1 text-xs uppercase tracking-wider hover:border-gold hover:text-gold"
+                    >
+                      Editar
+                    </button>
+                  </div>
+                </div>
+              )}
+            </li>
+          ))}
+        </ul>
+      )}
+    </>
+  );
+}
+
+function EditForm({
+  perfume,
+  onSave,
+  onCancel,
+}: {
+  perfume: Perfume;
+  onSave: (patch: {
+    nome?: string;
+    descricao?: string;
+    preco?: number | null;
+    custo?: number | null;
+    amount?: number | null;
+    imagemUrl?: string | null;
+  }) => Promise<void>;
+  onCancel: () => void;
+}) {
+  const [nome, setNome] = useState(perfume.nome);
+  const [descricao, setDescricao] = useState(perfume.descricao);
+  const [preco, setPreco] = useState(perfume.preco?.toString() ?? "");
+  const [custo, setCusto] = useState(perfume.custo?.toString() ?? "");
+  const [amount, setAmount] = useState(perfume.amount?.toString() ?? "");
+  const [imagemUrl, setImagemUrl] = useState("");
+  const [salvando, setSalvando] = useState(false);
+  const [erro, setErro] = useState<string | null>(null);
+
+  async function salvar() {
+    setSalvando(true);
+    setErro(null);
+    try {
+      const patch: Parameters<typeof onSave>[0] = {
+        nome,
+        descricao,
+        preco: preco === "" ? null : parseFloat(preco.replace(",", ".")),
+        custo: custo === "" ? null : parseFloat(custo.replace(",", ".")),
+        amount: amount === "" ? null : parseInt(amount, 10),
+      };
+      if (imagemUrl.trim()) patch.imagemUrl = imagemUrl.trim();
+      await onSave(patch);
+    } catch (e) {
+      setErro(e instanceof Error ? e.message : "Erro ao salvar");
+    } finally {
+      setSalvando(false);
+    }
+  }
+
+  return (
+    <div className="space-y-3">
+      <Field label="Nome">
+        <input
+          value={nome}
+          onChange={(e) => setNome(e.target.value)}
+          className="input"
+        />
+      </Field>
+      <Field label="Descrição">
+        <textarea
+          value={descricao}
+          onChange={(e) => setDescricao(e.target.value)}
+          rows={3}
+          className="input resize-none"
+        />
+      </Field>
+      <div className="grid grid-cols-3 gap-2">
+        <Field label="Preço (R$)">
+          <input
+            value={preco}
+            onChange={(e) => setPreco(e.target.value)}
+            className="input"
+            inputMode="decimal"
+          />
+        </Field>
+        <Field label="Custo (R$)">
+          <input
+            value={custo}
+            onChange={(e) => setCusto(e.target.value)}
+            className="input"
+            inputMode="decimal"
+          />
+        </Field>
+        <Field label="Estoque">
+          <input
+            value={amount}
+            onChange={(e) => setAmount(e.target.value)}
+            className="input"
+            inputMode="numeric"
+          />
+        </Field>
+      </div>
+      <Field label="Nova imagem (URL, opcional)">
+        <input
+          value={imagemUrl}
+          onChange={(e) => setImagemUrl(e.target.value)}
+          placeholder="https://…"
+          className="input"
+        />
+      </Field>
+      {erro && <p className="text-xs text-destructive">{erro}</p>}
+      <div className="flex gap-2 pt-2">
+        <button
+          onClick={salvar}
+          disabled={salvando}
+          className="rounded-full bg-gold px-4 py-1.5 text-xs font-semibold text-primary-foreground hover:brightness-110 disabled:opacity-50"
+        >
+          {salvando ? "Salvando…" : "Salvar"}
+        </button>
+        <button
+          onClick={onCancel}
+          className="rounded-full border border-border/60 px-4 py-1.5 text-xs text-muted-foreground hover:text-foreground"
+        >
+          Cancelar
+        </button>
+      </div>
+      <style>{`.input{width:100%;border-radius:.5rem;border:1px solid hsl(var(--border)/.6);background:hsl(var(--background));padding:.5rem .75rem;font-size:.875rem}.input:focus{outline:none;border-color:#D4AF37}`}</style>
+    </div>
+  );
+}
+
+function Field({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <label className="block">
+      <span className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+        {label}
+      </span>
+      <div className="mt-1">{children}</div>
+    </label>
   );
 }

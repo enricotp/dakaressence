@@ -37,7 +37,7 @@ export const criarPedido = createServerFn({ method: "POST" })
     (data: {
       cliente: string;
       itens: string;
-      itensDetalhados: Array<{ nome: string; qtd: number; precoUnit: number }>;
+      itensDetalhados: Array<{ id: string; nome: string; qtd: number; precoUnit: number }>;
       total: number;
       pagamento: "Pix" | "Cartão";
       parcelas: number;
@@ -72,7 +72,6 @@ export const criarPedido = createServerFn({ method: "POST" })
       throw new Error(`Sheets append failed [${res.status}]: ${text}`);
     }
 
-    // Registra cada item vendido na 2ª planilha
     if (data.itensDetalhados.length > 0) {
       const itemRows = data.itensDetalhados.map((it) => [
         dataFmt,
@@ -82,8 +81,9 @@ export const criarPedido = createServerFn({ method: "POST" })
         it.precoUnit.toFixed(2).replace(".", ","),
         (it.precoUnit * it.qtd).toFixed(2).replace(".", ","),
         data.cliente,
+        it.id,
       ]);
-      const itemsUrl = `${GATEWAY}/spreadsheets/${ITEMS_SHEET_ID}/values/${ITEMS_SHEET_NAME}!A:G:append?valueInputOption=USER_ENTERED`;
+      const itemsUrl = `${GATEWAY}/spreadsheets/${ITEMS_SHEET_ID}/values/${ITEMS_SHEET_NAME}!A:H:append?valueInputOption=USER_ENTERED`;
       const itemsRes = await fetch(itemsUrl, {
         method: "POST",
         headers: sheetsHeaders(),
@@ -92,7 +92,6 @@ export const criarPedido = createServerFn({ method: "POST" })
       if (!itemsRes.ok) {
         const text = await itemsRes.text();
         console.error(`Sheets items append failed [${itemsRes.status}]: ${text}`);
-        // não falha o pedido se o log de itens falhar
       }
     }
 
@@ -101,7 +100,8 @@ export const criarPedido = createServerFn({ method: "POST" })
 
 export const listarPedidos = createServerFn({ method: "GET" }).handler(
   async (): Promise<Pedido[]> => {
-    const { requireAdmin } = await import("./admin.server"); await requireAdmin();
+    const { requireAdmin } = await import("./admin.server");
+    await requireAdmin();
     const url = `${GATEWAY}/spreadsheets/${SHEET_ID}/values/${SHEET_NAME}!A2:H10000`;
     const res = await fetch(url, { headers: sheetsHeaders() });
     if (!res.ok) {
@@ -130,12 +130,84 @@ export const listarPedidos = createServerFn({ method: "GET" }).handler(
   },
 );
 
+export type ItemVendido = {
+  data: string;
+  pedidoId: string;
+  perfume: string;
+  perfumeId: string;
+  qtd: number;
+  precoUnit: number;
+  subtotal: number;
+  cliente: string;
+  statusPedido: string;
+};
+
+export const listarItensVendidos = createServerFn({ method: "GET" }).handler(
+  async (): Promise<ItemVendido[]> => {
+    const { requireAdmin } = await import("./admin.server");
+    await requireAdmin();
+    const [itensRes, pedidosRes] = await Promise.all([
+      fetch(`${GATEWAY}/spreadsheets/${ITEMS_SHEET_ID}/values/${ITEMS_SHEET_NAME}!A2:H10000`, {
+        headers: sheetsHeaders(),
+      }),
+      fetch(`${GATEWAY}/spreadsheets/${SHEET_ID}/values/${SHEET_NAME}!A2:H10000`, {
+        headers: sheetsHeaders(),
+      }),
+    ]);
+    if (!itensRes.ok) throw new Error(`Sheets items read failed [${itensRes.status}]`);
+    const itensJson = (await itensRes.json()) as { values?: string[][] };
+    const pedidosJson = pedidosRes.ok
+      ? ((await pedidosRes.json()) as { values?: string[][] })
+      : { values: [] };
+    const statusPorPedido = new Map<string, string>();
+    (pedidosJson.values ?? []).forEach((r) => {
+      if (r[0]) statusPorPedido.set(r[0], r[7] ?? "");
+    });
+
+    return (itensJson.values ?? [])
+      .map((r) => {
+        const preco = parseFloat((r[4] ?? "0").toString().replace(/\./g, "").replace(",", "."));
+        const sub = parseFloat((r[5] ?? "0").toString().replace(/\./g, "").replace(",", "."));
+        return {
+          data: r[0] ?? "",
+          pedidoId: r[1] ?? "",
+          perfume: r[2] ?? "",
+          qtd: parseInt(r[3] ?? "0", 10) || 0,
+          precoUnit: preco || 0,
+          subtotal: sub || 0,
+          cliente: r[6] ?? "",
+          perfumeId: r[7] ?? "",
+          statusPedido: statusPorPedido.get(r[1] ?? "") ?? "",
+        };
+      })
+      .filter((i) => i.pedidoId);
+  },
+);
+
+async function itensDoPedido(pedidoId: string): Promise<Array<{ perfumeId: string; qtd: number }>> {
+  const res = await fetch(
+    `${GATEWAY}/spreadsheets/${ITEMS_SHEET_ID}/values/${ITEMS_SHEET_NAME}!A2:H10000`,
+    { headers: sheetsHeaders() },
+  );
+  if (!res.ok) return [];
+  const json = (await res.json()) as { values?: string[][] };
+  return (json.values ?? [])
+    .filter((r) => r[1] === pedidoId && r[7])
+    .map((r) => ({ perfumeId: r[7]!, qtd: parseInt(r[3] ?? "0", 10) || 0 }));
+}
+
 export const atualizarStatusPedido = createServerFn({ method: "POST" })
   .validator(
-    (data: { row: number; status: "Concluído" | "Cancelado" | "Pendente" }) => data,
+    (data: {
+      row: number;
+      pedidoId: string;
+      statusAtual: string;
+      status: "Concluído" | "Cancelado" | "Pendente";
+    }) => data,
   )
   .handler(async ({ data }) => {
-    const { requireAdmin } = await import("./admin.server"); await requireAdmin();
+    const { requireAdmin } = await import("./admin.server");
+    await requireAdmin();
     const url = `${GATEWAY}/spreadsheets/${SHEET_ID}/values/${SHEET_NAME}!H${data.row}?valueInputOption=USER_ENTERED`;
     const res = await fetch(url, {
       method: "PUT",
@@ -145,6 +217,19 @@ export const atualizarStatusPedido = createServerFn({ method: "POST" })
     if (!res.ok) {
       const text = await res.text();
       throw new Error(`Sheets update failed [${res.status}]: ${text}`);
+    }
+
+    // Baixa de estoque ao concluir (idempotente: só se não estava concluído antes)
+    if (data.status === "Concluído" && data.statusAtual !== "Concluído") {
+      const itens = await itensDoPedido(data.pedidoId);
+      const { baixarEstoque } = await import("./perfumes.functions");
+      await Promise.all(
+        itens.map((it) =>
+          baixarEstoque({ data: { id: it.perfumeId, qtd: it.qtd } }).catch((err) =>
+            console.error("baixarEstoque falhou:", err),
+          ),
+        ),
+      );
     }
     return { ok: true };
   });
