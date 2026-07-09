@@ -264,31 +264,39 @@ export const atualizarStatusPedido = createServerFn({ method: "POST" })
       throw new Error(`Sheets update failed [${res.status}]: ${text}`);
     }
 
-    // Baixa de estoque ao concluir (idempotente).
-    if (data.status === "Concluído" && data.statusAtual !== "Concluído") {
+    // Ajuste de estoque conforme transição (idempotente por transição).
+    // Concluído → baixa. Sair de Concluído (Cancelado/Pendente) → devolve.
+    const saiuDeConcluido =
+      data.statusAtual === "Concluído" && data.status !== "Concluído";
+    const entrouEmConcluido =
+      data.statusAtual !== "Concluído" && data.status === "Concluído";
+
+    if (entrouEmConcluido || saiuDeConcluido) {
       try {
-        const { getPerfumes, baixarEstoqueInterno } = await import("./perfumes.functions");
+        const { getPerfumes, ajustarEstoqueInterno } = await import("./perfumes.functions");
         const perfumes = await getPerfumes();
         const porNome = new Map(perfumes.map((p) => [p.nome.toLowerCase(), p]));
         const itens = parseItensTextoLocal(data.itensTexto);
+        const delta = entrouEmConcluido ? -1 : 1;
         await Promise.all(
           itens.map(async (it) => {
             const p = porNome.get(it.nome.toLowerCase());
             if (!p) {
-              console.error(`Perfume não encontrado para baixa: "${it.nome}"`);
+              console.error(`Perfume não encontrado para ajuste: "${it.nome}"`);
               return;
             }
             try {
-              await baixarEstoqueInterno(p.id, it.qtd);
+              await ajustarEstoqueInterno(p.id, delta * it.qtd);
             } catch (err) {
-              console.error("baixarEstoque falhou:", err);
+              console.error("ajustarEstoque falhou:", err);
             }
           }),
         );
       } catch (err) {
-        console.error("Erro ao processar baixa de estoque:", err);
+        console.error("Erro ao processar ajuste de estoque:", err);
       }
     }
+
     return { ok: true };
   });
 
