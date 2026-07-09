@@ -3,10 +3,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import {
-  Bar,
-  BarChart,
   CartesianGrid,
-  Cell,
   Legend,
   Line,
   LineChart,
@@ -15,6 +12,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+
 import { isAdmin, loginAdmin, logoutAdmin } from "@/lib/admin.functions";
 import {
   listarPedidos,
@@ -545,36 +543,74 @@ function AnalyticsTab() {
         </div>
       </div>
 
-      <div className="mt-6 rounded-2xl border border-border/60 bg-card p-5">
-        <h3 className="mb-4 font-display text-lg">Top perfumes (unidades)</h3>
-        <div className="h-80 w-full">
-          <ResponsiveContainer>
-            <BarChart data={porPerfume} layout="vertical" margin={{ left: 40 }}>
-              <CartesianGrid strokeDasharray="3 3" opacity={0.2} />
-              <XAxis type="number" stroke="hsl(var(--muted-foreground))" fontSize={12} />
-              <YAxis
-                type="category"
-                dataKey="nome"
-                stroke="hsl(var(--muted-foreground))"
-                fontSize={11}
-                width={140}
-              />
-              <Tooltip
-                contentStyle={{
-                  background: "hsl(var(--card))",
-                  border: "1px solid hsl(var(--border))",
-                  borderRadius: 8,
-                }}
-              />
-              <Bar dataKey="qtd" name="Unidades">
-                {porPerfume.map((_, i) => (
-                  <Cell key={i} fill="#D4AF37" />
-                ))}
-              </Bar>
-            </BarChart>
-          </ResponsiveContainer>
+      <div className="mt-6 rounded-2xl border border-border/60 bg-card p-6">
+        <div className="mb-5 flex items-end justify-between gap-4">
+          <div>
+            <h3 className="font-display text-lg">Top perfumes</h3>
+            <p className="text-xs text-muted-foreground">
+              Ranking por unidades vendidas no período
+            </p>
+          </div>
+          <span className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+            {porPerfume.length} itens
+          </span>
         </div>
+
+        {porPerfume.length === 0 ? (
+          <p className="py-10 text-center text-sm text-muted-foreground">
+            Nenhuma venda registrada neste período.
+          </p>
+        ) : (
+          <ol className="space-y-2">
+            {porPerfume.map((p, i) => {
+              const max = porPerfume[0]?.qtd || 1;
+              const pct = Math.max(6, Math.round((p.qtd / max) * 100));
+              const medal =
+                i === 0
+                  ? "bg-gradient-to-br from-gold to-amber-600 text-primary-foreground shadow-[0_0_20px_-4px_rgba(212,175,55,0.6)]"
+                  : i === 1
+                    ? "bg-zinc-300/90 text-zinc-900"
+                    : i === 2
+                      ? "bg-amber-800/80 text-amber-50"
+                      : "bg-muted text-muted-foreground";
+              return (
+                <li
+                  key={p.nome}
+                  className="group relative overflow-hidden rounded-xl border border-border/40 bg-background/40 px-4 py-3 transition hover:border-gold/40"
+                >
+                  <div
+                    aria-hidden
+                    className="absolute inset-y-0 left-0 -z-0 bg-gradient-to-r from-gold/20 via-gold/10 to-transparent transition-all duration-500"
+                    style={{ width: `${pct}%` }}
+                  />
+                  <div className="relative z-10 flex items-center gap-4">
+                    <span
+                      className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full font-display text-xs font-bold ${medal}`}
+                    >
+                      {i + 1}
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-sm font-semibold">{p.nome}</p>
+                      <p className="text-[11px] uppercase tracking-wider text-muted-foreground">
+                        {formatBRL(p.receita)} em receita
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <p className="font-display text-xl font-semibold text-gold tabular-nums">
+                        {p.qtd}
+                      </p>
+                      <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                        {p.qtd === 1 ? "unidade" : "unidades"}
+                      </p>
+                    </div>
+                  </div>
+                </li>
+              );
+            })}
+          </ol>
+        )}
       </div>
+
     </>
   );
 }
