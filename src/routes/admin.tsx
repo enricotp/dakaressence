@@ -573,7 +573,7 @@ function AnalyticsTab() {
                     ? "bg-zinc-300/90 text-zinc-900"
                     : i === 2
                       ? "bg-amber-800/80 text-amber-50"
-                      : "bg-muted text-muted-foreground";
+                      : "bg-border/60 text-foreground";
               return (
                 <li
                   key={p.nome}
