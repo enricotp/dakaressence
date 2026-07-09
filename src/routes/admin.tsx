@@ -535,15 +535,37 @@ function PerfumesTab() {
   });
 
   const [editando, setEditando] = useState<string | null>(null);
+  const [volTab, setVolTab] = useState<"50ml" | "100ml">("50ml");
+
+  const filtrados = perfumes.filter((p) => p.volume === volTab);
+  const count50 = perfumes.filter((p) => p.volume === "50ml").length;
+  const count100 = perfumes.filter((p) => p.volume === "100ml").length;
 
   return (
     <>
-      <h2 className="mb-4 font-display text-lg">Perfumes ({perfumes.length})</h2>
+      <div className="mb-4 flex items-center gap-2">
+        {(["50ml", "100ml"] as const).map((v) => (
+          <button
+            key={v}
+            onClick={() => setVolTab(v)}
+            className={`rounded-full px-4 py-1.5 text-xs uppercase tracking-wider transition ${
+              volTab === v
+                ? "bg-gold text-primary-foreground"
+                : "border border-border/60 text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            {v} ({v === "50ml" ? count50 : count100})
+          </button>
+        ))}
+      </div>
+      <h2 className="mb-4 font-display text-lg">
+        Perfumes {volTab} ({filtrados.length})
+      </h2>
       {isLoading ? (
         <p className="text-sm text-muted-foreground">Carregando…</p>
       ) : (
         <ul className="grid gap-3 md:grid-cols-2">
-          {perfumes.map((p) => (
+          {filtrados.map((p) => (
             <li key={p.id} className="rounded-2xl border border-border/60 bg-card p-4">
               {editando === p.id ? (
                 <EditForm
@@ -565,7 +587,12 @@ function PerfumesTab() {
                     />
                   )}
                   <div className="flex-1">
-                    <p className="font-semibold">{p.nome}</p>
+                    <div className="flex items-center gap-2">
+                      <p className="font-semibold">{p.nome}</p>
+                      <span className="rounded-full bg-gold/10 px-2 py-0.5 text-[10px] uppercase tracking-wider text-gold">
+                        {p.volume}
+                      </span>
+                    </div>
                     <p className="mt-1 text-xs text-muted-foreground line-clamp-2">
                       {p.descricao || "Sem descrição"}
                     </p>
