@@ -36,7 +36,16 @@ function Index() {
   const { data: perfumes } = useSuspenseQuery(perfumesQuery);
   const { cart, cartCount, add, remove, open } = useCart();
   const [filtro, setFiltro] = useState<"todos" | "feminino" | "masculino">("todos");
-  const perfumesFiltrados = filtro === "todos" ? perfumes : perfumes.filter((p) => p.genero === filtro);
+  const [busca, setBusca] = useState("");
+  const [marca, setMarca] = useState<string>("todas");
+  const marcas = Array.from(new Set(perfumes.map((p) => p.marca).filter((m): m is string => !!m))).sort();
+  const buscaNorm = busca.trim().toLowerCase();
+  const perfumesFiltrados = perfumes.filter((p) => {
+    if (filtro !== "todos" && p.genero !== filtro) return false;
+    if (marca !== "todas" && p.marca !== marca) return false;
+    if (buscaNorm && !p.nome.toLowerCase().includes(buscaNorm)) return false;
+    return true;
+  });
 
   const secoes = ["home", "catalogo", "sobre", "faq"] as const;
   type Secao = (typeof secoes)[number];
