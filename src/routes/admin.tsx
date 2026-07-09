@@ -3,10 +3,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import {
-  Bar,
-  BarChart,
   CartesianGrid,
-  Cell,
   Legend,
   Line,
   LineChart,
@@ -15,6 +12,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+
 import { isAdmin, loginAdmin, logoutAdmin } from "@/lib/admin.functions";
 import {
   listarPedidos,
