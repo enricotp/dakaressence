@@ -493,6 +493,52 @@ function AnalyticsTab() {
     return Array.from(m.values()).sort((a, b) => b.qtd - a.qtd).slice(0, 15);
   }, [filtrados]);
 
+  // Índice de perfumes para joins
+  const perfumePorNome = useMemo(() => {
+    const m = new Map<string, Perfume>();
+    perfumes.forEach((p) => m.set(p.nome.toLowerCase(), p));
+    return m;
+  }, [perfumes]);
+
+  const porColecao = useMemo(() => {
+    const m = new Map<string, { colecao: string; qtd: number; receita: number }>();
+    COLECOES.forEach((c) => m.set(c, { colecao: c, qtd: 0, receita: 0 }));
+    filtrados.forEach((it) => {
+      const p = perfumePorNome.get(it.perfume.toLowerCase());
+      const c = p?.colecao ?? "Signature";
+      const cur = m.get(c) ?? { colecao: c, qtd: 0, receita: 0 };
+      cur.qtd += it.qtd;
+      cur.receita += it.subtotal;
+      m.set(c, cur);
+    });
+    return Array.from(m.values());
+  }, [filtrados, perfumePorNome]);
+
+  const porVolume = useMemo(() => {
+    const m = new Map<string, { volume: string; qtd: number; receita: number }>();
+    filtrados.forEach((it) => {
+      const p = perfumePorNome.get(it.perfume.toLowerCase());
+      const v = p?.volume ?? "—";
+      const cur = m.get(v) ?? { volume: v, qtd: 0, receita: 0 };
+      cur.qtd += it.qtd;
+      cur.receita += it.subtotal;
+      m.set(v, cur);
+    });
+    return Array.from(m.values()).sort((a, b) => b.qtd - a.qtd);
+  }, [filtrados, perfumePorNome]);
+
+  const porGenero = useMemo(() => {
+    const acc = { feminino: 0, masculino: 0 };
+    filtrados.forEach((it) => {
+      const p = perfumePorNome.get(it.perfume.toLowerCase());
+      if (!p) return;
+      acc[p.genero] += it.qtd;
+    });
+    return acc;
+  }, [filtrados, perfumePorNome]);
+  const totalGenero = porGenero.feminino + porGenero.masculino;
+
+
   const totalVendas = porDia.reduce((a, b) => a + b.vendas, 0);
   const totalLucro = porDia.reduce((a, b) => a + b.lucro, 0);
   const totalUnidades = filtrados.reduce((a, b) => a + b.qtd, 0);
