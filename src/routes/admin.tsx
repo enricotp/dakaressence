@@ -789,6 +789,14 @@ function EditForm({
           ))}
         </div>
       </Field>
+      <Field label="Marca">
+        <input
+          value={marca}
+          onChange={(e) => setMarca(e.target.value)}
+          placeholder="Ex.: Carolina Herrera"
+          className="input"
+        />
+      </Field>
       <Field label="Nova imagem (URL, opcional)">
         <input
           value={imagemUrl}
