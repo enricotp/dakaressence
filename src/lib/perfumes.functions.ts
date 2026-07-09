@@ -173,6 +173,7 @@ export const atualizarPerfume = createServerFn({ method: "POST" })
       custo?: number | null;
       amount?: number | null;
       volume?: Volume;
+      marca?: string | null;
       imagemUrl?: string | null;
     }) => data,
   )
@@ -189,6 +190,8 @@ export const atualizarPerfume = createServerFn({ method: "POST" })
     if (data.custo !== undefined) properties["Custo"] = { number: data.custo };
     if (data.amount !== undefined) properties["Amount"] = { number: data.amount };
     if (data.volume !== undefined) properties["Volume"] = { select: { name: data.volume } };
+    if (data.marca !== undefined)
+      properties["Marca"] = data.marca ? { select: { name: data.marca } } : { select: null };
 
     const body: Record<string, unknown> = { properties };
     if (data.imagemUrl !== undefined && data.imagemUrl) {
