@@ -10,12 +10,18 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as CalculadoraRouteImport } from './routes/calculadora'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PerfumeIdRouteImport } from './routes/perfume.$id'
 
 const CalculadoraRoute = CalculadoraRouteImport.update({
   id: '/calculadora',
   path: '/calculadora',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -31,30 +37,34 @@ const PerfumeIdRoute = PerfumeIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
   '/calculadora': typeof CalculadoraRoute
   '/perfume/$id': typeof PerfumeIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
   '/calculadora': typeof CalculadoraRoute
   '/perfume/$id': typeof PerfumeIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
   '/calculadora': typeof CalculadoraRoute
   '/perfume/$id': typeof PerfumeIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/calculadora' | '/perfume/$id'
+  fullPaths: '/' | '/admin' | '/calculadora' | '/perfume/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/calculadora' | '/perfume/$id'
-  id: '__root__' | '/' | '/calculadora' | '/perfume/$id'
+  to: '/' | '/admin' | '/calculadora' | '/perfume/$id'
+  id: '__root__' | '/' | '/admin' | '/calculadora' | '/perfume/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRoute: typeof AdminRoute
   CalculadoraRoute: typeof CalculadoraRoute
   PerfumeIdRoute: typeof PerfumeIdRoute
 }
@@ -66,6 +76,13 @@ declare module '@tanstack/react-router' {
       path: '/calculadora'
       fullPath: '/calculadora'
       preLoaderRoute: typeof CalculadoraRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -87,6 +104,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminRoute: AdminRoute,
   CalculadoraRoute: CalculadoraRoute,
   PerfumeIdRoute: PerfumeIdRoute,
 }
