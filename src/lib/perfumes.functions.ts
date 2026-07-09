@@ -4,7 +4,33 @@ const DATABASE_ID = "38858811-29ca-83c5-b57d-0102c05505b1";
 const GATEWAY = "https://connector-gateway.lovable.dev/notion/v1";
 
 export type Genero = "feminino" | "masculino";
-export type Volume = "50ml" | "100ml";
+export type Volume = "25ml" | "50ml" | "80ml" | "100ml";
+export type Colecao =
+  | "Signature"
+  | "Brand Collection"
+  | "Arabic Collection"
+  | "Dream Brand Collection";
+
+export const COLECOES: Colecao[] = [
+  "Signature",
+  "Brand Collection",
+  "Arabic Collection",
+  "Dream Brand Collection",
+];
+
+export const COLECAO_INFO: Record<
+  Colecao,
+  { volumes: Volume[]; defaultVolume: Volume; sobEncomenda: boolean }
+> = {
+  Signature: { volumes: ["50ml", "100ml"], defaultVolume: "50ml", sobEncomenda: false },
+  "Brand Collection": { volumes: ["25ml"], defaultVolume: "25ml", sobEncomenda: true },
+  "Arabic Collection": { volumes: ["25ml"], defaultVolume: "25ml", sobEncomenda: true },
+  "Dream Brand Collection": {
+    volumes: ["80ml", "100ml"],
+    defaultVolume: "100ml",
+    sobEncomenda: true,
+  },
+};
 
 export type Perfume = {
   id: string;
@@ -19,6 +45,7 @@ export type Perfume = {
   preco: number | null;
   custo: number | null;
   amount: number | null;
+  colecao: Colecao;
 };
 
 const GENERO_MAP: Record<string, Genero> = {
@@ -132,8 +159,21 @@ export const getPerfumes = createServerFn({ method: "GET" }).handler(
       const custo = page.properties["Custo"]?.number ?? null;
       const amount = page.properties["Amount"]?.number ?? null;
       const volumeRaw = page.properties["Volume"]?.select?.name ?? "50ml";
-      const volume: Volume = volumeRaw === "100ml" ? "100ml" : "50ml";
+      const volume: Volume = (["25ml", "50ml", "80ml", "100ml"] as const).includes(
+        volumeRaw as Volume,
+      )
+        ? (volumeRaw as Volume)
+        : "50ml";
       const marca = page.properties["Marca"]?.select?.name ?? null;
+      const generoRaw = page.properties["Gênero"]?.select?.name?.toLowerCase() ?? "";
+      const genero: Genero =
+        generoRaw === "feminino" || generoRaw === "masculino"
+          ? (generoRaw as Genero)
+          : inferirGenero(nome);
+      const colecaoRaw = page.properties["Coleção"]?.select?.name ?? "";
+      const colecao: Colecao = (COLECOES as string[]).includes(colecaoRaw)
+        ? (colecaoRaw as Colecao)
+        : "Signature";
       return {
         id: page.id,
         nome,
@@ -141,12 +181,13 @@ export const getPerfumes = createServerFn({ method: "GET" }).handler(
         status,
         imagem: extractImage(page),
         descricao,
-        genero: inferirGenero(nome),
+        genero,
         volume,
         marca,
         preco,
         custo,
         amount,
+        colecao,
       };
     });
   },
@@ -175,6 +216,8 @@ export const atualizarPerfume = createServerFn({ method: "POST" })
       volume?: Volume;
       marca?: string | null;
       imagemUrl?: string | null;
+      colecao?: Colecao;
+      genero?: Genero;
     }) => data,
   )
   .handler(async ({ data }) => {
@@ -192,6 +235,12 @@ export const atualizarPerfume = createServerFn({ method: "POST" })
     if (data.volume !== undefined) properties["Volume"] = { select: { name: data.volume } };
     if (data.marca !== undefined)
       properties["Marca"] = data.marca ? { select: { name: data.marca } } : { select: null };
+    if (data.colecao !== undefined)
+      properties["Coleção"] = { select: { name: data.colecao } };
+    if (data.genero !== undefined)
+      properties["Gênero"] = {
+        select: { name: data.genero === "feminino" ? "Feminino" : "Masculino" },
+      };
 
     const body: Record<string, unknown> = { properties };
     if (data.imagemUrl !== undefined && data.imagemUrl) {
@@ -241,6 +290,8 @@ export const criarPerfume = createServerFn({ method: "POST" })
       volume: Volume;
       marca?: string | null;
       imagemUrl?: string | null;
+      colecao?: Colecao;
+      genero?: Genero;
     }) => data,
   )
   .handler(async ({ data }) => {
@@ -257,6 +308,11 @@ export const criarPerfume = createServerFn({ method: "POST" })
     if (data.custo != null) properties["Custo"] = { number: data.custo };
     if (data.amount != null) properties["Amount"] = { number: data.amount };
     if (data.marca) properties["Marca"] = { select: { name: data.marca } };
+    if (data.colecao) properties["Coleção"] = { select: { name: data.colecao } };
+    if (data.genero)
+      properties["Gênero"] = {
+        select: { name: data.genero === "feminino" ? "Feminino" : "Masculino" },
+      };
 
     const body: Record<string, unknown> = {
       parent: { database_id: DATABASE_ID },

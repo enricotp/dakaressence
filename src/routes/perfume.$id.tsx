@@ -4,7 +4,7 @@ import perfume1 from "@/assets/perfume-1.jpg";
 import perfume2 from "@/assets/perfume-2.jpg";
 import perfume3 from "@/assets/perfume-3.jpg";
 import logoWhite from "@/assets/dakar-essence-white.png.asset.json";
-import { getPerfumes } from "@/lib/perfumes.functions";
+import { getPerfumes, COLECAO_INFO } from "@/lib/perfumes.functions";
 import { formatBRL } from "@/lib/format";
 import { useCart } from "@/lib/cart-context";
 import { CartButton } from "@/components/cart-drawer";
@@ -82,9 +82,22 @@ function PerfumeDetail() {
         </div>
 
         <div className="flex flex-col justify-center">
-          <span className="text-[11px] uppercase tracking-[0.25em] text-gold">
-            {p.emEstoque ? "Disponível" : "Esgotado"}
-          </span>
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="text-[11px] uppercase tracking-[0.25em] text-gold">
+              {p.emEstoque ? "Disponível" : "Esgotado"}
+            </span>
+            <span className="rounded-full bg-gold/10 px-2 py-0.5 text-[10px] uppercase tracking-wider text-gold">
+              {p.volume}
+            </span>
+            <span className="rounded-full border border-border/60 px-2 py-0.5 text-[10px] uppercase tracking-wider text-muted-foreground">
+              {p.colecao}
+            </span>
+            {COLECAO_INFO[p.colecao].sobEncomenda && (
+              <span className="rounded-full bg-amber-500/15 px-2 py-0.5 text-[10px] uppercase tracking-wider text-amber-400">
+                Sob encomenda
+              </span>
+            )}
+          </div>
           <h1 className="mt-3 font-display text-5xl font-semibold leading-tight md:text-6xl">
             {p.nome}
           </h1>
@@ -96,6 +109,11 @@ function PerfumeDetail() {
           <p className="mt-6 text-lg leading-relaxed text-muted-foreground">
             {p.descricao || "Contratipo exclusivo, com alta concentração e fixação prolongada."}
           </p>
+          {COLECAO_INFO[p.colecao].sobEncomenda && (
+            <p className="mt-4 rounded-lg border border-amber-500/30 bg-amber-500/5 px-4 py-3 text-sm text-amber-300">
+              Produto sob encomenda — prazo estimado de 7 a 15 dias após confirmação.
+            </p>
+          )}
 
           <div className="mt-10 flex flex-col gap-4">
             {!p.emEstoque ? (

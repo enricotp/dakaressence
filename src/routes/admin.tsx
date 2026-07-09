@@ -25,7 +25,12 @@ import {
   getPerfumes,
   atualizarPerfume,
   criarPerfume,
+  COLECOES,
+  COLECAO_INFO,
   type Perfume,
+  type Colecao,
+  type Genero,
+  type Volume,
 } from "@/lib/perfumes.functions";
 import { formatBRL } from "@/lib/format";
 
@@ -488,6 +493,52 @@ function AnalyticsTab() {
     return Array.from(m.values()).sort((a, b) => b.qtd - a.qtd).slice(0, 15);
   }, [filtrados]);
 
+  // Índice de perfumes para joins
+  const perfumePorNome = useMemo(() => {
+    const m = new Map<string, Perfume>();
+    perfumes.forEach((p) => m.set(p.nome.toLowerCase(), p));
+    return m;
+  }, [perfumes]);
+
+  const porColecao = useMemo(() => {
+    const m = new Map<string, { colecao: string; qtd: number; receita: number }>();
+    COLECOES.forEach((c) => m.set(c, { colecao: c, qtd: 0, receita: 0 }));
+    filtrados.forEach((it) => {
+      const p = perfumePorNome.get(it.perfume.toLowerCase());
+      const c = p?.colecao ?? "Signature";
+      const cur = m.get(c) ?? { colecao: c, qtd: 0, receita: 0 };
+      cur.qtd += it.qtd;
+      cur.receita += it.subtotal;
+      m.set(c, cur);
+    });
+    return Array.from(m.values());
+  }, [filtrados, perfumePorNome]);
+
+  const porVolume = useMemo(() => {
+    const m = new Map<string, { volume: string; qtd: number; receita: number }>();
+    filtrados.forEach((it) => {
+      const p = perfumePorNome.get(it.perfume.toLowerCase());
+      const v = p?.volume ?? "—";
+      const cur = m.get(v) ?? { volume: v, qtd: 0, receita: 0 };
+      cur.qtd += it.qtd;
+      cur.receita += it.subtotal;
+      m.set(v, cur);
+    });
+    return Array.from(m.values()).sort((a, b) => b.qtd - a.qtd);
+  }, [filtrados, perfumePorNome]);
+
+  const porGenero = useMemo(() => {
+    const acc = { feminino: 0, masculino: 0 };
+    filtrados.forEach((it) => {
+      const p = perfumePorNome.get(it.perfume.toLowerCase());
+      if (!p) return;
+      acc[p.genero] += it.qtd;
+    });
+    return acc;
+  }, [filtrados, perfumePorNome]);
+  const totalGenero = porGenero.feminino + porGenero.masculino;
+
+
   const totalVendas = porDia.reduce((a, b) => a + b.vendas, 0);
   const totalLucro = porDia.reduce((a, b) => a + b.lucro, 0);
   const totalUnidades = filtrados.reduce((a, b) => a + b.qtd, 0);
@@ -612,6 +663,96 @@ function AnalyticsTab() {
         )}
       </div>
 
+      <div className="mt-6 grid gap-4 lg:grid-cols-2">
+        <div className="rounded-2xl border border-border/60 bg-card p-5">
+          <h3 className="mb-4 font-display text-lg">Vendas por coleção</h3>
+          {porColecao.every((c) => c.qtd === 0) ? (
+            <p className="py-8 text-center text-sm text-muted-foreground">Sem vendas.</p>
+          ) : (
+            <ul className="space-y-2">
+              {porColecao.map((c) => {
+                const max = Math.max(...porColecao.map((x) => x.qtd), 1);
+                const pct = Math.round((c.qtd / max) * 100);
+                return (
+                  <li key={c.colecao} className="relative overflow-hidden rounded-lg border border-border/40 px-3 py-2">
+                    <div aria-hidden className="absolute inset-y-0 left-0 -z-0 bg-gold/15" style={{ width: `${pct}%` }} />
+                    <div className="relative z-10 flex items-center justify-between gap-3 text-sm">
+                      <span className="font-medium">{c.colecao}</span>
+                      <span className="tabular-nums text-muted-foreground">
+                        <b className="text-gold">{c.qtd}</b> un · {formatBRL(c.receita)}
+                      </span>
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
+          )}
+        </div>
+
+        <div className="rounded-2xl border border-border/60 bg-card p-5">
+          <h3 className="mb-4 font-display text-lg">Vendas por volume</h3>
+          {porVolume.length === 0 ? (
+            <p className="py-8 text-center text-sm text-muted-foreground">Sem vendas.</p>
+          ) : (
+            <ul className="space-y-2">
+              {porVolume.map((v) => {
+                const max = porVolume[0].qtd || 1;
+                const pct = Math.round((v.qtd / max) * 100);
+                return (
+                  <li key={v.volume} className="relative overflow-hidden rounded-lg border border-border/40 px-3 py-2">
+                    <div aria-hidden className="absolute inset-y-0 left-0 -z-0 bg-emerald-500/15" style={{ width: `${pct}%` }} />
+                    <div className="relative z-10 flex items-center justify-between gap-3 text-sm">
+                      <span className="font-medium">{v.volume}</span>
+                      <span className="tabular-nums text-muted-foreground">
+                        <b className="text-emerald-400">{v.qtd}</b> un · {formatBRL(v.receita)}
+                      </span>
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
+          )}
+        </div>
+      </div>
+
+      <div className="mt-6 rounded-2xl border border-border/60 bg-card p-5">
+        <h3 className="mb-4 font-display text-lg">Feminino vs Masculino</h3>
+        {totalGenero === 0 ? (
+          <p className="py-8 text-center text-sm text-muted-foreground">Sem vendas no período.</p>
+        ) : (
+          <>
+            <div className="flex h-4 w-full overflow-hidden rounded-full bg-border/40">
+              <div
+                className="bg-pink-400"
+                style={{ width: `${(porGenero.feminino / totalGenero) * 100}%` }}
+                title={`Feminino: ${porGenero.feminino}`}
+              />
+              <div
+                className="bg-sky-400"
+                style={{ width: `${(porGenero.masculino / totalGenero) * 100}%` }}
+                title={`Masculino: ${porGenero.masculino}`}
+              />
+            </div>
+            <div className="mt-3 flex items-center justify-between text-sm">
+              <span className="inline-flex items-center gap-2">
+                <span className="h-3 w-3 rounded-full bg-pink-400" />
+                Feminino <b className="text-pink-300">{porGenero.feminino}</b>
+                <span className="text-muted-foreground">
+                  ({Math.round((porGenero.feminino / totalGenero) * 100)}%)
+                </span>
+              </span>
+              <span className="inline-flex items-center gap-2">
+                <span className="h-3 w-3 rounded-full bg-sky-400" />
+                Masculino <b className="text-sky-300">{porGenero.masculino}</b>
+                <span className="text-muted-foreground">
+                  ({Math.round((porGenero.masculino / totalGenero) * 100)}%)
+                </span>
+              </span>
+            </div>
+          </>
+        )}
+      </div>
+
     </>
   );
 }
@@ -640,37 +781,37 @@ function PerfumesTab() {
 
   const [editando, setEditando] = useState<string | null>(null);
   const [criando, setCriando] = useState(false);
-  const [volTab, setVolTab] = useState<"50ml" | "100ml">("50ml");
+  const [colTab, setColTab] = useState<Colecao>("Signature");
   const [busca, setBusca] = useState("");
   const [marca, setMarca] = useState<string>("todas");
 
   const marcas = Array.from(
     new Set(perfumes.map((p) => p.marca).filter((m): m is string => !!m)),
   ).sort();
+  const nomes = Array.from(new Set(perfumes.map((p) => p.nome))).sort();
   const buscaNorm = busca.trim().toLowerCase();
   const filtrados = perfumes.filter((p) => {
-    if (p.volume !== volTab) return false;
+    if (p.colecao !== colTab) return false;
     if (marca !== "todas" && p.marca !== marca) return false;
     if (buscaNorm && !p.nome.toLowerCase().includes(buscaNorm)) return false;
     return true;
   });
-  const count50 = perfumes.filter((p) => p.volume === "50ml").length;
-  const count100 = perfumes.filter((p) => p.volume === "100ml").length;
+  const countCol = (c: Colecao) => perfumes.filter((p) => p.colecao === c).length;
 
   return (
     <>
       <div className="mb-4 flex flex-wrap items-center gap-2">
-        {(["50ml", "100ml"] as const).map((v) => (
+        {COLECOES.map((c) => (
           <button
-            key={v}
-            onClick={() => setVolTab(v)}
+            key={c}
+            onClick={() => setColTab(c)}
             className={`rounded-full px-4 py-1.5 text-xs uppercase tracking-wider transition ${
-              volTab === v
+              colTab === c
                 ? "bg-gold text-primary-foreground"
                 : "border border-border/60 text-muted-foreground hover:text-foreground"
             }`}
           >
-            {v} ({v === "50ml" ? count50 : count100})
+            {c} ({countCol(c)})
           </button>
         ))}
         <div className="relative ml-auto">
@@ -709,7 +850,12 @@ function PerfumesTab() {
       </div>
       <div className="mb-4 flex items-center justify-between gap-3">
         <h2 className="font-display text-lg">
-          Perfumes {volTab} ({filtrados.length})
+          {colTab} ({filtrados.length})
+          {COLECAO_INFO[colTab].sobEncomenda && (
+            <span className="ml-2 rounded-full bg-amber-500/15 px-2 py-0.5 text-[10px] uppercase tracking-wider text-amber-400">
+              Sob encomenda
+            </span>
+          )}
         </h2>
         <button
           onClick={() => setCriando((v) => !v)}
@@ -725,6 +871,8 @@ function PerfumesTab() {
             Adicionar novo perfume
           </p>
           <EditForm
+            marcasSugestoes={marcas}
+            nomesSugestoes={nomes}
             perfume={{
               id: "",
               nome: "",
@@ -733,11 +881,12 @@ function PerfumesTab() {
               imagem: null,
               descricao: "",
               genero: "masculino",
-              volume: volTab,
+              volume: COLECAO_INFO[colTab].defaultVolume,
               marca: null,
               preco: null,
               custo: null,
               amount: null,
+              colecao: colTab,
             }}
             onCancel={() => setCriando(false)}
             onSave={async (patch) => {
@@ -751,9 +900,11 @@ function PerfumesTab() {
                   preco: patch.preco ?? null,
                   custo: patch.custo ?? null,
                   amount: patch.amount ?? null,
-                  volume: patch.volume ?? volTab,
+                  volume: patch.volume ?? COLECAO_INFO[colTab].defaultVolume,
                   marca: patch.marca ?? null,
                   imagemUrl: patch.imagemUrl ?? null,
+                  colecao: patch.colecao ?? colTab,
+                  genero: patch.genero,
                 },
               });
               await qc.invalidateQueries({ queryKey: ["perfumes"] });
@@ -771,6 +922,8 @@ function PerfumesTab() {
               {editando === p.id ? (
                 <EditForm
                   perfume={p}
+                  marcasSugestoes={marcas}
+                  nomesSugestoes={nomes}
                   onCancel={() => setEditando(null)}
                   onSave={async (patch) => {
                     await atualizar({ data: { id: p.id, ...patch } });
@@ -792,6 +945,15 @@ function PerfumesTab() {
                       <p className="font-semibold">{p.nome}</p>
                       <span className="rounded-full bg-gold/10 px-2 py-0.5 text-[10px] uppercase tracking-wider text-gold">
                         {p.volume}
+                      </span>
+                      <span
+                        className={`rounded-full px-2 py-0.5 text-[10px] uppercase tracking-wider ${
+                          p.genero === "feminino"
+                            ? "bg-pink-500/15 text-pink-300"
+                            : "bg-sky-500/15 text-sky-300"
+                        }`}
+                      >
+                        {p.genero}
                       </span>
                       {p.marca && (
                         <span className="rounded-full border border-border/60 px-2 py-0.5 text-[10px] uppercase tracking-wider text-muted-foreground">
@@ -821,7 +983,6 @@ function PerfumesTab() {
                           <EstoqueBadge nivel={estoqueAlerta(p) as "low" | "out"} />
                         )}
                       </span>
-
                     </div>
                     <button
                       onClick={() => setEditando(p.id)}
@@ -840,10 +1001,35 @@ function PerfumesTab() {
   );
 }
 
+// Base de perfumes conhecidos para autopreenchimento (marca + gênero + descrição básica)
+const CATALOGO_CONHECIDO: Record<
+  string,
+  { marca: string; genero: Genero; descricao?: string }
+> = {
+  "Angel": { marca: "Mugler", genero: "feminino", descricao: "Doce, patchouli e chocolate." },
+  "Yara": { marca: "Lattafa", genero: "feminino", descricao: "Baunilha, orquídea e sândalo." },
+  "La Vie Est Belle": { marca: "Lancôme", genero: "feminino", descricao: "Íris, patchouli e baunilha." },
+  "Good Girl": { marca: "Carolina Herrera", genero: "feminino", descricao: "Tuberosa, jasmim e cacau." },
+  "Éclair": { marca: "Lattafa", genero: "feminino" },
+  "Scandal": { marca: "Jean Paul Gaultier", genero: "feminino" },
+  "212 VIP Rosé": { marca: "Carolina Herrera", genero: "feminino" },
+  "Fantasy": { marca: "Britney Spears", genero: "feminino" },
+  "212 VIP - This is a Private Party!": { marca: "Carolina Herrera", genero: "masculino" },
+  "1 Million": { marca: "Paco Rabanne", genero: "masculino" },
+  "Al Noble Wazeer": { marca: "Lattafa", genero: "masculino" },
+  "212 VIP Men": { marca: "Carolina Herrera", genero: "masculino" },
+  "Asad": { marca: "Lattafa", genero: "masculino" },
+  "Only the Brave": { marca: "Diesel", genero: "masculino" },
+  "Acqua di Giò": { marca: "Giorgio Armani", genero: "masculino" },
+  "212 VIP Black - Own the Party NYC": { marca: "Carolina Herrera", genero: "masculino" },
+};
+
 function EditForm({
   perfume,
   onSave,
   onCancel,
+  marcasSugestoes = [],
+  nomesSugestoes = [],
 }: {
   perfume: Perfume;
   onSave: (patch: {
@@ -852,22 +1038,47 @@ function EditForm({
     preco?: number | null;
     custo?: number | null;
     amount?: number | null;
-    volume?: "50ml" | "100ml";
+    volume?: Volume;
     marca?: string | null;
     imagemUrl?: string | null;
+    colecao?: Colecao;
+    genero?: Genero;
   }) => Promise<void>;
   onCancel: () => void;
+  marcasSugestoes?: string[];
+  nomesSugestoes?: string[];
 }) {
   const [nome, setNome] = useState(perfume.nome);
   const [descricao, setDescricao] = useState(perfume.descricao);
   const [preco, setPreco] = useState(perfume.preco?.toString() ?? "");
   const [custo, setCusto] = useState(perfume.custo?.toString() ?? "");
   const [amount, setAmount] = useState(perfume.amount?.toString() ?? "");
-  const [volume, setVolume] = useState<"50ml" | "100ml">(perfume.volume);
+  const [colecao, setColecao] = useState<Colecao>(perfume.colecao);
+  const [volume, setVolume] = useState<Volume>(perfume.volume);
   const [marca, setMarca] = useState(perfume.marca ?? "");
+  const [genero, setGenero] = useState<Genero>(perfume.genero);
   const [imagemUrl, setImagemUrl] = useState("");
   const [salvando, setSalvando] = useState(false);
   const [erro, setErro] = useState<string | null>(null);
+
+  const volumesDisponiveis = COLECAO_INFO[colecao].volumes;
+  // se trocar coleção e o volume atual não for válido, ajusta
+  const volumeEfetivo = volumesDisponiveis.includes(volume)
+    ? volume
+    : COLECAO_INFO[colecao].defaultVolume;
+
+  function aplicarAutocomplete(v: string) {
+    setNome(v);
+    const chave = Object.keys(CATALOGO_CONHECIDO).find(
+      (k) => k.toLowerCase() === v.trim().toLowerCase(),
+    );
+    if (chave) {
+      const info = CATALOGO_CONHECIDO[chave];
+      if (!marca.trim()) setMarca(info.marca);
+      setGenero(info.genero);
+      if (!descricao.trim() && info.descricao) setDescricao(info.descricao);
+    }
+  }
 
   async function salvar() {
     setSalvando(true);
@@ -879,8 +1090,10 @@ function EditForm({
         preco: preco === "" ? null : parseFloat(preco.replace(",", ".")),
         custo: custo === "" ? null : parseFloat(custo.replace(",", ".")),
         amount: amount === "" ? null : parseInt(amount, 10),
-        volume,
+        volume: volumeEfetivo,
         marca: marca.trim() === "" ? null : marca.trim(),
+        colecao,
+        genero,
       };
       if (imagemUrl.trim()) patch.imagemUrl = imagemUrl.trim();
       await onSave(patch);
@@ -896,9 +1109,15 @@ function EditForm({
       <Field label="Nome">
         <input
           value={nome}
-          onChange={(e) => setNome(e.target.value)}
+          onChange={(e) => aplicarAutocomplete(e.target.value)}
+          list="lista-nomes"
           className="input"
         />
+        <datalist id="lista-nomes">
+          {Array.from(new Set([...nomesSugestoes, ...Object.keys(CATALOGO_CONHECIDO)])).map((n) => (
+            <option key={n} value={n} />
+          ))}
+        </datalist>
       </Field>
       <Field label="Descrição">
         <textarea
@@ -934,15 +1153,26 @@ function EditForm({
           />
         </Field>
       </div>
-      <Field label="Volume">
-        <div className="flex gap-2">
-          {(["50ml", "100ml"] as const).map((v) => (
+      <Field label="Coleção">
+        <select
+          value={colecao}
+          onChange={(e) => setColecao(e.target.value as Colecao)}
+          className="input"
+        >
+          {COLECOES.map((c) => (
+            <option key={c} value={c}>{c}</option>
+          ))}
+        </select>
+      </Field>
+      <Field label={`Volume (${volumesDisponiveis.join(" ou ")})`}>
+        <div className="flex flex-wrap gap-2">
+          {volumesDisponiveis.map((v) => (
             <button
               key={v}
               type="button"
               onClick={() => setVolume(v)}
               className={`rounded-full px-4 py-1.5 text-xs uppercase tracking-wider transition ${
-                volume === v
+                volumeEfetivo === v
                   ? "bg-gold text-primary-foreground"
                   : "border border-border/60 text-muted-foreground hover:text-foreground"
               }`}
@@ -952,13 +1182,40 @@ function EditForm({
           ))}
         </div>
       </Field>
+      <Field label="Gênero">
+        <div className="flex gap-2">
+          {(["feminino", "masculino"] as const).map((g) => (
+            <button
+              key={g}
+              type="button"
+              onClick={() => setGenero(g)}
+              className={`rounded-full px-4 py-1.5 text-xs uppercase tracking-wider capitalize transition ${
+                genero === g
+                  ? "bg-gold text-primary-foreground"
+                  : "border border-border/60 text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              {g}
+            </button>
+          ))}
+        </div>
+      </Field>
       <Field label="Marca">
         <input
           value={marca}
           onChange={(e) => setMarca(e.target.value)}
+          list="lista-marcas"
           placeholder="Ex.: Carolina Herrera"
           className="input"
         />
+        <datalist id="lista-marcas">
+          {Array.from(new Set([
+            ...marcasSugestoes,
+            ...Object.values(CATALOGO_CONHECIDO).map((c) => c.marca),
+          ])).map((m) => (
+            <option key={m} value={m} />
+          ))}
+        </datalist>
       </Field>
       <Field label="Nova imagem (URL, opcional)">
         <input
@@ -999,3 +1256,4 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
     </label>
   );
 }
+

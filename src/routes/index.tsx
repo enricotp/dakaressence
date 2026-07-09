@@ -6,7 +6,7 @@ import perfume1 from "@/assets/perfume-1.jpg";
 import perfume2 from "@/assets/perfume-2.jpg";
 import perfume3 from "@/assets/perfume-3.jpg";
 import logoWhite from "@/assets/dakar-essence-white.png.asset.json";
-import { getPerfumes } from "@/lib/perfumes.functions";
+import { getPerfumes, COLECOES, COLECAO_INFO, type Colecao } from "@/lib/perfumes.functions";
 import { formatBRL } from "@/lib/format";
 import { useCart } from "@/lib/cart-context";
 import { CartButton } from "@/components/cart-drawer";
@@ -38,9 +38,17 @@ function Index() {
   const [filtro, setFiltro] = useState<"todos" | "feminino" | "masculino">("todos");
   const [busca, setBusca] = useState("");
   const [marca, setMarca] = useState<string>("todas");
+  // Coleções extras (Brand/Arabic/Dream Brand) só aparecem quando o usuário liga o chip.
+  const [colecoesAtivas, setColecoesAtivas] = useState<Record<Colecao, boolean>>({
+    Signature: true,
+    "Brand Collection": false,
+    "Arabic Collection": false,
+    "Dream Brand Collection": false,
+  });
   const marcas = Array.from(new Set(perfumes.map((p) => p.marca).filter((m): m is string => !!m))).sort();
   const buscaNorm = busca.trim().toLowerCase();
   const perfumesFiltrados = perfumes.filter((p) => {
+    if (!colecoesAtivas[p.colecao]) return false;
     if (filtro !== "todos" && p.genero !== filtro) return false;
     if (marca !== "todas" && p.marca !== marca) return false;
     if (buscaNorm && !p.nome.toLowerCase().includes(buscaNorm)) return false;
@@ -188,6 +196,36 @@ function Index() {
             </div>
           </div>
 
+          {/* Coleções — Signature vem ativa; as demais aparecem ao clicar */}
+          <div className="mb-8 flex flex-wrap justify-center gap-2">
+            {COLECOES.map((c) => {
+              const on = colecoesAtivas[c];
+              const encomenda = COLECAO_INFO[c].sobEncomenda;
+              return (
+                <button
+                  key={c}
+                  type="button"
+                  onClick={() =>
+                    setColecoesAtivas((s) => ({ ...s, [c]: !s[c] }))
+                  }
+                  className={`inline-flex items-center gap-2 rounded-full border px-4 py-1.5 text-xs uppercase tracking-wider transition ${
+                    on
+                      ? "border-gold bg-gold text-primary-foreground"
+                      : "border-border/60 bg-card text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  {c}
+                  {encomenda && (
+                    <span className={`rounded-full px-1.5 py-0.5 text-[9px] normal-case tracking-normal ${on ? "bg-primary-foreground/20 text-primary-foreground" : "bg-amber-500/15 text-amber-400"}`}>
+                      encomenda
+                    </span>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+
+
           {/* Busca por nome + seletor de marca */}
           <div className="mb-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
             <div className="relative w-full max-w-xs">
@@ -253,9 +291,17 @@ function Index() {
                       loading="lazy"
                       className={`h-full w-full object-cover transition duration-700 group-hover:scale-105 ${indisponivel ? "opacity-40" : ""}`}
                     />
-                    <span className="absolute left-4 top-4 rounded-full bg-background/80 px-3 py-1 text-[10px] uppercase tracking-[0.2em] text-gold backdrop-blur">
+                    <span className="absolute left-4 top-4 flex items-center gap-1.5 rounded-full bg-background/80 px-3 py-1 text-[10px] uppercase tracking-[0.2em] text-gold backdrop-blur">
                       {codigo}
+                      <span className="rounded-full bg-gold/20 px-1.5 py-0.5 text-[9px] font-semibold text-gold">
+                        {p.volume}
+                      </span>
                     </span>
+                    {COLECAO_INFO[p.colecao].sobEncomenda && !indisponivel && (
+                      <span className="absolute right-4 top-4 rounded-full bg-amber-500/90 px-3 py-1 text-[10px] uppercase tracking-[0.2em] text-black backdrop-blur">
+                        Sob encomenda
+                      </span>
+                    )}
                     {indisponivel && (
                       <span className="absolute right-4 top-4 rounded-full bg-background/90 px-3 py-1 text-[10px] uppercase tracking-[0.2em] text-muted-foreground backdrop-blur">
                         Esgotado
