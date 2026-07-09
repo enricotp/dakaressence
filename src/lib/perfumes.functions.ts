@@ -4,6 +4,7 @@ const DATABASE_ID = "38858811-29ca-83c5-b57d-0102c05505b1";
 const GATEWAY = "https://connector-gateway.lovable.dev/notion/v1";
 
 export type Genero = "feminino" | "masculino";
+export type Volume = "50ml" | "100ml";
 
 export type Perfume = {
   id: string;
@@ -13,6 +14,7 @@ export type Perfume = {
   imagem: string | null;
   descricao: string;
   genero: Genero;
+  volume: Volume;
   preco: number | null;
   custo: number | null;
   amount: number | null;
@@ -68,6 +70,7 @@ type NotionPage = {
       url?: string | null;
       rich_text?: Array<{ plain_text: string }>;
       number?: number | null;
+      select?: { name?: string } | null;
     }
   >;
 };
@@ -75,12 +78,10 @@ type NotionPage = {
 type NotionQueryResponse = { results: NotionPage[] };
 
 function extractImage(page: NotionPage): string | null {
-  // 1. Page cover
   if (page.cover) {
     if (page.cover.type === "external") return page.cover.external.url;
     if (page.cover.type === "file") return page.cover.file.url;
   }
-  // 2. Any Files & media property (first item), commonly named "Imagem" or "Image"
   for (const prop of Object.values(page.properties)) {
     if (prop.type === "files" && prop.files && prop.files.length > 0) {
       const f = prop.files[0];
@@ -88,7 +89,6 @@ function extractImage(page: NotionPage): string | null {
       if (f.type === "file") return f.file.url;
     }
   }
-  // 3. URL property named "Imagem" / "Image"
   for (const [name, prop] of Object.entries(page.properties)) {
     if (prop.type === "url" && prop.url && /imag/i.test(name)) return prop.url;
   }
@@ -130,6 +130,8 @@ export const getPerfumes = createServerFn({ method: "GET" }).handler(
       const preco = page.properties["Preço"]?.number ?? null;
       const custo = page.properties["Custo"]?.number ?? null;
       const amount = page.properties["Amount"]?.number ?? null;
+      const volumeRaw = page.properties["Volume"]?.select?.name ?? "50ml";
+      const volume: Volume = volumeRaw === "100ml" ? "100ml" : "50ml";
       return {
         id: page.id,
         nome,
@@ -138,6 +140,7 @@ export const getPerfumes = createServerFn({ method: "GET" }).handler(
         imagem: extractImage(page),
         descricao,
         genero: inferirGenero(nome),
+        volume,
         preco,
         custo,
         amount,
@@ -166,6 +169,7 @@ export const atualizarPerfume = createServerFn({ method: "POST" })
       preco?: number | null;
       custo?: number | null;
       amount?: number | null;
+      volume?: Volume;
       imagemUrl?: string | null;
     }) => data,
   )
@@ -181,6 +185,7 @@ export const atualizarPerfume = createServerFn({ method: "POST" })
     if (data.preco !== undefined) properties["Preço"] = { number: data.preco };
     if (data.custo !== undefined) properties["Custo"] = { number: data.custo };
     if (data.amount !== undefined) properties["Amount"] = { number: data.amount };
+    if (data.volume !== undefined) properties["Volume"] = { select: { name: data.volume } };
 
     const body: Record<string, unknown> = { properties };
     if (data.imagemUrl !== undefined && data.imagemUrl) {
@@ -199,20 +204,17 @@ export const atualizarPerfume = createServerFn({ method: "POST" })
     return { ok: true };
   });
 
-export const baixarEstoque = createServerFn({ method: "POST" })
-  .validator((data: { id: string; qtd: number }) => data)
-  .handler(async ({ data }) => {
-    const { requireAdmin } = await import("./admin.server");
-    await requireAdmin();
-    const getRes = await fetch(`${GATEWAY}/pages/${data.id}`, { headers: notionHeaders() });
-    if (!getRes.ok) return { ok: false };
-    const page = (await getRes.json()) as NotionPage;
-    const current = page.properties["Amount"]?.number ?? 0;
-    const next = Math.max(0, current - data.qtd);
-    const res = await fetch(`${GATEWAY}/pages/${data.id}`, {
-      method: "PATCH",
-      headers: notionHeaders(),
-      body: JSON.stringify({ properties: { Amount: { number: next } } }),
-    });
-    return { ok: res.ok, novoEstoque: next };
+// Baixa direta usada internamente pelo servidor (sem RPC / sem requireAdmin).
+export async function baixarEstoqueInterno(id: string, qtd: number) {
+  const getRes = await fetch(`${GATEWAY}/pages/${id}`, { headers: notionHeaders() });
+  if (!getRes.ok) return { ok: false as const };
+  const page = (await getRes.json()) as NotionPage;
+  const current = page.properties["Amount"]?.number ?? 0;
+  const next = Math.max(0, current - qtd);
+  const res = await fetch(`${GATEWAY}/pages/${id}`, {
+    method: "PATCH",
+    headers: notionHeaders(),
+    body: JSON.stringify({ properties: { Amount: { number: next } } }),
   });
+  return { ok: res.ok, novoEstoque: next };
+}
