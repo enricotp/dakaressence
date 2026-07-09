@@ -70,9 +70,9 @@ export function CartDrawer() {
       .map(([id, qtd]) => {
         const item = perfumeById.get(id);
         if (!item || item.p.preco == null) return null;
-        return { nome: item.p.nome, qtd, precoUnit: item.p.preco };
+        return { id, nome: item.p.nome, qtd, precoUnit: item.p.preco };
       })
-      .filter((x): x is { nome: string; qtd: number; precoUnit: number } => x !== null);
+      .filter((x): x is { id: string; nome: string; qtd: number; precoUnit: number } => x !== null);
   }, [cart, perfumeById]);
 
   const linhasItens = useMemo(() => {
