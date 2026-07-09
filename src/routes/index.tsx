@@ -291,9 +291,17 @@ function Index() {
                       loading="lazy"
                       className={`h-full w-full object-cover transition duration-700 group-hover:scale-105 ${indisponivel ? "opacity-40" : ""}`}
                     />
-                    <span className="absolute left-4 top-4 rounded-full bg-background/80 px-3 py-1 text-[10px] uppercase tracking-[0.2em] text-gold backdrop-blur">
+                    <span className="absolute left-4 top-4 flex items-center gap-1.5 rounded-full bg-background/80 px-3 py-1 text-[10px] uppercase tracking-[0.2em] text-gold backdrop-blur">
                       {codigo}
+                      <span className="rounded-full bg-gold/20 px-1.5 py-0.5 text-[9px] font-semibold text-gold">
+                        {p.volume}
+                      </span>
                     </span>
+                    {COLECAO_INFO[p.colecao].sobEncomenda && !indisponivel && (
+                      <span className="absolute right-4 top-4 rounded-full bg-amber-500/90 px-3 py-1 text-[10px] uppercase tracking-[0.2em] text-black backdrop-blur">
+                        Sob encomenda
+                      </span>
+                    )}
                     {indisponivel && (
                       <span className="absolute right-4 top-4 rounded-full bg-background/90 px-3 py-1 text-[10px] uppercase tracking-[0.2em] text-muted-foreground backdrop-blur">
                         Esgotado
