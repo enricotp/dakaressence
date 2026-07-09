@@ -104,12 +104,20 @@ function AdminPanel({ onLogout }: { onLogout: () => void }) {
   const [filtro, setFiltro] = useState<"todos" | "Pendente" | "Concluído" | "Cancelado">(
     "Pendente",
   );
+  const [busca, setBusca] = useState("");
+  const [dataFiltro, setDataFiltro] = useState("");
 
   const { data: pedidos = [], isLoading } = useQuery({
     queryKey: ["pedidos"],
     queryFn: () => listar(),
     refetchInterval: 15000,
   });
+
+  const buscaNorm = busca.trim().toLowerCase();
+  // dataFiltro vem como YYYY-MM-DD; pedido.data está em pt-BR (DD/MM/YYYY HH:mm:ss)
+  const dataFiltroBR = dataFiltro
+    ? dataFiltro.split("-").reverse().join("/")
+    : "";
 
   const filtrados = pedidos.filter((p: Pedido) =>
     filtro === "todos" ? true : p.status === filtro,
