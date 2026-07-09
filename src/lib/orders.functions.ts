@@ -37,6 +37,7 @@ export const criarPedido = createServerFn({ method: "POST" })
     (data: {
       cliente: string;
       itens: string;
+      itensDetalhados: Array<{ nome: string; qtd: number; precoUnit: number }>;
       total: number;
       pagamento: "Pix" | "Cartão";
       parcelas: number;
@@ -70,6 +71,31 @@ export const criarPedido = createServerFn({ method: "POST" })
       console.error(`Sheets append failed [${res.status}]: ${text}`);
       throw new Error(`Sheets append failed [${res.status}]: ${text}`);
     }
+
+    // Registra cada item vendido na 2ª planilha
+    if (data.itensDetalhados.length > 0) {
+      const itemRows = data.itensDetalhados.map((it) => [
+        dataFmt,
+        id,
+        it.nome,
+        it.qtd,
+        it.precoUnit.toFixed(2).replace(".", ","),
+        (it.precoUnit * it.qtd).toFixed(2).replace(".", ","),
+        data.cliente,
+      ]);
+      const itemsUrl = `${GATEWAY}/spreadsheets/${ITEMS_SHEET_ID}/values/${ITEMS_SHEET_NAME}!A:G:append?valueInputOption=USER_ENTERED`;
+      const itemsRes = await fetch(itemsUrl, {
+        method: "POST",
+        headers: sheetsHeaders(),
+        body: JSON.stringify({ values: itemRows }),
+      });
+      if (!itemsRes.ok) {
+        const text = await itemsRes.text();
+        console.error(`Sheets items append failed [${itemsRes.status}]: ${text}`);
+        // não falha o pedido se o log de itens falhar
+      }
+    }
+
     return { id };
   });
 
