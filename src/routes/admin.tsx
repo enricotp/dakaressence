@@ -663,6 +663,96 @@ function AnalyticsTab() {
         )}
       </div>
 
+      <div className="mt-6 grid gap-4 lg:grid-cols-2">
+        <div className="rounded-2xl border border-border/60 bg-card p-5">
+          <h3 className="mb-4 font-display text-lg">Vendas por coleção</h3>
+          {porColecao.every((c) => c.qtd === 0) ? (
+            <p className="py-8 text-center text-sm text-muted-foreground">Sem vendas.</p>
+          ) : (
+            <ul className="space-y-2">
+              {porColecao.map((c) => {
+                const max = Math.max(...porColecao.map((x) => x.qtd), 1);
+                const pct = Math.round((c.qtd / max) * 100);
+                return (
+                  <li key={c.colecao} className="relative overflow-hidden rounded-lg border border-border/40 px-3 py-2">
+                    <div aria-hidden className="absolute inset-y-0 left-0 -z-0 bg-gold/15" style={{ width: `${pct}%` }} />
+                    <div className="relative z-10 flex items-center justify-between gap-3 text-sm">
+                      <span className="font-medium">{c.colecao}</span>
+                      <span className="tabular-nums text-muted-foreground">
+                        <b className="text-gold">{c.qtd}</b> un · {formatBRL(c.receita)}
+                      </span>
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
+          )}
+        </div>
+
+        <div className="rounded-2xl border border-border/60 bg-card p-5">
+          <h3 className="mb-4 font-display text-lg">Vendas por volume</h3>
+          {porVolume.length === 0 ? (
+            <p className="py-8 text-center text-sm text-muted-foreground">Sem vendas.</p>
+          ) : (
+            <ul className="space-y-2">
+              {porVolume.map((v) => {
+                const max = porVolume[0].qtd || 1;
+                const pct = Math.round((v.qtd / max) * 100);
+                return (
+                  <li key={v.volume} className="relative overflow-hidden rounded-lg border border-border/40 px-3 py-2">
+                    <div aria-hidden className="absolute inset-y-0 left-0 -z-0 bg-emerald-500/15" style={{ width: `${pct}%` }} />
+                    <div className="relative z-10 flex items-center justify-between gap-3 text-sm">
+                      <span className="font-medium">{v.volume}</span>
+                      <span className="tabular-nums text-muted-foreground">
+                        <b className="text-emerald-400">{v.qtd}</b> un · {formatBRL(v.receita)}
+                      </span>
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
+          )}
+        </div>
+      </div>
+
+      <div className="mt-6 rounded-2xl border border-border/60 bg-card p-5">
+        <h3 className="mb-4 font-display text-lg">Feminino vs Masculino</h3>
+        {totalGenero === 0 ? (
+          <p className="py-8 text-center text-sm text-muted-foreground">Sem vendas no período.</p>
+        ) : (
+          <>
+            <div className="flex h-4 w-full overflow-hidden rounded-full bg-border/40">
+              <div
+                className="bg-pink-400"
+                style={{ width: `${(porGenero.feminino / totalGenero) * 100}%` }}
+                title={`Feminino: ${porGenero.feminino}`}
+              />
+              <div
+                className="bg-sky-400"
+                style={{ width: `${(porGenero.masculino / totalGenero) * 100}%` }}
+                title={`Masculino: ${porGenero.masculino}`}
+              />
+            </div>
+            <div className="mt-3 flex items-center justify-between text-sm">
+              <span className="inline-flex items-center gap-2">
+                <span className="h-3 w-3 rounded-full bg-pink-400" />
+                Feminino <b className="text-pink-300">{porGenero.feminino}</b>
+                <span className="text-muted-foreground">
+                  ({Math.round((porGenero.feminino / totalGenero) * 100)}%)
+                </span>
+              </span>
+              <span className="inline-flex items-center gap-2">
+                <span className="h-3 w-3 rounded-full bg-sky-400" />
+                Masculino <b className="text-sky-300">{porGenero.masculino}</b>
+                <span className="text-muted-foreground">
+                  ({Math.round((porGenero.masculino / totalGenero) * 100)}%)
+                </span>
+              </span>
+            </div>
+          </>
+        )}
+      </div>
+
     </>
   );
 }
