@@ -690,6 +690,7 @@ function EditForm({
     custo?: number | null;
     amount?: number | null;
     volume?: "50ml" | "100ml";
+    marca?: string | null;
     imagemUrl?: string | null;
   }) => Promise<void>;
   onCancel: () => void;
@@ -700,6 +701,7 @@ function EditForm({
   const [custo, setCusto] = useState(perfume.custo?.toString() ?? "");
   const [amount, setAmount] = useState(perfume.amount?.toString() ?? "");
   const [volume, setVolume] = useState<"50ml" | "100ml">(perfume.volume);
+  const [marca, setMarca] = useState(perfume.marca ?? "");
   const [imagemUrl, setImagemUrl] = useState("");
   const [salvando, setSalvando] = useState(false);
   const [erro, setErro] = useState<string | null>(null);
@@ -715,6 +717,7 @@ function EditForm({
         custo: custo === "" ? null : parseFloat(custo.replace(",", ".")),
         amount: amount === "" ? null : parseInt(amount, 10),
         volume,
+        marca: marca.trim() === "" ? null : marca.trim(),
       };
       if (imagemUrl.trim()) patch.imagemUrl = imagemUrl.trim();
       await onSave(patch);
