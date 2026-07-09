@@ -722,9 +722,15 @@ function PerfumesTab() {
                         Custo:{" "}
                         <b>{p.custo != null ? formatBRL(p.custo) : "—"}</b>
                       </span>
-                      <span>
-                        Estoque: <b>{p.amount ?? "—"}</b>
+                      <span className="inline-flex items-center gap-2">
+                        <span>
+                          Estoque: <b>{p.amount ?? "—"}</b>
+                        </span>
+                        {estoqueAlerta(p) !== "ok" && (
+                          <EstoqueBadge nivel={estoqueAlerta(p) as "low" | "out"} />
+                        )}
                       </span>
+
                     </div>
                     <button
                       onClick={() => setEditando(p.id)}
