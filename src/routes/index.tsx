@@ -36,7 +36,16 @@ function Index() {
   const { data: perfumes } = useSuspenseQuery(perfumesQuery);
   const { cart, cartCount, add, remove, open } = useCart();
   const [filtro, setFiltro] = useState<"todos" | "feminino" | "masculino">("todos");
-  const perfumesFiltrados = filtro === "todos" ? perfumes : perfumes.filter((p) => p.genero === filtro);
+  const [busca, setBusca] = useState("");
+  const [marca, setMarca] = useState<string>("todas");
+  const marcas = Array.from(new Set(perfumes.map((p) => p.marca).filter((m): m is string => !!m))).sort();
+  const buscaNorm = busca.trim().toLowerCase();
+  const perfumesFiltrados = perfumes.filter((p) => {
+    if (filtro !== "todos" && p.genero !== filtro) return false;
+    if (marca !== "todas" && p.marca !== marca) return false;
+    if (buscaNorm && !p.nome.toLowerCase().includes(buscaNorm)) return false;
+    return true;
+  });
 
   const secoes = ["home", "catalogo", "sobre", "faq"] as const;
   type Secao = (typeof secoes)[number];
@@ -178,6 +187,45 @@ function Index() {
               ))}
             </div>
           </div>
+
+          {/* Busca por nome + seletor de marca */}
+          <div className="mb-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+            <div className="relative w-full max-w-xs">
+              <svg
+                aria-hidden
+                className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <circle cx="11" cy="11" r="7" />
+                <path d="m21 21-4.3-4.3" />
+              </svg>
+              <input
+                type="search"
+                value={busca}
+                onChange={(e) => setBusca(e.target.value)}
+                placeholder="Buscar perfume por nome…"
+                className="w-full rounded-full border border-border/60 bg-card py-2 pl-9 pr-4 text-sm outline-none transition focus:border-gold"
+              />
+            </div>
+            <select
+              value={marca}
+              onChange={(e) => setMarca(e.target.value)}
+              className="w-full max-w-[200px] rounded-full border border-border/60 bg-card px-4 py-2 text-sm outline-none transition focus:border-gold"
+              aria-label="Filtrar por marca"
+            >
+              <option value="todas">Todas as marcas</option>
+              {marcas.map((m) => (
+                <option key={m} value={m}>{m}</option>
+              ))}
+            </select>
+          </div>
+
+
 
           <div className="grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-3">
             {perfumesFiltrados.map((p) => {

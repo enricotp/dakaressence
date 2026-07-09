@@ -15,6 +15,7 @@ export type Perfume = {
   descricao: string;
   genero: Genero;
   volume: Volume;
+  marca: string | null;
   preco: number | null;
   custo: number | null;
   amount: number | null;
@@ -132,6 +133,7 @@ export const getPerfumes = createServerFn({ method: "GET" }).handler(
       const amount = page.properties["Amount"]?.number ?? null;
       const volumeRaw = page.properties["Volume"]?.select?.name ?? "50ml";
       const volume: Volume = volumeRaw === "100ml" ? "100ml" : "50ml";
+      const marca = page.properties["Marca"]?.select?.name ?? null;
       return {
         id: page.id,
         nome,
@@ -141,6 +143,7 @@ export const getPerfumes = createServerFn({ method: "GET" }).handler(
         descricao,
         genero: inferirGenero(nome),
         volume,
+        marca,
         preco,
         custo,
         amount,
@@ -170,6 +173,7 @@ export const atualizarPerfume = createServerFn({ method: "POST" })
       custo?: number | null;
       amount?: number | null;
       volume?: Volume;
+      marca?: string | null;
       imagemUrl?: string | null;
     }) => data,
   )
@@ -186,6 +190,8 @@ export const atualizarPerfume = createServerFn({ method: "POST" })
     if (data.custo !== undefined) properties["Custo"] = { number: data.custo };
     if (data.amount !== undefined) properties["Amount"] = { number: data.amount };
     if (data.volume !== undefined) properties["Volume"] = { select: { name: data.volume } };
+    if (data.marca !== undefined)
+      properties["Marca"] = data.marca ? { select: { name: data.marca } } : { select: null };
 
     const body: Record<string, unknown> = { properties };
     if (data.imagemUrl !== undefined && data.imagemUrl) {
