@@ -178,7 +178,7 @@ export const listarItensVendidos = createServerFn({ method: "GET" }).handler(
     await requireAdmin();
 
     const [itensRes, pedidosRes, perfumesModule] = await Promise.all([
-      fetch(`${GATEWAY}/spreadsheets/${ITEMS_SHEET_ID}/values/${ITEMS_SHEET_NAME}!A2:H10000`, {
+      fetch(`${GATEWAY}/spreadsheets/${ITEMS_SHEET_ID}/values/${ITEMS_SHEET_NAME}!A2:J10000`, {
         headers: sheetsHeaders(),
       }),
       fetch(`${GATEWAY}/spreadsheets/${SHEET_ID}/values/${SHEET_NAME}!A2:H10000`, {
