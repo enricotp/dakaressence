@@ -25,7 +25,12 @@ import {
   getPerfumes,
   atualizarPerfume,
   criarPerfume,
+  COLECOES,
+  COLECAO_INFO,
   type Perfume,
+  type Colecao,
+  type Genero,
+  type Volume,
 } from "@/lib/perfumes.functions";
 import { formatBRL } from "@/lib/format";
 
