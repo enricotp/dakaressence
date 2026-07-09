@@ -210,13 +210,13 @@ export const atualizarPerfume = createServerFn({ method: "POST" })
     return { ok: true };
   });
 
-// Baixa direta usada internamente pelo servidor (sem RPC / sem requireAdmin).
-export async function baixarEstoqueInterno(id: string, qtd: number) {
+// Ajuste direto usado internamente pelo servidor. delta negativo = baixa, positivo = devolve.
+export async function ajustarEstoqueInterno(id: string, delta: number) {
   const getRes = await fetch(`${GATEWAY}/pages/${id}`, { headers: notionHeaders() });
   if (!getRes.ok) return { ok: false as const };
   const page = (await getRes.json()) as NotionPage;
   const current = page.properties["Amount"]?.number ?? 0;
-  const next = Math.max(0, current - qtd);
+  const next = Math.max(0, current + delta);
   const res = await fetch(`${GATEWAY}/pages/${id}`, {
     method: "PATCH",
     headers: notionHeaders(),
@@ -224,3 +224,9 @@ export async function baixarEstoqueInterno(id: string, qtd: number) {
   });
   return { ok: res.ok, novoEstoque: next };
 }
+
+// Compat: baixa (delta negativo).
+export async function baixarEstoqueInterno(id: string, qtd: number) {
+  return ajustarEstoqueInterno(id, -qtd);
+}
+
