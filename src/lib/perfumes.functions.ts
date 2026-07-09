@@ -4,7 +4,33 @@ const DATABASE_ID = "38858811-29ca-83c5-b57d-0102c05505b1";
 const GATEWAY = "https://connector-gateway.lovable.dev/notion/v1";
 
 export type Genero = "feminino" | "masculino";
-export type Volume = "50ml" | "100ml";
+export type Volume = "25ml" | "50ml" | "80ml" | "100ml";
+export type Colecao =
+  | "Signature"
+  | "Brand Collection"
+  | "Arabic Collection"
+  | "Dream Brand Collection";
+
+export const COLECOES: Colecao[] = [
+  "Signature",
+  "Brand Collection",
+  "Arabic Collection",
+  "Dream Brand Collection",
+];
+
+export const COLECAO_INFO: Record<
+  Colecao,
+  { volumes: Volume[]; defaultVolume: Volume; sobEncomenda: boolean }
+> = {
+  Signature: { volumes: ["50ml", "100ml"], defaultVolume: "50ml", sobEncomenda: false },
+  "Brand Collection": { volumes: ["25ml"], defaultVolume: "25ml", sobEncomenda: true },
+  "Arabic Collection": { volumes: ["25ml"], defaultVolume: "25ml", sobEncomenda: true },
+  "Dream Brand Collection": {
+    volumes: ["80ml", "100ml"],
+    defaultVolume: "100ml",
+    sobEncomenda: true,
+  },
+};
 
 export type Perfume = {
   id: string;
@@ -19,6 +45,7 @@ export type Perfume = {
   preco: number | null;
   custo: number | null;
   amount: number | null;
+  colecao: Colecao;
 };
 
 const GENERO_MAP: Record<string, Genero> = {
