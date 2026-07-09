@@ -719,6 +719,24 @@ function EditForm({
           />
         </Field>
       </div>
+      <Field label="Volume">
+        <div className="flex gap-2">
+          {(["50ml", "100ml"] as const).map((v) => (
+            <button
+              key={v}
+              type="button"
+              onClick={() => setVolume(v)}
+              className={`rounded-full px-4 py-1.5 text-xs uppercase tracking-wider transition ${
+                volume === v
+                  ? "bg-gold text-primary-foreground"
+                  : "border border-border/60 text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              {v}
+            </button>
+          ))}
+        </div>
+      </Field>
       <Field label="Nova imagem (URL, opcional)">
         <input
           value={imagemUrl}
