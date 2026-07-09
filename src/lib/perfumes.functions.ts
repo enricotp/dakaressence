@@ -230,3 +230,52 @@ export async function baixarEstoqueInterno(id: string, qtd: number) {
   return ajustarEstoqueInterno(id, -qtd);
 }
 
+export const criarPerfume = createServerFn({ method: "POST" })
+  .validator(
+    (data: {
+      nome: string;
+      descricao?: string;
+      preco?: number | null;
+      custo?: number | null;
+      amount?: number | null;
+      volume: Volume;
+      marca?: string | null;
+      imagemUrl?: string | null;
+    }) => data,
+  )
+  .handler(async ({ data }) => {
+    const { requireAdmin } = await import("./admin.server");
+    await requireAdmin();
+
+    const properties: Record<string, unknown> = {
+      "Product Name": { title: [{ text: { content: data.nome } }] },
+      Volume: { select: { name: data.volume } },
+    };
+    if (data.descricao)
+      properties["Descrição"] = { rich_text: [{ text: { content: data.descricao } }] };
+    if (data.preco != null) properties["Preço"] = { number: data.preco };
+    if (data.custo != null) properties["Custo"] = { number: data.custo };
+    if (data.amount != null) properties["Amount"] = { number: data.amount };
+    if (data.marca) properties["Marca"] = { select: { name: data.marca } };
+
+    const body: Record<string, unknown> = {
+      parent: { database_id: DATABASE_ID },
+      properties,
+    };
+    if (data.imagemUrl) {
+      body.cover = { type: "external", external: { url: data.imagemUrl } };
+    }
+
+    const res = await fetch(`${GATEWAY}/pages`, {
+      method: "POST",
+      headers: notionHeaders(),
+      body: JSON.stringify(body),
+    });
+    if (!res.ok) {
+      const text = await res.text();
+      throw new Error(`Notion create failed [${res.status}]: ${text}`);
+    }
+    const created = (await res.json()) as { id: string };
+    return { ok: true, id: created.id };
+}
+
