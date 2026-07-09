@@ -381,36 +381,49 @@ function AnalyticsTab() {
     return m;
   }, [perfumes]);
 
+  // Extrai DD/MM/YYYY do campo de data, robusto a vírgulas e NBSP do toLocaleString
+  function parseData(s: string): Date | null {
+    const m = s.match(/(\d{2})\/(\d{2})\/(\d{4})/);
+    if (!m) return null;
+    return new Date(`${m[3]}-${m[2]}-${m[1]}T00:00:00`);
+  }
+
   // filtra últimos N dias, ignora cancelados
   const filtrados = useMemo(() => {
     const cutoff = new Date();
     cutoff.setDate(cutoff.getDate() - periodo);
+    cutoff.setHours(0, 0, 0, 0);
     return itens.filter((it: ItemVendido) => {
       if (it.statusPedido === "Cancelado") return false;
-      const [dia, mes, resto] = it.data.split("/");
-      if (!dia || !mes || !resto) return true;
-      const ano = resto.split(" ")[0] ?? "";
-      const dt = new Date(`${ano}-${mes}-${dia}`);
+      const dt = parseData(it.data);
+      if (!dt) return true;
       return dt >= cutoff;
     });
   }, [itens, periodo]);
 
   const porDia = useMemo(() => {
-    const m = new Map<string, { data: string; vendas: number; lucro: number }>();
+    const m = new Map<string, { data: string; vendas: number; lucro: number; sortKey: number }>();
     filtrados.forEach((it) => {
-      const dia = (it.data.split(" ")[0] ?? it.data).slice(0, 5); // DD/MM
-      const cur = m.get(dia) ?? { data: dia, vendas: 0, lucro: 0 };
+      const dt = parseData(it.data);
+      const dia = dt
+        ? `${String(dt.getDate()).padStart(2, "0")}/${String(dt.getMonth() + 1).padStart(2, "0")}`
+        : (it.data.match(/(\d{2}\/\d{2})/)?.[1] ?? it.data);
+      const cur = m.get(dia) ?? {
+        data: dia,
+        vendas: 0,
+        lucro: 0,
+        sortKey: dt ? dt.getTime() : 0,
+      };
       cur.vendas += it.subtotal;
       const custo = custoPorNome.get(it.perfume) ?? 0;
       cur.lucro += (it.precoUnit - custo) * it.qtd;
       m.set(dia, cur);
     });
-    return Array.from(m.values()).sort((a, b) => {
-      const [da, ma] = a.data.split("/").map(Number);
-      const [db, mb] = b.data.split("/").map(Number);
-      return ma - mb || da - db;
-    });
+    return Array.from(m.values())
+      .sort((a, b) => a.sortKey - b.sortKey)
+      .map(({ sortKey: _s, ...rest }) => rest);
   }, [filtrados, custoPorNome]);
+
 
   const porPerfume = useMemo(() => {
     const m = new Map<string, { nome: string; qtd: number; receita: number }>();
