@@ -119,9 +119,12 @@ function AdminPanel({ onLogout }: { onLogout: () => void }) {
     ? dataFiltro.split("-").reverse().join("/")
     : "";
 
-  const filtrados = pedidos.filter((p: Pedido) =>
-    filtro === "todos" ? true : p.status === filtro,
-  );
+  const filtrados = pedidos.filter((p: Pedido) => {
+    if (filtro !== "todos" && p.status !== filtro) return false;
+    if (buscaNorm && !p.id.toLowerCase().includes(buscaNorm) && !p.cliente.toLowerCase().includes(buscaNorm)) return false;
+    if (dataFiltroBR && !p.data.startsWith(dataFiltroBR)) return false;
+    return true;
+  });
 
   async function mudarStatus(p: Pedido, status: "Concluído" | "Cancelado" | "Pendente") {
     await atualizar({ data: { row: p.row, status } });
