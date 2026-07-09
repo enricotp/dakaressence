@@ -15,6 +15,7 @@ export type Perfume = {
   descricao: string;
   genero: Genero;
   volume: Volume;
+  marca: string | null;
   preco: number | null;
   custo: number | null;
   amount: number | null;
