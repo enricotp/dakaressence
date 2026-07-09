@@ -196,6 +196,36 @@ function Index() {
             </div>
           </div>
 
+          {/* Coleções — Signature vem ativa; as demais aparecem ao clicar */}
+          <div className="mb-8 flex flex-wrap justify-center gap-2">
+            {COLECOES.map((c) => {
+              const on = colecoesAtivas[c];
+              const encomenda = COLECAO_INFO[c].sobEncomenda;
+              return (
+                <button
+                  key={c}
+                  type="button"
+                  onClick={() =>
+                    setColecoesAtivas((s) => ({ ...s, [c]: !s[c] }))
+                  }
+                  className={`inline-flex items-center gap-2 rounded-full border px-4 py-1.5 text-xs uppercase tracking-wider transition ${
+                    on
+                      ? "border-gold bg-gold text-primary-foreground"
+                      : "border-border/60 bg-card text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  {c}
+                  {encomenda && (
+                    <span className={`rounded-full px-1.5 py-0.5 text-[9px] normal-case tracking-normal ${on ? "bg-primary-foreground/20 text-primary-foreground" : "bg-amber-500/15 text-amber-400"}`}>
+                      encomenda
+                    </span>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+
+
           {/* Busca por nome + seletor de marca */}
           <div className="mb-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
             <div className="relative w-full max-w-xs">
