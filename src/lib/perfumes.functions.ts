@@ -14,6 +14,8 @@ export type Perfume = {
   descricao: string;
   genero: Genero;
   preco: number | null;
+  custo: number | null;
+  amount: number | null;
 };
 
 const GENERO_MAP: Record<string, Genero> = {
