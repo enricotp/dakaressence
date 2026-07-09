@@ -38,9 +38,17 @@ function Index() {
   const [filtro, setFiltro] = useState<"todos" | "feminino" | "masculino">("todos");
   const [busca, setBusca] = useState("");
   const [marca, setMarca] = useState<string>("todas");
+  // Coleções extras (Brand/Arabic/Dream Brand) só aparecem quando o usuário liga o chip.
+  const [colecoesAtivas, setColecoesAtivas] = useState<Record<Colecao, boolean>>({
+    Signature: true,
+    "Brand Collection": false,
+    "Arabic Collection": false,
+    "Dream Brand Collection": false,
+  });
   const marcas = Array.from(new Set(perfumes.map((p) => p.marca).filter((m): m is string => !!m))).sort();
   const buscaNorm = busca.trim().toLowerCase();
   const perfumesFiltrados = perfumes.filter((p) => {
+    if (!colecoesAtivas[p.colecao]) return false;
     if (filtro !== "todos" && p.genero !== filtro) return false;
     if (marca !== "todas" && p.marca !== marca) return false;
     if (buscaNorm && !p.nome.toLowerCase().includes(buscaNorm)) return false;
