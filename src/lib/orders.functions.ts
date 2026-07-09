@@ -73,17 +73,33 @@ export const criarPedido = createServerFn({ method: "POST" })
     }
 
     if (data.itensDetalhados.length > 0) {
-      const itemRows = data.itensDetalhados.map((it) => [
-        dataFmt,
-        id,
-        it.nome,
-        it.qtd,
-        it.precoUnit.toFixed(2).replace(".", ","),
-        (it.precoUnit * it.qtd).toFixed(2).replace(".", ","),
-        data.cliente,
-        it.id,
-      ]);
-      const itemsUrl = `${GATEWAY}/spreadsheets/${ITEMS_SHEET_ID}/values/${ITEMS_SHEET_NAME}!A:H:append?valueInputOption=USER_ENTERED`;
+      // Enriquecer com coleção/volume via Notion.
+      let porId = new Map<string, { colecao: string; volume: string }>();
+      try {
+        const { getPerfumes } = await import("./perfumes.functions");
+        const perfumes = await getPerfumes();
+        porId = new Map(
+          perfumes.map((p) => [p.id, { colecao: p.colecao, volume: p.volume }]),
+        );
+      } catch (err) {
+        console.error("Falha ao enriquecer itens com coleção/volume:", err);
+      }
+      const itemRows = data.itensDetalhados.map((it) => {
+        const extra = porId.get(it.id) ?? { colecao: "", volume: "" };
+        return [
+          dataFmt,
+          id,
+          it.nome,
+          it.qtd,
+          it.precoUnit.toFixed(2).replace(".", ","),
+          (it.precoUnit * it.qtd).toFixed(2).replace(".", ","),
+          data.cliente,
+          it.id,
+          extra.colecao,
+          extra.volume,
+        ];
+      });
+      const itemsUrl = `${GATEWAY}/spreadsheets/${ITEMS_SHEET_ID}/values/${ITEMS_SHEET_NAME}!A:J:append?valueInputOption=USER_ENTERED`;
       const itemsRes = await fetch(itemsUrl, {
         method: "POST",
         headers: sheetsHeaders(),
