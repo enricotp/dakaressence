@@ -707,9 +707,61 @@ function PerfumesTab() {
           ))}
         </select>
       </div>
-      <h2 className="mb-4 font-display text-lg">
-        Perfumes {volTab} ({filtrados.length})
-      </h2>
+      <div className="mb-4 flex items-center justify-between gap-3">
+        <h2 className="font-display text-lg">
+          Perfumes {volTab} ({filtrados.length})
+        </h2>
+        <button
+          onClick={() => setCriando((v) => !v)}
+          className="inline-flex items-center gap-1.5 rounded-full bg-gold px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-primary-foreground transition hover:brightness-110"
+        >
+          <span className="text-base leading-none">+</span>
+          {criando ? "Fechar" : "Novo perfume"}
+        </button>
+      </div>
+      {criando && (
+        <div className="mb-4 rounded-2xl border border-gold/40 bg-card p-4">
+          <p className="mb-3 text-xs uppercase tracking-[0.2em] text-gold">
+            Adicionar novo perfume
+          </p>
+          <EditForm
+            perfume={{
+              id: "",
+              nome: "",
+              emEstoque: false,
+              status: "",
+              imagem: null,
+              descricao: "",
+              genero: "masculino",
+              volume: volTab,
+              marca: null,
+              preco: null,
+              custo: null,
+              amount: null,
+            }}
+            onCancel={() => setCriando(false)}
+            onSave={async (patch) => {
+              if (!patch.nome || !patch.nome.trim()) {
+                throw new Error("Nome é obrigatório");
+              }
+              await criar({
+                data: {
+                  nome: patch.nome.trim(),
+                  descricao: patch.descricao,
+                  preco: patch.preco ?? null,
+                  custo: patch.custo ?? null,
+                  amount: patch.amount ?? null,
+                  volume: patch.volume ?? volTab,
+                  marca: patch.marca ?? null,
+                  imagemUrl: patch.imagemUrl ?? null,
+                },
+              });
+              await qc.invalidateQueries({ queryKey: ["perfumes"] });
+              setCriando(false);
+            }}
+          />
+        </div>
+      )}
       {isLoading ? (
         <p className="text-sm text-muted-foreground">Carregando…</p>
       ) : (
