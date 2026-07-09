@@ -24,6 +24,7 @@ import {
 import {
   getPerfumes,
   atualizarPerfume,
+  criarPerfume,
   type Perfume,
 } from "@/lib/perfumes.functions";
 import { formatBRL } from "@/lib/format";
