@@ -104,6 +104,8 @@ function AdminPanel({ onLogout }: { onLogout: () => void }) {
   const [filtro, setFiltro] = useState<"todos" | "Pendente" | "Concluído" | "Cancelado">(
     "Pendente",
   );
+  const [busca, setBusca] = useState("");
+  const [dataFiltro, setDataFiltro] = useState("");
 
   const { data: pedidos = [], isLoading } = useQuery({
     queryKey: ["pedidos"],
@@ -111,9 +113,18 @@ function AdminPanel({ onLogout }: { onLogout: () => void }) {
     refetchInterval: 15000,
   });
 
-  const filtrados = pedidos.filter((p: Pedido) =>
-    filtro === "todos" ? true : p.status === filtro,
-  );
+  const buscaNorm = busca.trim().toLowerCase();
+  // dataFiltro vem como YYYY-MM-DD; pedido.data está em pt-BR (DD/MM/YYYY HH:mm:ss)
+  const dataFiltroBR = dataFiltro
+    ? dataFiltro.split("-").reverse().join("/")
+    : "";
+
+  const filtrados = pedidos.filter((p: Pedido) => {
+    if (filtro !== "todos" && p.status !== filtro) return false;
+    if (buscaNorm && !p.id.toLowerCase().includes(buscaNorm) && !p.cliente.toLowerCase().includes(buscaNorm)) return false;
+    if (dataFiltroBR && !p.data.startsWith(dataFiltroBR)) return false;
+    return true;
+  });
 
   async function mudarStatus(p: Pedido, status: "Concluído" | "Cancelado" | "Pendente") {
     await atualizar({ data: { row: p.row, status } });
@@ -164,6 +175,30 @@ function AdminPanel({ onLogout }: { onLogout: () => void }) {
               {f === "todos" ? "Todos" : f} {filtro === f && `(${filtrados.length})`}
             </button>
           ))}
+        </div>
+
+        <div className="mb-6 flex flex-wrap items-center gap-3">
+          <input
+            type="text"
+            value={busca}
+            onChange={(e) => setBusca(e.target.value)}
+            placeholder="Buscar por nº do pedido ou cliente"
+            className="min-w-64 flex-1 rounded-lg border border-border/60 bg-background px-4 py-2 text-sm focus:border-gold focus:outline-none"
+          />
+          <input
+            type="date"
+            value={dataFiltro}
+            onChange={(e) => setDataFiltro(e.target.value)}
+            className="rounded-lg border border-border/60 bg-background px-4 py-2 text-sm focus:border-gold focus:outline-none"
+          />
+          {(busca || dataFiltro) && (
+            <button
+              onClick={() => { setBusca(""); setDataFiltro(""); }}
+              className="text-xs uppercase tracking-[0.2em] text-muted-foreground hover:text-foreground"
+            >
+              Limpar
+            </button>
+          )}
         </div>
 
         {isLoading ? (
