@@ -3,6 +3,8 @@ import { createServerFn } from "@tanstack/react-start";
 
 const SHEET_ID = "1YDXLWaevUB9LnrQGImIV9iGBT9ayCbZYdkzaWkXZrWw";
 const SHEET_NAME = "Pedidos";
+const ITEMS_SHEET_ID = "1jDoMknc5tZ_XQbbRlo4luPGU4c6WrC5Jn5E6p8--FbM";
+const ITEMS_SHEET_NAME = "Página1";
 const GATEWAY = "https://connector-gateway.lovable.dev/google_sheets/v4";
 
 function sheetsHeaders() {
