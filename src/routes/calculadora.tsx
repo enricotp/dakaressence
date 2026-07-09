@@ -84,6 +84,8 @@ function parseTexto(texto: string, perfumes: Perfume[]): LinhaCalculada[] {
 function Calculadora() {
   const { data: perfumes } = useSuspenseQuery(perfumesQuery);
   const [texto, setTexto] = useState("");
+  const [pagamento, setPagamento] = useState<"Pix" | "Cartão">("Pix");
+  const [parcelas, setParcelas] = useState(1);
 
   const linhas = useMemo(() => parseTexto(texto, perfumes), [texto, perfumes]);
   const total = linhas.reduce((acc, l) => acc + (l.subtotal ?? 0), 0);
@@ -165,6 +167,74 @@ function Calculadora() {
                   Alguns itens ficaram sem preço — confira manualmente.
                 </p>
               )}
+
+              <div className="mt-6 space-y-4 border-t border-border/60 pt-6">
+                <div>
+                  <label className="text-xs uppercase tracking-wider text-muted-foreground">
+                    Forma de pagamento
+                  </label>
+                  <div className="mt-2 grid grid-cols-2 gap-2">
+                    {(["Pix", "Cartão"] as const).map((opt) => (
+                      <button
+                        key={opt}
+                        type="button"
+                        onClick={() => setPagamento(opt)}
+                        className={`rounded-lg border px-4 py-3 text-sm transition ${
+                          pagamento === opt
+                            ? "border-gold bg-gold/10 text-gold"
+                            : "border-border/60 text-muted-foreground hover:text-foreground"
+                        }`}
+                      >
+                        {opt === "Pix" ? "Pix à vista" : "Cartão parcelado"}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {pagamento === "Cartão" && total > 0 && (
+                  <div>
+                    <label className="text-xs uppercase tracking-wider text-muted-foreground">
+                      Parcelas
+                    </label>
+                    <div className="mt-2 grid grid-cols-3 gap-2 sm:grid-cols-4">
+                      {Array.from({ length: 12 }, (_, i) => i + 1).map((n) => (
+                        <button
+                          key={n}
+                          type="button"
+                          onClick={() => setParcelas(n)}
+                          className={`rounded-lg border px-2 py-2 text-xs transition ${
+                            parcelas === n
+                              ? "border-gold bg-gold/10 text-gold"
+                              : "border-border/60 text-muted-foreground hover:text-foreground"
+                          }`}
+                        >
+                          <div className="font-semibold">{n}x</div>
+                          <div className="text-[10px]">{formatBRL(total / n)}</div>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {total > 0 && (
+                  <div className="rounded-lg border border-gold/40 bg-gold/5 p-4 text-sm">
+                    {pagamento === "Pix" ? (
+                      <p>
+                        <strong className="text-gold">Pix à vista:</strong>{" "}
+                        {formatBRL(total)}
+                      </p>
+                    ) : (
+                      <p>
+                        <strong className="text-gold">
+                          Cartão em {parcelas}x:
+                        </strong>{" "}
+                        {parcelas}× de {formatBRL(total / parcelas)} ={" "}
+                        {formatBRL(total)}
+                      </p>
+                    )}
+                  </div>
+                )}
+              </div>
             </div>
           )}
         </div>
