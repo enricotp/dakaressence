@@ -31,7 +31,7 @@ export type Pedido = {
 };
 
 export const criarPedido = createServerFn({ method: "POST" })
-  .inputValidator(
+  .validator(
     (data: {
       cliente: string;
       itens: string;
@@ -73,7 +73,7 @@ export const criarPedido = createServerFn({ method: "POST" })
 
 export const listarPedidos = createServerFn({ method: "GET" }).handler(
   async (): Promise<Pedido[]> => {
-    await requireAdmin();
+    const { requireAdmin } = await import("./admin.server"); await requireAdmin();
     const url = `${GATEWAY}/spreadsheets/${SHEET_ID}/values/${SHEET_NAME}!A2:H10000`;
     const res = await fetch(url, { headers: sheetsHeaders() });
     if (!res.ok) {
@@ -103,11 +103,11 @@ export const listarPedidos = createServerFn({ method: "GET" }).handler(
 );
 
 export const atualizarStatusPedido = createServerFn({ method: "POST" })
-  .inputValidator(
+  .validator(
     (data: { row: number; status: "Concluído" | "Cancelado" | "Pendente" }) => data,
   )
   .handler(async ({ data }) => {
-    await requireAdmin();
+    const { requireAdmin } = await import("./admin.server"); await requireAdmin();
     const url = `${GATEWAY}/spreadsheets/${SHEET_ID}/values/${SHEET_NAME}!H${data.row}?valueInputOption=USER_ENTERED`;
     const res = await fetch(url, {
       method: "PUT",
