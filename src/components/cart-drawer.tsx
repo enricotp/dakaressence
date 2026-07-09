@@ -65,6 +65,16 @@ export function CartDrawer() {
     }, 0);
   }, [cart, perfumeById]);
 
+  const itensDetalhados = useMemo(() => {
+    return Object.entries(cart)
+      .map(([id, qtd]) => {
+        const item = perfumeById.get(id);
+        if (!item || item.p.preco == null) return null;
+        return { nome: item.p.nome, qtd, precoUnit: item.p.preco };
+      })
+      .filter((x): x is { nome: string; qtd: number; precoUnit: number } => x !== null);
+  }, [cart, perfumeById]);
+
   const linhasItens = useMemo(() => {
     return Object.entries(cart)
       .map(([id, qtd]) => {
@@ -94,6 +104,7 @@ export function CartDrawer() {
         data: {
           cliente: nome,
           itens: linhasItens.join("\n"),
+          itensDetalhados,
           total,
           pagamento,
           parcelas: pagamento === "Cartão" ? parcelas : 1,
