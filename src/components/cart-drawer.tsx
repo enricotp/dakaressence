@@ -104,6 +104,7 @@ export function CartDrawer() {
         data: {
           cliente: nome,
           itens: linhasItens.join("\n"),
+          itensDetalhados,
           total,
           pagamento,
           parcelas: pagamento === "Cartão" ? parcelas : 1,
