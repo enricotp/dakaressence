@@ -536,14 +536,25 @@ function PerfumesTab() {
 
   const [editando, setEditando] = useState<string | null>(null);
   const [volTab, setVolTab] = useState<"50ml" | "100ml">("50ml");
+  const [busca, setBusca] = useState("");
+  const [marca, setMarca] = useState<string>("todas");
 
-  const filtrados = perfumes.filter((p) => p.volume === volTab);
+  const marcas = Array.from(
+    new Set(perfumes.map((p) => p.marca).filter((m): m is string => !!m)),
+  ).sort();
+  const buscaNorm = busca.trim().toLowerCase();
+  const filtrados = perfumes.filter((p) => {
+    if (p.volume !== volTab) return false;
+    if (marca !== "todas" && p.marca !== marca) return false;
+    if (buscaNorm && !p.nome.toLowerCase().includes(buscaNorm)) return false;
+    return true;
+  });
   const count50 = perfumes.filter((p) => p.volume === "50ml").length;
   const count100 = perfumes.filter((p) => p.volume === "100ml").length;
 
   return (
     <>
-      <div className="mb-4 flex items-center gap-2">
+      <div className="mb-4 flex flex-wrap items-center gap-2">
         {(["50ml", "100ml"] as const).map((v) => (
           <button
             key={v}
@@ -557,6 +568,39 @@ function PerfumesTab() {
             {v} ({v === "50ml" ? count50 : count100})
           </button>
         ))}
+        <div className="relative ml-auto">
+          <svg
+            aria-hidden
+            className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <circle cx="11" cy="11" r="7" />
+            <path d="m21 21-4.3-4.3" />
+          </svg>
+          <input
+            type="search"
+            value={busca}
+            onChange={(e) => setBusca(e.target.value)}
+            placeholder="Buscar por nome…"
+            className="w-48 rounded-full border border-border/60 bg-background py-1.5 pl-8 pr-3 text-xs outline-none focus:border-gold"
+          />
+        </div>
+        <select
+          value={marca}
+          onChange={(e) => setMarca(e.target.value)}
+          className="rounded-full border border-border/60 bg-background px-3 py-1.5 text-xs outline-none focus:border-gold"
+          aria-label="Filtrar por marca"
+        >
+          <option value="todas">Todas as marcas</option>
+          {marcas.map((m) => (
+            <option key={m} value={m}>{m}</option>
+          ))}
+        </select>
       </div>
       <h2 className="mb-4 font-display text-lg">
         Perfumes {volTab} ({filtrados.length})
