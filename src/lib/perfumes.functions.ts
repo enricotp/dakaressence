@@ -216,6 +216,8 @@ export const atualizarPerfume = createServerFn({ method: "POST" })
       volume?: Volume;
       marca?: string | null;
       imagemUrl?: string | null;
+      colecao?: Colecao;
+      genero?: Genero;
     }) => data,
   )
   .handler(async ({ data }) => {
@@ -233,6 +235,12 @@ export const atualizarPerfume = createServerFn({ method: "POST" })
     if (data.volume !== undefined) properties["Volume"] = { select: { name: data.volume } };
     if (data.marca !== undefined)
       properties["Marca"] = data.marca ? { select: { name: data.marca } } : { select: null };
+    if (data.colecao !== undefined)
+      properties["Coleção"] = { select: { name: data.colecao } };
+    if (data.genero !== undefined)
+      properties["Gênero"] = {
+        select: { name: data.genero === "feminino" ? "Feminino" : "Masculino" },
+      };
 
     const body: Record<string, unknown> = { properties };
     if (data.imagemUrl !== undefined && data.imagemUrl) {
