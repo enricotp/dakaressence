@@ -3,7 +3,7 @@ import { createServerFn } from "@tanstack/react-start";
 const DATABASE_ID = "38858811-29ca-83c5-b57d-0102c05505b1";
 const GATEWAY = "https://connector-gateway.lovable.dev/notion/v1";
 
-export type Genero = "feminino" | "masculino";
+export type Genero = "feminino" | "masculino" | "unissex";
 export type Volume = "25ml" | "50ml" | "80ml" | "100ml";
 export type Colecao =
   | "Signature"
