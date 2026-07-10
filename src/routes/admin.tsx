@@ -1051,12 +1051,44 @@ function PerfumesTab() {
                         )}
                       </span>
                     </div>
-                    <button
-                      onClick={() => setEditando(p.id)}
-                      className="mt-3 rounded-full border border-border/60 px-3 py-1 text-xs uppercase tracking-wider hover:border-gold hover:text-gold"
-                    >
-                      Editar
-                    </button>
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      <button
+                        onClick={() => setEditando(p.id)}
+                        className="rounded-full border border-border/60 px-3 py-1 text-xs uppercase tracking-wider hover:border-gold hover:text-gold"
+                      >
+                        Editar
+                      </button>
+                      <button
+                        onClick={async () => {
+                          await criar({
+                            data: {
+                              nome: `${p.nome} (cópia)`,
+                              descricao: p.descricao,
+                              preco: p.preco,
+                              custo: p.custo,
+                              amount: 0,
+                              volume: p.volume,
+                              marca: p.marca,
+                              imagemUrl: p.imagem,
+                              colecao: p.colecao,
+                              genero: p.genero,
+                              lowThreshold: p.lowThreshold,
+                              oosThreshold: p.oosThreshold,
+                              sobEncomenda: p.sobEncomenda,
+                              prontaEntrega: p.prontaEntrega,
+                              notasTopo: p.notasTopo,
+                              notasCoracao: p.notasCoracao,
+                              notasFundo: p.notasFundo,
+                            },
+                          });
+                          await qc.invalidateQueries({ queryKey: ["perfumes"] });
+                        }}
+                        className="rounded-full border border-border/60 px-3 py-1 text-xs uppercase tracking-wider text-muted-foreground hover:border-gold hover:text-gold"
+                        title="Cria um novo perfume com os mesmos dados (estoque zerado)"
+                      >
+                        Duplicar
+                      </button>
+                    </div>
                   </div>
                 </div>
               )}
