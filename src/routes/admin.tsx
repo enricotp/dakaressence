@@ -528,7 +528,7 @@ function AnalyticsTab() {
   }, [filtrados, perfumePorNome]);
 
   const porGenero = useMemo(() => {
-    const acc = { feminino: 0, masculino: 0 };
+    const acc: Record<Genero, number> = { feminino: 0, masculino: 0, unissex: 0 };
     filtrados.forEach((it) => {
       const p = perfumePorNome.get(it.perfume.toLowerCase());
       if (!p) return;
@@ -536,7 +536,7 @@ function AnalyticsTab() {
     });
     return acc;
   }, [filtrados, perfumePorNome]);
-  const totalGenero = porGenero.feminino + porGenero.masculino;
+  const totalGenero = porGenero.feminino + porGenero.masculino + porGenero.unissex;
 
 
   const totalVendas = porDia.reduce((a, b) => a + b.vendas, 0);
