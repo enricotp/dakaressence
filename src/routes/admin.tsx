@@ -937,6 +937,9 @@ function PerfumesTab() {
               custo: null,
               amount: null,
               colecao: colTab,
+              lowThreshold: null,
+              oosThreshold: null,
+              checkbox: false,
             }}
             onCancel={() => setCriando(false)}
             onSave={async (patch) => {
