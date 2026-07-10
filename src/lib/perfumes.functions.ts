@@ -248,6 +248,9 @@ export const atualizarPerfume = createServerFn({ method: "POST" })
       oosThreshold?: number | null;
       sobEncomenda?: boolean;
       prontaEntrega?: boolean;
+      notasTopo?: string;
+      notasCoracao?: string;
+      notasFundo?: string;
     }) => data,
   )
   .handler(async ({ data }) => {
@@ -275,6 +278,12 @@ export const atualizarPerfume = createServerFn({ method: "POST" })
       properties["OoS threshold"] = { number: data.oosThreshold };
     if (data.sobEncomenda !== undefined) properties["Sob encomenda"] = { checkbox: data.sobEncomenda };
     if (data.prontaEntrega !== undefined) properties["Pronta entrega"] = { checkbox: data.prontaEntrega };
+    if (data.notasTopo !== undefined)
+      properties["Notas de topo"] = { rich_text: [{ text: { content: data.notasTopo } }] };
+    if (data.notasCoracao !== undefined)
+      properties["Notas de coração"] = { rich_text: [{ text: { content: data.notasCoracao } }] };
+    if (data.notasFundo !== undefined)
+      properties["Notas de fundo"] = { rich_text: [{ text: { content: data.notasFundo } }] };
 
     const body: Record<string, unknown> = { properties };
     if (data.imagemUrl !== undefined && data.imagemUrl) {
