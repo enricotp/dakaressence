@@ -46,6 +46,9 @@ export type Perfume = {
   custo: number | null;
   amount: number | null;
   colecao: Colecao;
+  lowThreshold: number | null;
+  oosThreshold: number | null;
+  checkbox: boolean;
 };
 
 const GENERO_MAP: Record<string, Genero> = {
