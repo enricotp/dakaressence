@@ -759,6 +759,42 @@ function AnalyticsTab() {
         )}
       </div>
 
+      <div className="mt-6 rounded-2xl border border-border/60 bg-card p-5">
+        <h3 className="mb-4 font-display text-lg">Pronta entrega vs Sob encomenda</h3>
+        {totalEntrega === 0 ? (
+          <p className="py-8 text-center text-sm text-muted-foreground">Sem vendas no período.</p>
+        ) : (
+          <ul className="space-y-2">
+            {(
+              [
+                ["pronta", "Pronta entrega", "#10b981"],
+                ["encomenda", "Sob encomenda", "#f59e0b"],
+                ["outros", "Sem marcação", "#94a3b8"],
+              ] as const
+            ).map(([k, label, color]) => {
+              const v = porEntrega[k];
+              const pct = Math.round((v / totalEntrega) * 100);
+              return (
+                <li key={k} className="relative overflow-hidden rounded-lg border border-border/40 px-3 py-2">
+                  <div aria-hidden className="absolute inset-y-0 left-0 -z-0" style={{ width: `${pct}%`, background: `${color}25` }} />
+                  <div className="relative z-10 flex items-center justify-between gap-3 text-sm">
+                    <span className="flex items-center gap-2 font-medium">
+                      <span className="h-2.5 w-2.5 rounded-full" style={{ background: color }} />
+                      {label}
+                    </span>
+                    <span className="tabular-nums text-muted-foreground">
+                      <b style={{ color }}>{v}</b> un · {pct}%
+                    </span>
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
+        )}
+      </div>
+
+
+
 
     </>
   );
