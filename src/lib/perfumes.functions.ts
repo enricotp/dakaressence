@@ -171,13 +171,16 @@ export const getPerfumes = createServerFn({ method: "GET" }).handler(
       const marca = page.properties["Marca"]?.select?.name ?? null;
       const generoRaw = page.properties["Gênero"]?.select?.name?.toLowerCase() ?? "";
       const genero: Genero =
-        generoRaw === "feminino" || generoRaw === "masculino"
+        generoRaw === "feminino" || generoRaw === "masculino" || generoRaw === "unissex"
           ? (generoRaw as Genero)
           : inferirGenero(nome);
       const colecaoRaw = page.properties["Coleção"]?.select?.name ?? "";
       const colecao: Colecao = (COLECOES as string[]).includes(colecaoRaw)
         ? (colecaoRaw as Colecao)
         : "Signature";
+      const lowThreshold = page.properties["Low threshold "]?.number ?? null;
+      const oosThreshold = page.properties["OoS threshold"]?.number ?? null;
+      const checkbox = page.properties["Checkbox"]?.checkbox ?? false;
       return {
         id: page.id,
         nome,
@@ -192,6 +195,9 @@ export const getPerfumes = createServerFn({ method: "GET" }).handler(
         custo,
         amount,
         colecao,
+        lowThreshold,
+        oosThreshold,
+        checkbox,
       };
     });
   },
