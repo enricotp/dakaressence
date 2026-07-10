@@ -1114,6 +1114,9 @@ function EditForm({
     oosThreshold?: number | null;
     sobEncomenda?: boolean;
     prontaEntrega?: boolean;
+    notasTopo?: string;
+    notasCoracao?: string;
+    notasFundo?: string;
   }) => Promise<void>;
   onCancel: () => void;
   marcasSugestoes?: string[];
@@ -1133,6 +1136,9 @@ function EditForm({
   const [oosThreshold, setOosThreshold] = useState(perfume.oosThreshold?.toString() ?? "");
   const [sobEncomenda, setSobEncomenda] = useState(perfume.sobEncomenda);
   const [prontaEntrega, setProntaEntrega] = useState(perfume.prontaEntrega);
+  const [notasTopo, setNotasTopo] = useState(perfume.notasTopo);
+  const [notasCoracao, setNotasCoracao] = useState(perfume.notasCoracao);
+  const [notasFundo, setNotasFundo] = useState(perfume.notasFundo);
   const [salvando, setSalvando] = useState(false);
   const [erro, setErro] = useState<string | null>(null);
 
@@ -1173,6 +1179,9 @@ function EditForm({
         oosThreshold: oosThreshold === "" ? null : parseInt(oosThreshold, 10),
         sobEncomenda,
         prontaEntrega,
+        notasTopo,
+        notasCoracao,
+        notasFundo,
       };
       if (imagemUrl.trim()) patch.imagemUrl = imagemUrl.trim();
       await onSave(patch);
