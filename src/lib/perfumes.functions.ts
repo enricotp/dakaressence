@@ -314,6 +314,9 @@ export const criarPerfume = createServerFn({ method: "POST" })
       imagemUrl?: string | null;
       colecao?: Colecao;
       genero?: Genero;
+      lowThreshold?: number | null;
+      oosThreshold?: number | null;
+      checkbox?: boolean;
     }) => data,
   )
   .handler(async ({ data }) => {
@@ -332,9 +335,12 @@ export const criarPerfume = createServerFn({ method: "POST" })
     if (data.marca) properties["Marca"] = { select: { name: data.marca } };
     if (data.colecao) properties["Coleção"] = { select: { name: data.colecao } };
     if (data.genero)
-      properties["Gênero"] = {
-        select: { name: data.genero === "feminino" ? "Feminino" : "Masculino" },
-      };
+      properties["Gênero"] = { select: { name: generoNotionName(data.genero) } };
+    if (data.lowThreshold != null)
+      properties["Low threshold "] = { number: data.lowThreshold };
+    if (data.oosThreshold != null)
+      properties["OoS threshold"] = { number: data.oosThreshold };
+    if (data.checkbox !== undefined) properties["Checkbox"] = { checkbox: data.checkbox };
 
     const body: Record<string, unknown> = {
       parent: { database_id: DATABASE_ID },
