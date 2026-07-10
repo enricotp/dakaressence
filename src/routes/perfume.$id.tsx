@@ -152,7 +152,7 @@ function PerfumeDetail() {
 
 
           <div className="mt-10 flex flex-col gap-4">
-            {!p.emEstoque ? (
+            {!p.emEstoque && !p.sobEncomenda ? (
               <button
                 disabled
                 className="inline-flex cursor-not-allowed items-center justify-center rounded-full bg-foreground/5 px-6 py-3 text-sm font-medium text-muted-foreground"
