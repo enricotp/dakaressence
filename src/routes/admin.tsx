@@ -889,7 +889,8 @@ function PerfumesTab() {
         <select
           value={marca}
           onChange={(e) => setMarca(e.target.value)}
-          className="rounded-full border border-border/60 bg-background px-3 py-1.5 text-xs outline-none focus:border-gold"
+          style={{ colorScheme: "dark" }}
+          className="rounded-full border border-border/60 bg-background px-3 py-1.5 text-xs text-foreground outline-none focus:border-gold"
           aria-label="Filtrar por marca"
         >
           <option value="todas">Todas as marcas</option>
@@ -999,7 +1000,7 @@ function PerfumesTab() {
                   <div className="flex-1">
                     <div className="flex flex-wrap items-center gap-2">
                       <p className="font-semibold">{p.nome}</p>
-                      <span className="rounded-full bg-gold/10 px-2 py-0.5 text-[10px] uppercase tracking-wider text-gold">
+                      <span className="rounded-full bg-gold/15 px-2.5 py-1 text-sm font-bold uppercase tracking-wider text-gold">
                         {p.volume}
                       </span>
                       <span
@@ -1222,6 +1223,7 @@ function EditForm({
         <select
           value={colecao}
           onChange={(e) => setColecao(e.target.value as Colecao)}
+          style={{ colorScheme: "dark" }}
           className="input"
         >
           {COLECOES.map((c) => (

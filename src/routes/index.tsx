@@ -253,7 +253,8 @@ function Index() {
             <select
               value={marca}
               onChange={(e) => setMarca(e.target.value)}
-              className="w-full max-w-[200px] rounded-full border border-border/60 bg-card px-4 py-2 text-sm outline-none transition focus:border-gold"
+              style={{ colorScheme: "dark" }}
+              className="w-full max-w-[200px] rounded-full border border-border/60 bg-card px-4 py-2 text-sm text-foreground outline-none transition focus:border-gold"
               aria-label="Filtrar por marca"
             >
               <option value="todas">Todas as marcas</option>
@@ -291,9 +292,9 @@ function Index() {
                       loading="lazy"
                       className={`h-full w-full object-cover transition duration-700 group-hover:scale-105 ${indisponivel ? "opacity-40" : ""}`}
                     />
-                    <span className="absolute left-4 top-4 flex items-center gap-1.5 rounded-full bg-background/80 px-3 py-1 text-[10px] uppercase tracking-[0.2em] text-gold backdrop-blur">
+                    <span className="absolute left-4 top-4 flex items-center gap-2 rounded-full bg-background/85 px-3 py-1.5 text-sm font-semibold uppercase tracking-[0.15em] text-gold backdrop-blur">
                       {codigo}
-                      <span className="rounded-full bg-gold/20 px-1.5 py-0.5 text-[9px] font-semibold text-gold">
+                      <span className="rounded-full bg-gold/25 px-2 py-0.5 text-xs font-bold text-gold">
                         {p.volume}
                       </span>
                     </span>
