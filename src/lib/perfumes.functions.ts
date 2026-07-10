@@ -48,7 +48,7 @@ export type Perfume = {
   colecao: Colecao;
   lowThreshold: number | null;
   oosThreshold: number | null;
-  checkbox: boolean;
+  sobEncomenda: boolean;
 };
 
 const GENERO_MAP: Record<string, Genero> = {
@@ -180,7 +180,7 @@ export const getPerfumes = createServerFn({ method: "GET" }).handler(
         : "Signature";
       const lowThreshold = page.properties["Low threshold "]?.number ?? null;
       const oosThreshold = page.properties["OoS threshold"]?.number ?? null;
-      const checkbox = page.properties["Checkbox"]?.checkbox ?? false;
+      const sobEncomenda = page.properties["Sob encomenda"]?.checkbox ?? false;
       return {
         id: page.id,
         nome,
@@ -197,7 +197,7 @@ export const getPerfumes = createServerFn({ method: "GET" }).handler(
         colecao,
         lowThreshold,
         oosThreshold,
-        checkbox,
+        sobEncomenda,
       };
     });
   },
