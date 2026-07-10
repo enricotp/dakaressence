@@ -4,7 +4,7 @@ import perfume1 from "@/assets/perfume-1.jpg";
 import perfume2 from "@/assets/perfume-2.jpg";
 import perfume3 from "@/assets/perfume-3.jpg";
 import logoWhite from "@/assets/dakar-essence-white.png.asset.json";
-import { getPerfumes } from "@/lib/perfumes.functions";
+import { getPerfumes, COLECAO_INFO } from "@/lib/perfumes.functions";
 import { formatBRL } from "@/lib/format";
 import { useCart } from "@/lib/cart-context";
 import { CartButton } from "@/components/cart-drawer";
@@ -46,6 +46,18 @@ function PerfumeDetail() {
   const codigo = `Nº ${String(index + 1).padStart(3, "0")}`;
   const imagem = p.imagem ?? fallbacks[index % fallbacks.length];
   const qtd = cart[p.id] ?? 0;
+  const prazo = COLECAO_INFO[p.colecao].prazoEncomendaDias;
+  const outros = perfumes.filter((o) => o.colecao === p.colecao && o.id !== p.id).slice(0, 6);
+  const shareUrl = typeof window !== "undefined" ? window.location.href : "";
+  const precoTxt = p.preco != null ? ` — ${formatBRL(p.preco)}` : "";
+  const shareMsg = `Olha esse perfume: ${p.nome}${precoTxt}\n${shareUrl}`;
+  const waShare = `https://wa.me/?text=${encodeURIComponent(shareMsg)}`;
+  const notas: Array<[string, string]> = [
+    ["Topo", p.notasTopo],
+    ["Coração", p.notasCoracao],
+    ["Fundo", p.notasFundo],
+  ];
+  const temNotas = notas.some(([, v]) => v && v.trim());
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -116,9 +128,28 @@ function PerfumeDetail() {
           </p>
           {p.sobEncomenda && (
             <p className="mt-4 rounded-lg border border-amber-500/30 bg-amber-500/5 px-4 py-3 text-sm text-amber-300">
-              Produto sob encomenda — prazo estimado de 7 a 15 dias após confirmação.
+              Produto sob encomenda — prazo estimado de {prazo} dias após confirmação. Frete grátis com 3+ itens no pedido.
             </p>
           )}
+
+          {temNotas && (
+            <div className="mt-6 rounded-xl border border-border/60 bg-card/40 p-4">
+              <p className="text-[10px] uppercase tracking-[0.25em] text-gold">Pirâmide olfativa</p>
+              <div className="mt-3 grid gap-3 sm:grid-cols-3">
+                {notas.map(([label, v]) =>
+                  v && v.trim() ? (
+                    <div key={label}>
+                      <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                        {label}
+                      </p>
+                      <p className="mt-1 text-sm">{v}</p>
+                    </div>
+                  ) : null,
+                )}
+              </div>
+            </div>
+          )}
+
 
           <div className="mt-10 flex flex-col gap-4">
             {!p.emEstoque ? (
@@ -160,6 +191,15 @@ function PerfumeDetail() {
               </div>
             )}
 
+            <a
+              href={waShare}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center justify-center gap-2 rounded-full border border-emerald-500/40 bg-emerald-500/10 px-6 py-3 text-sm font-semibold text-emerald-300 transition hover:bg-emerald-500/20"
+            >
+              Compartilhar no WhatsApp
+            </a>
+
             <Link
               to="/"
               className="inline-flex items-center justify-center rounded-full border border-border px-6 py-3 text-sm font-medium transition hover:border-gold hover:text-gold"
@@ -169,6 +209,57 @@ function PerfumeDetail() {
           </div>
         </div>
       </section>
+
+      {outros.length > 0 && (
+        <section className="mx-auto max-w-6xl px-6 pb-24">
+          <div className="mb-8 flex items-end justify-between">
+            <div>
+              <span className="text-[11px] uppercase tracking-[0.25em] text-gold">
+                {p.colecao}
+              </span>
+              <h2 className="mt-2 font-display text-2xl font-semibold md:text-3xl">
+                Outros da mesma coleção
+              </h2>
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-4 sm:gap-6 md:grid-cols-3">
+            {outros.map((o) => {
+              const oi = perfumes.indexOf(o);
+              const oImg = o.imagem ?? fallbacks[oi % fallbacks.length];
+              return (
+                <Link
+                  key={o.id}
+                  to="/perfume/$id"
+                  params={{ id: o.id }}
+                  className="group overflow-hidden rounded-2xl border border-border/60 bg-card transition hover:border-gold/50"
+                >
+                  <div className="aspect-[4/5] overflow-hidden bg-background">
+                    <img
+                      src={oImg}
+                      alt={o.nome}
+                      loading="lazy"
+                      className={`h-full w-full object-cover transition duration-700 group-hover:scale-105 ${!o.emEstoque ? "opacity-40" : ""}`}
+                    />
+                  </div>
+                  <div className="p-4">
+                    <p className="text-[10px] uppercase tracking-[0.2em] text-gold">
+                      {o.volume}
+                    </p>
+                    <p className="mt-1 truncate font-display text-sm font-semibold">
+                      {o.nome}
+                    </p>
+                    {o.preco != null && (
+                      <p className="mt-1 text-xs font-semibold text-gold">
+                        {formatBRL(o.preco)}
+                      </p>
+                    )}
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+        </section>
+      )}
     </div>
   );
 }

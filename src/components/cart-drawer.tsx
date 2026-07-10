@@ -65,6 +65,17 @@ export function CartDrawer() {
     }, 0);
   }, [cart, perfumeById]);
 
+  const temEncomenda = useMemo(() => {
+    return Object.entries(cart).some(([id, qtd]) => {
+      if (qtd <= 0) return false;
+      const item = perfumeById.get(id);
+      return !!item?.p.sobEncomenda;
+    });
+  }, [cart, perfumeById]);
+  const faltamParaEncomenda = temEncomenda ? Math.max(0, 3 - cartCount) : 0;
+  const bloqueadoPorEncomenda = temEncomenda && cartCount < 3;
+  const freteGratis = temEncomenda && cartCount >= 3;
+
   const itensDetalhados = useMemo(() => {
     return Object.entries(cart)
       .map(([id, qtd]) => {
@@ -91,9 +102,10 @@ export function CartDrawer() {
         ? "Pagamento: Pix à vista"
         : `Pagamento: Cartão em ${parcelas}x de ${formatBRL(total / parcelas)}`;
     const nomeLinha = nome ? `Nome: ${nome}\n` : "";
+    const linhaFrete = freteGratis ? "Frete: GRÁTIS 🎉\n" : "";
     return `Olá! Gostaria de fechar o pedido ${pedidoId}:\n\n${linhasItens.join(
       "\n",
-    )}\n\nTotal: ${formatBRL(total)}\n${linhaPagamento}\n${nomeLinha}\nPodemos confirmar?`;
+    )}\n\nTotal: ${formatBRL(total)}\n${linhaFrete}${linhaPagamento}\n${nomeLinha}\nPodemos confirmar?`;
   }
 
   async function confirmar() {
@@ -156,7 +168,19 @@ export function CartDrawer() {
               Seu carrinho está vazio.
             </p>
           ) : etapa === "carrinho" ? (
-            <ul className="space-y-4">
+            <>
+              {temEncomenda && (
+                bloqueadoPorEncomenda ? (
+                  <div className="mb-4 rounded-lg border border-amber-500/40 bg-amber-500/10 px-3 py-2 text-xs text-amber-300">
+                    Você tem itens <b>sob encomenda</b>. Adicione mais {faltamParaEncomenda} {faltamParaEncomenda === 1 ? "produto" : "produtos"} para fechar o pedido — e o <b>frete fica grátis</b>.
+                  </div>
+                ) : (
+                  <div className="mb-4 rounded-lg border border-emerald-500/40 bg-emerald-500/10 px-3 py-2 text-xs text-emerald-300">
+                    🎉 Frete <b>GRÁTIS</b> desbloqueado (3+ itens com encomenda).
+                  </div>
+                )
+              )}
+              <ul className="space-y-4">
               {Object.entries(cart).map(([id, qtd]) => {
                 const item = perfumeById.get(id);
                 if (!item) return null;
@@ -207,6 +231,7 @@ export function CartDrawer() {
                 );
               })}
             </ul>
+            </>
           ) : (
             <div className="space-y-5">
               <div>
@@ -276,6 +301,12 @@ export function CartDrawer() {
                     {formatBRL(total)}
                   </span>
                 </div>
+                {freteGratis && (
+                  <div className="mt-1 flex items-center justify-between text-xs">
+                    <span className="text-muted-foreground">Frete</span>
+                    <span className="font-semibold text-emerald-400">GRÁTIS 🎉</span>
+                  </div>
+                )}
                 {pagamento === "Cartão" && (
                   <p className="mt-1 text-right text-xs text-muted-foreground">
                     {parcelas}x de {formatBRL(total / parcelas)}
@@ -297,20 +328,28 @@ export function CartDrawer() {
               </span>
             </div>
           )}
+          {freteGratis && etapa === "carrinho" && (
+            <div className="flex items-center justify-between text-xs">
+              <span className="uppercase tracking-[0.2em] text-muted-foreground">Frete</span>
+              <span className="font-semibold text-emerald-400">GRÁTIS 🎉</span>
+            </div>
+          )}
 
           {etapa === "carrinho" ? (
             <>
               <button
                 type="button"
                 onClick={() => setEtapa("checkout")}
-                disabled={cartCount === 0}
+                disabled={cartCount === 0 || bloqueadoPorEncomenda}
                 className={`inline-flex w-full items-center justify-center rounded-full px-6 py-3 text-sm font-semibold transition ${
-                  cartCount === 0
+                  cartCount === 0 || bloqueadoPorEncomenda
                     ? "pointer-events-none bg-foreground/5 text-muted-foreground"
                     : "bg-gold text-primary-foreground hover:brightness-110"
                 }`}
               >
-                Continuar
+                {bloqueadoPorEncomenda
+                  ? `Adicione +${faltamParaEncomenda} p/ continuar`
+                  : "Continuar"}
               </button>
               {cartCount > 0 && (
                 <button

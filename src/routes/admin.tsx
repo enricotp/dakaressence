@@ -199,9 +199,11 @@ function AdminPanel({ onLogout }: { onLogout: () => void }) {
 
 function estoqueAlerta(p: Perfume): "ok" | "low" | "out" {
   const s = (p.status || "").toLowerCase();
-  if (s.includes("no stock") || s.includes("out") || (p.amount != null && p.amount <= 0))
+  const oos = p.oosThreshold ?? 0;
+  const low = p.lowThreshold ?? 3;
+  if (s.includes("no stock") || s.includes("out") || (p.amount != null && p.amount <= oos))
     return "out";
-  if (s.includes("low") || (p.amount != null && p.amount > 0 && p.amount <= 3)) return "low";
+  if (s.includes("low") || (p.amount != null && p.amount <= low)) return "low";
   return "ok";
 }
 
@@ -538,6 +540,19 @@ function AnalyticsTab() {
   }, [filtrados, perfumePorNome]);
   const totalGenero = porGenero.feminino + porGenero.masculino + porGenero.unissex;
 
+  const porEntrega = useMemo(() => {
+    const acc = { pronta: 0, encomenda: 0, outros: 0 };
+    filtrados.forEach((it) => {
+      const p = perfumePorNome.get(it.perfume.toLowerCase());
+      if (!p) return;
+      if (p.prontaEntrega) acc.pronta += it.qtd;
+      else if (p.sobEncomenda) acc.encomenda += it.qtd;
+      else acc.outros += it.qtd;
+    });
+    return acc;
+  }, [filtrados, perfumePorNome]);
+  const totalEntrega = porEntrega.pronta + porEntrega.encomenda + porEntrega.outros;
+
 
   const totalVendas = porDia.reduce((a, b) => a + b.vendas, 0);
   const totalLucro = porDia.reduce((a, b) => a + b.lucro, 0);
@@ -744,6 +759,42 @@ function AnalyticsTab() {
         )}
       </div>
 
+      <div className="mt-6 rounded-2xl border border-border/60 bg-card p-5">
+        <h3 className="mb-4 font-display text-lg">Pronta entrega vs Sob encomenda</h3>
+        {totalEntrega === 0 ? (
+          <p className="py-8 text-center text-sm text-muted-foreground">Sem vendas no período.</p>
+        ) : (
+          <ul className="space-y-2">
+            {(
+              [
+                ["pronta", "Pronta entrega", "#10b981"],
+                ["encomenda", "Sob encomenda", "#f59e0b"],
+                ["outros", "Sem marcação", "#94a3b8"],
+              ] as const
+            ).map(([k, label, color]) => {
+              const v = porEntrega[k];
+              const pct = Math.round((v / totalEntrega) * 100);
+              return (
+                <li key={k} className="relative overflow-hidden rounded-lg border border-border/40 px-3 py-2">
+                  <div aria-hidden className="absolute inset-y-0 left-0 -z-0" style={{ width: `${pct}%`, background: `${color}25` }} />
+                  <div className="relative z-10 flex items-center justify-between gap-3 text-sm">
+                    <span className="flex items-center gap-2 font-medium">
+                      <span className="h-2.5 w-2.5 rounded-full" style={{ background: color }} />
+                      {label}
+                    </span>
+                    <span className="tabular-nums text-muted-foreground">
+                      <b style={{ color }}>{v}</b> un · {pct}%
+                    </span>
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
+        )}
+      </div>
+
+
+
 
     </>
   );
@@ -942,6 +993,9 @@ function PerfumesTab() {
               oosThreshold: null,
               sobEncomenda: COLECAO_INFO[colTab].sobEncomenda,
               prontaEntrega: false,
+              notasTopo: "",
+              notasCoracao: "",
+              notasFundo: "",
             }}
             onCancel={() => setCriando(false)}
             onSave={async (patch) => {
@@ -964,6 +1018,9 @@ function PerfumesTab() {
                   oosThreshold: patch.oosThreshold ?? null,
                   sobEncomenda: patch.sobEncomenda,
                   prontaEntrega: patch.prontaEntrega,
+                  notasTopo: patch.notasTopo,
+                  notasCoracao: patch.notasCoracao,
+                  notasFundo: patch.notasFundo,
                 },
               });
               await qc.invalidateQueries({ queryKey: ["perfumes"] });
@@ -1043,12 +1100,44 @@ function PerfumesTab() {
                         )}
                       </span>
                     </div>
-                    <button
-                      onClick={() => setEditando(p.id)}
-                      className="mt-3 rounded-full border border-border/60 px-3 py-1 text-xs uppercase tracking-wider hover:border-gold hover:text-gold"
-                    >
-                      Editar
-                    </button>
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      <button
+                        onClick={() => setEditando(p.id)}
+                        className="rounded-full border border-border/60 px-3 py-1 text-xs uppercase tracking-wider hover:border-gold hover:text-gold"
+                      >
+                        Editar
+                      </button>
+                      <button
+                        onClick={async () => {
+                          await criar({
+                            data: {
+                              nome: `${p.nome} (cópia)`,
+                              descricao: p.descricao,
+                              preco: p.preco,
+                              custo: p.custo,
+                              amount: 0,
+                              volume: p.volume,
+                              marca: p.marca,
+                              imagemUrl: p.imagem,
+                              colecao: p.colecao,
+                              genero: p.genero,
+                              lowThreshold: p.lowThreshold,
+                              oosThreshold: p.oosThreshold,
+                              sobEncomenda: p.sobEncomenda,
+                              prontaEntrega: p.prontaEntrega,
+                              notasTopo: p.notasTopo,
+                              notasCoracao: p.notasCoracao,
+                              notasFundo: p.notasFundo,
+                            },
+                          });
+                          await qc.invalidateQueries({ queryKey: ["perfumes"] });
+                        }}
+                        className="rounded-full border border-border/60 px-3 py-1 text-xs uppercase tracking-wider text-muted-foreground hover:border-gold hover:text-gold"
+                        title="Cria um novo perfume com os mesmos dados (estoque zerado)"
+                      >
+                        Duplicar
+                      </button>
+                    </div>
                   </div>
                 </div>
               )}
@@ -1106,6 +1195,9 @@ function EditForm({
     oosThreshold?: number | null;
     sobEncomenda?: boolean;
     prontaEntrega?: boolean;
+    notasTopo?: string;
+    notasCoracao?: string;
+    notasFundo?: string;
   }) => Promise<void>;
   onCancel: () => void;
   marcasSugestoes?: string[];
@@ -1125,6 +1217,9 @@ function EditForm({
   const [oosThreshold, setOosThreshold] = useState(perfume.oosThreshold?.toString() ?? "");
   const [sobEncomenda, setSobEncomenda] = useState(perfume.sobEncomenda);
   const [prontaEntrega, setProntaEntrega] = useState(perfume.prontaEntrega);
+  const [notasTopo, setNotasTopo] = useState(perfume.notasTopo);
+  const [notasCoracao, setNotasCoracao] = useState(perfume.notasCoracao);
+  const [notasFundo, setNotasFundo] = useState(perfume.notasFundo);
   const [salvando, setSalvando] = useState(false);
   const [erro, setErro] = useState<string | null>(null);
 
@@ -1165,6 +1260,9 @@ function EditForm({
         oosThreshold: oosThreshold === "" ? null : parseInt(oosThreshold, 10),
         sobEncomenda,
         prontaEntrega,
+        notasTopo,
+        notasCoracao,
+        notasFundo,
       };
       if (imagemUrl.trim()) patch.imagemUrl = imagemUrl.trim();
       await onSave(patch);
@@ -1324,6 +1422,37 @@ function EditForm({
           </span>
         </span>
       </label>
+      <div className="rounded-lg border border-border/60 bg-background/40 p-3">
+        <p className="mb-2 text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+          Pirâmide olfativa
+        </p>
+        <div className="grid gap-2 sm:grid-cols-3">
+          <Field label="Topo">
+            <input
+              value={notasTopo}
+              onChange={(e) => setNotasTopo(e.target.value)}
+              placeholder="Bergamota, limão…"
+              className="input"
+            />
+          </Field>
+          <Field label="Coração">
+            <input
+              value={notasCoracao}
+              onChange={(e) => setNotasCoracao(e.target.value)}
+              placeholder="Jasmim, rosa…"
+              className="input"
+            />
+          </Field>
+          <Field label="Fundo">
+            <input
+              value={notasFundo}
+              onChange={(e) => setNotasFundo(e.target.value)}
+              placeholder="Sândalo, âmbar…"
+              className="input"
+            />
+          </Field>
+        </div>
+      </div>
       <Field label="Marca">
         <input
           value={marca}
