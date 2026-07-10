@@ -1341,6 +1341,37 @@ function EditForm({
           </span>
         </span>
       </label>
+      <div className="rounded-lg border border-border/60 bg-background/40 p-3">
+        <p className="mb-2 text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+          Pirâmide olfativa
+        </p>
+        <div className="grid gap-2 sm:grid-cols-3">
+          <Field label="Topo">
+            <input
+              value={notasTopo}
+              onChange={(e) => setNotasTopo(e.target.value)}
+              placeholder="Bergamota, limão…"
+              className="input"
+            />
+          </Field>
+          <Field label="Coração">
+            <input
+              value={notasCoracao}
+              onChange={(e) => setNotasCoracao(e.target.value)}
+              placeholder="Jasmim, rosa…"
+              className="input"
+            />
+          </Field>
+          <Field label="Fundo">
+            <input
+              value={notasFundo}
+              onChange={(e) => setNotasFundo(e.target.value)}
+              placeholder="Sândalo, âmbar…"
+              className="input"
+            />
+          </Field>
+        </div>
+      </div>
       <Field label="Marca">
         <input
           value={marca}
