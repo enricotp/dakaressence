@@ -46,6 +46,18 @@ function PerfumeDetail() {
   const codigo = `Nº ${String(index + 1).padStart(3, "0")}`;
   const imagem = p.imagem ?? fallbacks[index % fallbacks.length];
   const qtd = cart[p.id] ?? 0;
+  const prazo = COLECAO_INFO[p.colecao].prazoEncomendaDias;
+  const outros = perfumes.filter((o) => o.colecao === p.colecao && o.id !== p.id).slice(0, 6);
+  const shareUrl = typeof window !== "undefined" ? window.location.href : "";
+  const precoTxt = p.preco != null ? ` — ${formatBRL(p.preco)}` : "";
+  const shareMsg = `Olha esse perfume: ${p.nome}${precoTxt}\n${shareUrl}`;
+  const waShare = `https://wa.me/?text=${encodeURIComponent(shareMsg)}`;
+  const notas: Array<[string, string]> = [
+    ["Topo", p.notasTopo],
+    ["Coração", p.notasCoracao],
+    ["Fundo", p.notasFundo],
+  ];
+  const temNotas = notas.some(([, v]) => v && v.trim());
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -116,9 +128,28 @@ function PerfumeDetail() {
           </p>
           {p.sobEncomenda && (
             <p className="mt-4 rounded-lg border border-amber-500/30 bg-amber-500/5 px-4 py-3 text-sm text-amber-300">
-              Produto sob encomenda — prazo estimado de 7 a 15 dias após confirmação.
+              Produto sob encomenda — prazo estimado de {prazo} dias após confirmação. Frete grátis com 3+ itens no pedido.
             </p>
           )}
+
+          {temNotas && (
+            <div className="mt-6 rounded-xl border border-border/60 bg-card/40 p-4">
+              <p className="text-[10px] uppercase tracking-[0.25em] text-gold">Pirâmide olfativa</p>
+              <div className="mt-3 grid gap-3 sm:grid-cols-3">
+                {notas.map(([label, v]) =>
+                  v && v.trim() ? (
+                    <div key={label}>
+                      <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                        {label}
+                      </p>
+                      <p className="mt-1 text-sm">{v}</p>
+                    </div>
+                  ) : null,
+                )}
+              </div>
+            </div>
+          )}
+
 
           <div className="mt-10 flex flex-col gap-4">
             {!p.emEstoque ? (
