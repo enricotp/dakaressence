@@ -1248,8 +1248,8 @@ function EditForm({
         </div>
       </Field>
       <Field label="Gênero">
-        <div className="flex gap-2">
-          {(["feminino", "masculino"] as const).map((g) => (
+        <div className="flex flex-wrap gap-2">
+          {(["feminino", "masculino", "unissex"] as const).map((g) => (
             <button
               key={g}
               type="button"
@@ -1265,6 +1265,35 @@ function EditForm({
           ))}
         </div>
       </Field>
+      <div className="grid grid-cols-2 gap-2">
+        <Field label="Low threshold">
+          <input
+            value={lowThreshold}
+            onChange={(e) => setLowThreshold(e.target.value)}
+            className="input"
+            inputMode="numeric"
+            placeholder="Ex.: 3"
+          />
+        </Field>
+        <Field label="OoS threshold">
+          <input
+            value={oosThreshold}
+            onChange={(e) => setOosThreshold(e.target.value)}
+            className="input"
+            inputMode="numeric"
+            placeholder="Ex.: 0"
+          />
+        </Field>
+      </div>
+      <label className="flex items-center gap-2 text-sm">
+        <input
+          type="checkbox"
+          checked={checkbox}
+          onChange={(e) => setCheckbox(e.target.checked)}
+          className="h-4 w-4 accent-gold"
+        />
+        <span>Checkbox (Notion)</span>
+      </label>
       <Field label="Marca">
         <input
           value={marca}
