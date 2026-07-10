@@ -168,7 +168,19 @@ export function CartDrawer() {
               Seu carrinho está vazio.
             </p>
           ) : etapa === "carrinho" ? (
-            <ul className="space-y-4">
+            <>
+              {temEncomenda && (
+                bloqueadoPorEncomenda ? (
+                  <div className="mb-4 rounded-lg border border-amber-500/40 bg-amber-500/10 px-3 py-2 text-xs text-amber-300">
+                    Você tem itens <b>sob encomenda</b>. Adicione mais {faltamParaEncomenda} {faltamParaEncomenda === 1 ? "produto" : "produtos"} para fechar o pedido — e o <b>frete fica grátis</b>.
+                  </div>
+                ) : (
+                  <div className="mb-4 rounded-lg border border-emerald-500/40 bg-emerald-500/10 px-3 py-2 text-xs text-emerald-300">
+                    🎉 Frete <b>GRÁTIS</b> desbloqueado (3+ itens com encomenda).
+                  </div>
+                )
+              )}
+              <ul className="space-y-4">
               {Object.entries(cart).map(([id, qtd]) => {
                 const item = perfumeById.get(id);
                 if (!item) return null;
@@ -219,6 +231,7 @@ export function CartDrawer() {
                 );
               })}
             </ul>
+            </>
           ) : (
             <div className="space-y-5">
               <div>
