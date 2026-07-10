@@ -228,6 +228,9 @@ export const atualizarPerfume = createServerFn({ method: "POST" })
       imagemUrl?: string | null;
       colecao?: Colecao;
       genero?: Genero;
+      lowThreshold?: number | null;
+      oosThreshold?: number | null;
+      checkbox?: boolean;
     }) => data,
   )
   .handler(async ({ data }) => {
@@ -248,9 +251,12 @@ export const atualizarPerfume = createServerFn({ method: "POST" })
     if (data.colecao !== undefined)
       properties["Coleção"] = { select: { name: data.colecao } };
     if (data.genero !== undefined)
-      properties["Gênero"] = {
-        select: { name: data.genero === "feminino" ? "Feminino" : "Masculino" },
-      };
+      properties["Gênero"] = { select: { name: generoNotionName(data.genero) } };
+    if (data.lowThreshold !== undefined)
+      properties["Low threshold "] = { number: data.lowThreshold };
+    if (data.oosThreshold !== undefined)
+      properties["OoS threshold"] = { number: data.oosThreshold };
+    if (data.checkbox !== undefined) properties["Checkbox"] = { checkbox: data.checkbox };
 
     const body: Record<string, unknown> = { properties };
     if (data.imagemUrl !== undefined && data.imagemUrl) {
@@ -268,6 +274,12 @@ export const atualizarPerfume = createServerFn({ method: "POST" })
     }
     return { ok: true };
   });
+
+function generoNotionName(g: Genero): string {
+  if (g === "feminino") return "Feminino";
+  if (g === "masculino") return "Masculino";
+  return "Unissex";
+}
 
 // Ajuste direto usado internamente pelo servidor. delta negativo = baixa, positivo = devolve.
 export async function ajustarEstoqueInterno(id: string, delta: number) {
