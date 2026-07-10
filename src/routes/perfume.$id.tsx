@@ -85,7 +85,7 @@ function PerfumeDetail() {
             <img
               src={imagem}
               alt={p.nome}
-              className={`h-full w-full object-cover ${!p.emEstoque ? "opacity-50" : ""}`}
+              className={`h-full w-full object-cover ${!p.emEstoque && !p.sobEncomenda ? "opacity-50" : ""}`}
             />
             <span className="absolute left-4 top-4 rounded-full bg-background/80 px-3 py-1 text-[10px] uppercase tracking-[0.2em] text-gold backdrop-blur">
               {codigo}
@@ -96,7 +96,7 @@ function PerfumeDetail() {
         <div className="flex flex-col justify-center">
           <div className="flex flex-wrap items-center gap-2">
             <span className="text-[11px] uppercase tracking-[0.25em] text-gold">
-              {p.emEstoque ? "Disponível" : "Esgotado"}
+              {p.emEstoque ? "Disponível" : p.sobEncomenda ? "Sob encomenda" : "Esgotado"}
             </span>
             <span className="rounded-full bg-gold/10 px-2 py-0.5 text-[10px] uppercase tracking-wider text-gold">
               {p.volume}
@@ -152,7 +152,7 @@ function PerfumeDetail() {
 
 
           <div className="mt-10 flex flex-col gap-4">
-            {!p.emEstoque ? (
+            {!p.emEstoque && !p.sobEncomenda ? (
               <button
                 disabled
                 className="inline-flex cursor-not-allowed items-center justify-center rounded-full bg-foreground/5 px-6 py-3 text-sm font-medium text-muted-foreground"

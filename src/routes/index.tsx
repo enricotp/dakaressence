@@ -271,7 +271,7 @@ function Index() {
               const i = perfumes.indexOf(p);
               const codigo = codigoDoPerfume(i);
               const imagem = p.imagem ?? imagensRotativas[i % imagensRotativas.length];
-              const indisponivel = !p.emEstoque;
+              const indisponivel = !p.emEstoque && !p.sobEncomenda;
               const qtd = cart[p.id] ?? 0;
               return (
                 <article
