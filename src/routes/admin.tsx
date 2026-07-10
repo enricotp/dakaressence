@@ -1099,6 +1099,9 @@ function EditForm({
     imagemUrl?: string | null;
     colecao?: Colecao;
     genero?: Genero;
+    lowThreshold?: number | null;
+    oosThreshold?: number | null;
+    checkbox?: boolean;
   }) => Promise<void>;
   onCancel: () => void;
   marcasSugestoes?: string[];
@@ -1114,6 +1117,9 @@ function EditForm({
   const [marca, setMarca] = useState(perfume.marca ?? "");
   const [genero, setGenero] = useState<Genero>(perfume.genero);
   const [imagemUrl, setImagemUrl] = useState("");
+  const [lowThreshold, setLowThreshold] = useState(perfume.lowThreshold?.toString() ?? "");
+  const [oosThreshold, setOosThreshold] = useState(perfume.oosThreshold?.toString() ?? "");
+  const [checkbox, setCheckbox] = useState(perfume.checkbox);
   const [salvando, setSalvando] = useState(false);
   const [erro, setErro] = useState<string | null>(null);
 
@@ -1150,6 +1156,9 @@ function EditForm({
         marca: marca.trim() === "" ? null : marca.trim(),
         colecao,
         genero,
+        lowThreshold: lowThreshold === "" ? null : parseInt(lowThreshold, 10),
+        oosThreshold: oosThreshold === "" ? null : parseInt(oosThreshold, 10),
+        checkbox,
       };
       if (imagemUrl.trim()) patch.imagemUrl = imagemUrl.trim();
       await onSave(patch);
