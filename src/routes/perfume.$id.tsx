@@ -85,7 +85,7 @@ function PerfumeDetail() {
             <img
               src={imagem}
               alt={p.nome}
-              className={`h-full w-full object-cover ${!p.emEstoque ? "opacity-50" : ""}`}
+              className={`h-full w-full object-cover ${!p.emEstoque && !p.sobEncomenda ? "opacity-50" : ""}`}
             />
             <span className="absolute left-4 top-4 rounded-full bg-background/80 px-3 py-1 text-[10px] uppercase tracking-[0.2em] text-gold backdrop-blur">
               {codigo}
