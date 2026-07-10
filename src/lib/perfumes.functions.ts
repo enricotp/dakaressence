@@ -140,22 +140,32 @@ export const getPerfumes = createServerFn({ method: "GET" }).handler(
       throw new Error("Notion connector não configurado");
     }
 
-    const res = await fetch(`${GATEWAY}/databases/${DATABASE_ID}/query`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${lovableKey}`,
-        "X-Connection-Api-Key": notionKey,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ page_size: 100 }),
-    });
-
-    if (!res.ok) {
-      const text = await res.text();
-      throw new Error(`Notion query failed [${res.status}]: ${text}`);
+    const allResults: NotionQueryResponse["results"] = [];
+    let startCursor: string | undefined = undefined;
+    let hasMore = true;
+    while (hasMore) {
+      const body: Record<string, unknown> = { page_size: 100 };
+      if (startCursor) body.start_cursor = startCursor;
+      const res = await fetch(`${GATEWAY}/databases/${DATABASE_ID}/query`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${lovableKey}`,
+          "X-Connection-Api-Key": notionKey,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+      });
+      if (!res.ok) {
+        const text = await res.text();
+        throw new Error(`Notion query failed [${res.status}]: ${text}`);
+      }
+      const pageData = (await res.json()) as NotionQueryResponse & { has_more?: boolean; next_cursor?: string | null };
+      allResults.push(...pageData.results);
+      hasMore = Boolean(pageData.has_more);
+      startCursor = pageData.next_cursor ?? undefined;
     }
+    const data = { results: allResults } as NotionQueryResponse;
 
-    const data = (await res.json()) as NotionQueryResponse;
 
     return data.results.map((page) => {
       const nome =
