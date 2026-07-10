@@ -940,7 +940,7 @@ function PerfumesTab() {
               colecao: colTab,
               lowThreshold: null,
               oosThreshold: null,
-              checkbox: false,
+              sobEncomenda: COLECAO_INFO[colTab].sobEncomenda,
             }}
             onCancel={() => setCriando(false)}
             onSave={async (patch) => {
@@ -961,7 +961,7 @@ function PerfumesTab() {
                   genero: patch.genero,
                   lowThreshold: patch.lowThreshold ?? null,
                   oosThreshold: patch.oosThreshold ?? null,
-                  checkbox: patch.checkbox,
+                  sobEncomenda: patch.sobEncomenda,
                 },
               });
               await qc.invalidateQueries({ queryKey: ["perfumes"] });
@@ -1102,7 +1102,7 @@ function EditForm({
     genero?: Genero;
     lowThreshold?: number | null;
     oosThreshold?: number | null;
-    checkbox?: boolean;
+    sobEncomenda?: boolean;
   }) => Promise<void>;
   onCancel: () => void;
   marcasSugestoes?: string[];
@@ -1120,7 +1120,7 @@ function EditForm({
   const [imagemUrl, setImagemUrl] = useState("");
   const [lowThreshold, setLowThreshold] = useState(perfume.lowThreshold?.toString() ?? "");
   const [oosThreshold, setOosThreshold] = useState(perfume.oosThreshold?.toString() ?? "");
-  const [checkbox, setCheckbox] = useState(perfume.checkbox);
+  const [sobEncomenda, setSobEncomenda] = useState(perfume.sobEncomenda);
   const [salvando, setSalvando] = useState(false);
   const [erro, setErro] = useState<string | null>(null);
 
@@ -1159,7 +1159,7 @@ function EditForm({
         genero,
         lowThreshold: lowThreshold === "" ? null : parseInt(lowThreshold, 10),
         oosThreshold: oosThreshold === "" ? null : parseInt(oosThreshold, 10),
-        checkbox,
+        sobEncomenda,
       };
       if (imagemUrl.trim()) patch.imagemUrl = imagemUrl.trim();
       await onSave(patch);
@@ -1222,7 +1222,11 @@ function EditForm({
       <Field label="Coleção">
         <select
           value={colecao}
-          onChange={(e) => setColecao(e.target.value as Colecao)}
+          onChange={(e) => {
+            const nova = e.target.value as Colecao;
+            setColecao(nova);
+            setSobEncomenda(COLECAO_INFO[nova].sobEncomenda);
+          }}
           style={{ colorScheme: "dark" }}
           className="input"
         >
@@ -1287,14 +1291,19 @@ function EditForm({
           />
         </Field>
       </div>
-      <label className="flex items-center gap-2 text-sm">
+      <label className="flex items-center gap-2 rounded-lg border border-amber-500/30 bg-amber-500/5 px-3 py-2 text-sm">
         <input
           type="checkbox"
-          checked={checkbox}
-          onChange={(e) => setCheckbox(e.target.checked)}
+          checked={sobEncomenda}
+          onChange={(e) => setSobEncomenda(e.target.checked)}
           className="h-4 w-4 accent-gold"
         />
-        <span>Checkbox (Notion)</span>
+        <span>
+          <b className="text-amber-400">Sob encomenda</b>
+          <span className="ml-2 text-xs text-muted-foreground">
+            (mostra o selo amarelo no card — pré-marcado para Brand/Arabic/Dream Brand)
+          </span>
+        </span>
       </label>
       <Field label="Marca">
         <input
