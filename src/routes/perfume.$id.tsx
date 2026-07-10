@@ -191,6 +191,15 @@ function PerfumeDetail() {
               </div>
             )}
 
+            <a
+              href={waShare}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center justify-center gap-2 rounded-full border border-emerald-500/40 bg-emerald-500/10 px-6 py-3 text-sm font-semibold text-emerald-300 transition hover:bg-emerald-500/20"
+            >
+              Compartilhar no WhatsApp
+            </a>
+
             <Link
               to="/"
               className="inline-flex items-center justify-center rounded-full border border-border px-6 py-3 text-sm font-medium transition hover:border-gold hover:text-gold"
@@ -200,6 +209,57 @@ function PerfumeDetail() {
           </div>
         </div>
       </section>
+
+      {outros.length > 0 && (
+        <section className="mx-auto max-w-6xl px-6 pb-24">
+          <div className="mb-8 flex items-end justify-between">
+            <div>
+              <span className="text-[11px] uppercase tracking-[0.25em] text-gold">
+                {p.colecao}
+              </span>
+              <h2 className="mt-2 font-display text-2xl font-semibold md:text-3xl">
+                Outros da mesma coleção
+              </h2>
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-4 sm:gap-6 md:grid-cols-3">
+            {outros.map((o) => {
+              const oi = perfumes.indexOf(o);
+              const oImg = o.imagem ?? fallbacks[oi % fallbacks.length];
+              return (
+                <Link
+                  key={o.id}
+                  to="/perfume/$id"
+                  params={{ id: o.id }}
+                  className="group overflow-hidden rounded-2xl border border-border/60 bg-card transition hover:border-gold/50"
+                >
+                  <div className="aspect-[4/5] overflow-hidden bg-background">
+                    <img
+                      src={oImg}
+                      alt={o.nome}
+                      loading="lazy"
+                      className={`h-full w-full object-cover transition duration-700 group-hover:scale-105 ${!o.emEstoque ? "opacity-40" : ""}`}
+                    />
+                  </div>
+                  <div className="p-4">
+                    <p className="text-[10px] uppercase tracking-[0.2em] text-gold">
+                      {o.volume}
+                    </p>
+                    <p className="mt-1 truncate font-display text-sm font-semibold">
+                      {o.nome}
+                    </p>
+                    {o.preco != null && (
+                      <p className="mt-1 text-xs font-semibold text-gold">
+                        {formatBRL(o.preco)}
+                      </p>
+                    )}
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+        </section>
+      )}
     </div>
   );
 }
