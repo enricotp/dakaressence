@@ -65,6 +65,17 @@ export function CartDrawer() {
     }, 0);
   }, [cart, perfumeById]);
 
+  const temEncomenda = useMemo(() => {
+    return Object.entries(cart).some(([id, qtd]) => {
+      if (qtd <= 0) return false;
+      const item = perfumeById.get(id);
+      return !!item?.p.sobEncomenda;
+    });
+  }, [cart, perfumeById]);
+  const faltamParaEncomenda = temEncomenda ? Math.max(0, 3 - cartCount) : 0;
+  const bloqueadoPorEncomenda = temEncomenda && cartCount < 3;
+  const freteGratis = temEncomenda && cartCount >= 3;
+
   const itensDetalhados = useMemo(() => {
     return Object.entries(cart)
       .map(([id, qtd]) => {
@@ -91,9 +102,10 @@ export function CartDrawer() {
         ? "Pagamento: Pix à vista"
         : `Pagamento: Cartão em ${parcelas}x de ${formatBRL(total / parcelas)}`;
     const nomeLinha = nome ? `Nome: ${nome}\n` : "";
+    const linhaFrete = freteGratis ? "Frete: GRÁTIS 🎉\n" : "";
     return `Olá! Gostaria de fechar o pedido ${pedidoId}:\n\n${linhasItens.join(
       "\n",
-    )}\n\nTotal: ${formatBRL(total)}\n${linhaPagamento}\n${nomeLinha}\nPodemos confirmar?`;
+    )}\n\nTotal: ${formatBRL(total)}\n${linhaFrete}${linhaPagamento}\n${nomeLinha}\nPodemos confirmar?`;
   }
 
   async function confirmar() {
