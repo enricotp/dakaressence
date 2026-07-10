@@ -969,6 +969,9 @@ function PerfumesTab() {
                   oosThreshold: patch.oosThreshold ?? null,
                   sobEncomenda: patch.sobEncomenda,
                   prontaEntrega: patch.prontaEntrega,
+                  notasTopo: patch.notasTopo,
+                  notasCoracao: patch.notasCoracao,
+                  notasFundo: patch.notasFundo,
                 },
               });
               await qc.invalidateQueries({ queryKey: ["perfumes"] });
