@@ -230,7 +230,7 @@ export const atualizarPerfume = createServerFn({ method: "POST" })
       genero?: Genero;
       lowThreshold?: number | null;
       oosThreshold?: number | null;
-      checkbox?: boolean;
+      sobEncomenda?: boolean;
     }) => data,
   )
   .handler(async ({ data }) => {
@@ -256,7 +256,7 @@ export const atualizarPerfume = createServerFn({ method: "POST" })
       properties["Low threshold "] = { number: data.lowThreshold };
     if (data.oosThreshold !== undefined)
       properties["OoS threshold"] = { number: data.oosThreshold };
-    if (data.checkbox !== undefined) properties["Checkbox"] = { checkbox: data.checkbox };
+    if (data.sobEncomenda !== undefined) properties["Sob encomenda"] = { checkbox: data.sobEncomenda };
 
     const body: Record<string, unknown> = { properties };
     if (data.imagemUrl !== undefined && data.imagemUrl) {
