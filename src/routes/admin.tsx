@@ -540,6 +540,19 @@ function AnalyticsTab() {
   }, [filtrados, perfumePorNome]);
   const totalGenero = porGenero.feminino + porGenero.masculino + porGenero.unissex;
 
+  const porEntrega = useMemo(() => {
+    const acc = { pronta: 0, encomenda: 0, outros: 0 };
+    filtrados.forEach((it) => {
+      const p = perfumePorNome.get(it.perfume.toLowerCase());
+      if (!p) return;
+      if (p.prontaEntrega) acc.pronta += it.qtd;
+      else if (p.sobEncomenda) acc.encomenda += it.qtd;
+      else acc.outros += it.qtd;
+    });
+    return acc;
+  }, [filtrados, perfumePorNome]);
+  const totalEntrega = porEntrega.pronta + porEntrega.encomenda + porEntrega.outros;
+
 
   const totalVendas = porDia.reduce((a, b) => a + b.vendas, 0);
   const totalLucro = porDia.reduce((a, b) => a + b.lucro, 0);
