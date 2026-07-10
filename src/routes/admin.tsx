@@ -758,6 +758,64 @@ function KpiCard({ label, value }: { label: string; value: string }) {
   );
 }
 
+function GenderDonut({
+  data,
+  total,
+}: {
+  data: Record<Genero, number>;
+  total: number;
+}) {
+  const size = 180;
+  const r = 70;
+  const cx = size / 2;
+  const cy = size / 2;
+  const circ = 2 * Math.PI * r;
+  const segments: Array<{ key: Genero; color: string; value: number }> = [
+    { key: "feminino", color: "#f472b6", value: data.feminino },
+    { key: "masculino", color: "#38bdf8", value: data.masculino },
+    { key: "unissex", color: "#a78bfa", value: data.unissex },
+  ];
+  let offset = 0;
+  return (
+    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} className="-rotate-90">
+      <circle cx={cx} cy={cy} r={r} fill="none" stroke="hsl(var(--border))" strokeWidth={22} opacity={0.3} />
+      {segments.map((s) => {
+        if (s.value === 0) return null;
+        const len = (s.value / total) * circ;
+        const dasharray = `${len} ${circ - len}`;
+        const el = (
+          <circle
+            key={s.key}
+            cx={cx}
+            cy={cy}
+            r={r}
+            fill="none"
+            stroke={s.color}
+            strokeWidth={22}
+            strokeDasharray={dasharray}
+            strokeDashoffset={-offset}
+          />
+        );
+        offset += len;
+        return el;
+      })}
+      <text
+        x={cx}
+        y={cy}
+        textAnchor="middle"
+        dominantBaseline="central"
+        transform={`rotate(90 ${cx} ${cy})`}
+        className="fill-foreground font-display"
+        fontSize={22}
+        fontWeight={600}
+      >
+        {total}
+      </text>
+    </svg>
+  );
+}
+
+
 /* ---------------- Perfumes CRUD ---------------- */
 
 function PerfumesTab() {
