@@ -102,6 +102,7 @@ type NotionPage = {
       rich_text?: Array<{ plain_text: string }>;
       number?: number | null;
       select?: { name?: string } | null;
+      checkbox?: boolean;
     }
   >;
 };
