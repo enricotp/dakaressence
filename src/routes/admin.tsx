@@ -941,6 +941,7 @@ function PerfumesTab() {
               lowThreshold: null,
               oosThreshold: null,
               sobEncomenda: COLECAO_INFO[colTab].sobEncomenda,
+              prontaEntrega: false,
             }}
             onCancel={() => setCriando(false)}
             onSave={async (patch) => {
@@ -962,6 +963,7 @@ function PerfumesTab() {
                   lowThreshold: patch.lowThreshold ?? null,
                   oosThreshold: patch.oosThreshold ?? null,
                   sobEncomenda: patch.sobEncomenda,
+                  prontaEntrega: patch.prontaEntrega,
                 },
               });
               await qc.invalidateQueries({ queryKey: ["perfumes"] });
@@ -1103,6 +1105,7 @@ function EditForm({
     lowThreshold?: number | null;
     oosThreshold?: number | null;
     sobEncomenda?: boolean;
+    prontaEntrega?: boolean;
   }) => Promise<void>;
   onCancel: () => void;
   marcasSugestoes?: string[];
@@ -1121,6 +1124,7 @@ function EditForm({
   const [lowThreshold, setLowThreshold] = useState(perfume.lowThreshold?.toString() ?? "");
   const [oosThreshold, setOosThreshold] = useState(perfume.oosThreshold?.toString() ?? "");
   const [sobEncomenda, setSobEncomenda] = useState(perfume.sobEncomenda);
+  const [prontaEntrega, setProntaEntrega] = useState(perfume.prontaEntrega);
   const [salvando, setSalvando] = useState(false);
   const [erro, setErro] = useState<string | null>(null);
 
@@ -1160,6 +1164,7 @@ function EditForm({
         lowThreshold: lowThreshold === "" ? null : parseInt(lowThreshold, 10),
         oosThreshold: oosThreshold === "" ? null : parseInt(oosThreshold, 10),
         sobEncomenda,
+        prontaEntrega,
       };
       if (imagemUrl.trim()) patch.imagemUrl = imagemUrl.trim();
       await onSave(patch);
@@ -1302,6 +1307,20 @@ function EditForm({
           <b className="text-amber-400">Sob encomenda</b>
           <span className="ml-2 text-xs text-muted-foreground">
             (mostra o selo amarelo no card — pré-marcado para Brand/Arabic/Dream Brand)
+          </span>
+        </span>
+      </label>
+      <label className="flex items-center gap-2 rounded-lg border border-emerald-500/30 bg-emerald-500/5 px-3 py-2 text-sm">
+        <input
+          type="checkbox"
+          checked={prontaEntrega}
+          onChange={(e) => setProntaEntrega(e.target.checked)}
+          className="h-4 w-4 accent-gold"
+        />
+        <span>
+          <b className="text-emerald-400">Pronta entrega</b>
+          <span className="ml-2 text-xs text-muted-foreground">
+            (mostra o selo verde no card — envio imediato)
           </span>
         </span>
       </label>
