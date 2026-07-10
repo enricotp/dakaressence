@@ -716,42 +716,34 @@ function AnalyticsTab() {
       </div>
 
       <div className="mt-6 rounded-2xl border border-border/60 bg-card p-5">
-        <h3 className="mb-4 font-display text-lg">Feminino vs Masculino</h3>
+        <h3 className="mb-4 font-display text-lg">Distribuição por gênero</h3>
         {totalGenero === 0 ? (
           <p className="py-8 text-center text-sm text-muted-foreground">Sem vendas no período.</p>
         ) : (
-          <>
-            <div className="flex h-4 w-full overflow-hidden rounded-full bg-border/40">
-              <div
-                className="bg-pink-400"
-                style={{ width: `${(porGenero.feminino / totalGenero) * 100}%` }}
-                title={`Feminino: ${porGenero.feminino}`}
-              />
-              <div
-                className="bg-sky-400"
-                style={{ width: `${(porGenero.masculino / totalGenero) * 100}%` }}
-                title={`Masculino: ${porGenero.masculino}`}
-              />
-            </div>
-            <div className="mt-3 flex items-center justify-between text-sm">
-              <span className="inline-flex items-center gap-2">
-                <span className="h-3 w-3 rounded-full bg-pink-400" />
-                Feminino <b className="text-pink-300">{porGenero.feminino}</b>
-                <span className="text-muted-foreground">
-                  ({Math.round((porGenero.feminino / totalGenero) * 100)}%)
-                </span>
-              </span>
-              <span className="inline-flex items-center gap-2">
-                <span className="h-3 w-3 rounded-full bg-sky-400" />
-                Masculino <b className="text-sky-300">{porGenero.masculino}</b>
-                <span className="text-muted-foreground">
-                  ({Math.round((porGenero.masculino / totalGenero) * 100)}%)
-                </span>
-              </span>
-            </div>
-          </>
+          <div className="flex flex-wrap items-center justify-center gap-8">
+            <GenderDonut data={porGenero} total={totalGenero} />
+            <ul className="space-y-2 text-sm">
+              {(
+                [
+                  ["feminino", "Feminino", "#f472b6"],
+                  ["masculino", "Masculino", "#38bdf8"],
+                  ["unissex", "Unissex", "#a78bfa"],
+                ] as const
+              ).map(([k, label, color]) => (
+                <li key={k} className="flex items-center gap-3">
+                  <span className="h-3 w-3 rounded-full" style={{ background: color }} />
+                  <span className="w-24">{label}</span>
+                  <b style={{ color }}>{porGenero[k]}</b>
+                  <span className="text-muted-foreground">
+                    ({Math.round((porGenero[k] / totalGenero) * 100)}%)
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
         )}
       </div>
+
 
     </>
   );
