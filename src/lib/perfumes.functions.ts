@@ -345,6 +345,9 @@ export const criarPerfume = createServerFn({ method: "POST" })
       oosThreshold?: number | null;
       sobEncomenda?: boolean;
       prontaEntrega?: boolean;
+      notasTopo?: string;
+      notasCoracao?: string;
+      notasFundo?: string;
     }) => data,
   )
   .handler(async ({ data }) => {
@@ -370,6 +373,12 @@ export const criarPerfume = createServerFn({ method: "POST" })
       properties["OoS threshold"] = { number: data.oosThreshold };
     if (data.sobEncomenda !== undefined) properties["Sob encomenda"] = { checkbox: data.sobEncomenda };
     if (data.prontaEntrega !== undefined) properties["Pronta entrega"] = { checkbox: data.prontaEntrega };
+    if (data.notasTopo)
+      properties["Notas de topo"] = { rich_text: [{ text: { content: data.notasTopo } }] };
+    if (data.notasCoracao)
+      properties["Notas de coração"] = { rich_text: [{ text: { content: data.notasCoracao } }] };
+    if (data.notasFundo)
+      properties["Notas de fundo"] = { rich_text: [{ text: { content: data.notasFundo } }] };
 
     const body: Record<string, unknown> = {
       parent: { database_id: DATABASE_ID },
