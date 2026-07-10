@@ -96,7 +96,7 @@ function PerfumeDetail() {
         <div className="flex flex-col justify-center">
           <div className="flex flex-wrap items-center gap-2">
             <span className="text-[11px] uppercase tracking-[0.25em] text-gold">
-              {p.emEstoque ? "Disponível" : "Esgotado"}
+              {p.emEstoque ? "Disponível" : p.sobEncomenda ? "Sob encomenda" : "Esgotado"}
             </span>
             <span className="rounded-full bg-gold/10 px-2 py-0.5 text-[10px] uppercase tracking-wider text-gold">
               {p.volume}
