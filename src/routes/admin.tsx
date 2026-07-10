@@ -958,6 +958,9 @@ function PerfumesTab() {
                   imagemUrl: patch.imagemUrl ?? null,
                   colecao: patch.colecao ?? colTab,
                   genero: patch.genero,
+                  lowThreshold: patch.lowThreshold ?? null,
+                  oosThreshold: patch.oosThreshold ?? null,
+                  checkbox: patch.checkbox,
                 },
               });
               await qc.invalidateQueries({ queryKey: ["perfumes"] });
