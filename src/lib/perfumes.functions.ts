@@ -187,6 +187,12 @@ export const getPerfumes = createServerFn({ method: "GET" }).handler(
       const oosThreshold = page.properties["OoS threshold"]?.number ?? null;
       const sobEncomenda = page.properties["Sob encomenda"]?.checkbox ?? false;
       const prontaEntrega = page.properties["Pronta entrega"]?.checkbox ?? false;
+      const notasTopo =
+        page.properties["Notas de topo"]?.rich_text?.map((t) => t.plain_text).join("") ?? "";
+      const notasCoracao =
+        page.properties["Notas de coração"]?.rich_text?.map((t) => t.plain_text).join("") ?? "";
+      const notasFundo =
+        page.properties["Notas de fundo"]?.rich_text?.map((t) => t.plain_text).join("") ?? "";
       return {
         id: page.id,
         nome,
@@ -205,6 +211,9 @@ export const getPerfumes = createServerFn({ method: "GET" }).handler(
         oosThreshold,
         sobEncomenda,
         prontaEntrega,
+        notasTopo,
+        notasCoracao,
+        notasFundo,
       };
     });
   },
