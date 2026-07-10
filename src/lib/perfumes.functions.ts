@@ -48,7 +48,7 @@ export type Perfume = {
   colecao: Colecao;
   lowThreshold: number | null;
   oosThreshold: number | null;
-  checkbox: boolean;
+  sobEncomenda: boolean;
 };
 
 const GENERO_MAP: Record<string, Genero> = {
@@ -180,7 +180,7 @@ export const getPerfumes = createServerFn({ method: "GET" }).handler(
         : "Signature";
       const lowThreshold = page.properties["Low threshold "]?.number ?? null;
       const oosThreshold = page.properties["OoS threshold"]?.number ?? null;
-      const checkbox = page.properties["Checkbox"]?.checkbox ?? false;
+      const sobEncomenda = page.properties["Sob encomenda"]?.checkbox ?? false;
       return {
         id: page.id,
         nome,
@@ -197,7 +197,7 @@ export const getPerfumes = createServerFn({ method: "GET" }).handler(
         colecao,
         lowThreshold,
         oosThreshold,
-        checkbox,
+        sobEncomenda,
       };
     });
   },
@@ -230,7 +230,7 @@ export const atualizarPerfume = createServerFn({ method: "POST" })
       genero?: Genero;
       lowThreshold?: number | null;
       oosThreshold?: number | null;
-      checkbox?: boolean;
+      sobEncomenda?: boolean;
     }) => data,
   )
   .handler(async ({ data }) => {
@@ -256,7 +256,7 @@ export const atualizarPerfume = createServerFn({ method: "POST" })
       properties["Low threshold "] = { number: data.lowThreshold };
     if (data.oosThreshold !== undefined)
       properties["OoS threshold"] = { number: data.oosThreshold };
-    if (data.checkbox !== undefined) properties["Checkbox"] = { checkbox: data.checkbox };
+    if (data.sobEncomenda !== undefined) properties["Sob encomenda"] = { checkbox: data.sobEncomenda };
 
     const body: Record<string, unknown> = { properties };
     if (data.imagemUrl !== undefined && data.imagemUrl) {
@@ -316,7 +316,7 @@ export const criarPerfume = createServerFn({ method: "POST" })
       genero?: Genero;
       lowThreshold?: number | null;
       oosThreshold?: number | null;
-      checkbox?: boolean;
+      sobEncomenda?: boolean;
     }) => data,
   )
   .handler(async ({ data }) => {
@@ -340,7 +340,7 @@ export const criarPerfume = createServerFn({ method: "POST" })
       properties["Low threshold "] = { number: data.lowThreshold };
     if (data.oosThreshold != null)
       properties["OoS threshold"] = { number: data.oosThreshold };
-    if (data.checkbox !== undefined) properties["Checkbox"] = { checkbox: data.checkbox };
+    if (data.sobEncomenda !== undefined) properties["Sob encomenda"] = { checkbox: data.sobEncomenda };
 
     const body: Record<string, unknown> = {
       parent: { database_id: DATABASE_ID },
