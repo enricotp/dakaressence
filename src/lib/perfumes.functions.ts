@@ -20,15 +20,16 @@ export const COLECOES: Colecao[] = [
 
 export const COLECAO_INFO: Record<
   Colecao,
-  { volumes: Volume[]; defaultVolume: Volume; sobEncomenda: boolean }
+  { volumes: Volume[]; defaultVolume: Volume; sobEncomenda: boolean; prazoEncomendaDias: number }
 > = {
-  Signature: { volumes: ["50ml", "100ml"], defaultVolume: "50ml", sobEncomenda: false },
-  "Brand Collection": { volumes: ["25ml"], defaultVolume: "25ml", sobEncomenda: true },
-  "Arabic Collection": { volumes: ["25ml"], defaultVolume: "25ml", sobEncomenda: true },
+  Signature: { volumes: ["50ml", "100ml"], defaultVolume: "50ml", sobEncomenda: false, prazoEncomendaDias: 6 },
+  "Brand Collection": { volumes: ["25ml"], defaultVolume: "25ml", sobEncomenda: true, prazoEncomendaDias: 6 },
+  "Arabic Collection": { volumes: ["25ml"], defaultVolume: "25ml", sobEncomenda: true, prazoEncomendaDias: 6 },
   "Dream Brand Collection": {
     volumes: ["80ml", "100ml"],
     defaultVolume: "100ml",
     sobEncomenda: true,
+    prazoEncomendaDias: 6,
   },
 };
 
@@ -50,6 +51,9 @@ export type Perfume = {
   oosThreshold: number | null;
   sobEncomenda: boolean;
   prontaEntrega: boolean;
+  notasTopo: string;
+  notasCoracao: string;
+  notasFundo: string;
 };
 
 const GENERO_MAP: Record<string, Genero> = {
