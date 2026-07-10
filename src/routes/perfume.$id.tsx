@@ -92,6 +92,11 @@ function PerfumeDetail() {
             <span className="rounded-full border border-border/60 px-2 py-0.5 text-[10px] uppercase tracking-wider text-muted-foreground">
               {p.colecao}
             </span>
+            {p.prontaEntrega && (
+              <span className="rounded-full bg-emerald-500/15 px-2 py-0.5 text-[10px] uppercase tracking-wider text-emerald-400">
+                Pronta entrega
+              </span>
+            )}
             {p.sobEncomenda && (
               <span className="rounded-full bg-amber-500/15 px-2 py-0.5 text-[10px] uppercase tracking-wider text-amber-400">
                 Sob encomenda

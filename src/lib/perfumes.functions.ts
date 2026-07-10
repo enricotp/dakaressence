@@ -49,6 +49,7 @@ export type Perfume = {
   lowThreshold: number | null;
   oosThreshold: number | null;
   sobEncomenda: boolean;
+  prontaEntrega: boolean;
 };
 
 const GENERO_MAP: Record<string, Genero> = {
@@ -181,6 +182,7 @@ export const getPerfumes = createServerFn({ method: "GET" }).handler(
       const lowThreshold = page.properties["Low threshold "]?.number ?? null;
       const oosThreshold = page.properties["OoS threshold"]?.number ?? null;
       const sobEncomenda = page.properties["Sob encomenda"]?.checkbox ?? false;
+      const prontaEntrega = page.properties["Pronta entrega"]?.checkbox ?? false;
       return {
         id: page.id,
         nome,
@@ -198,6 +200,7 @@ export const getPerfumes = createServerFn({ method: "GET" }).handler(
         lowThreshold,
         oosThreshold,
         sobEncomenda,
+        prontaEntrega,
       };
     });
   },
@@ -231,6 +234,7 @@ export const atualizarPerfume = createServerFn({ method: "POST" })
       lowThreshold?: number | null;
       oosThreshold?: number | null;
       sobEncomenda?: boolean;
+      prontaEntrega?: boolean;
     }) => data,
   )
   .handler(async ({ data }) => {
@@ -257,6 +261,7 @@ export const atualizarPerfume = createServerFn({ method: "POST" })
     if (data.oosThreshold !== undefined)
       properties["OoS threshold"] = { number: data.oosThreshold };
     if (data.sobEncomenda !== undefined) properties["Sob encomenda"] = { checkbox: data.sobEncomenda };
+    if (data.prontaEntrega !== undefined) properties["Pronta entrega"] = { checkbox: data.prontaEntrega };
 
     const body: Record<string, unknown> = { properties };
     if (data.imagemUrl !== undefined && data.imagemUrl) {
@@ -317,6 +322,7 @@ export const criarPerfume = createServerFn({ method: "POST" })
       lowThreshold?: number | null;
       oosThreshold?: number | null;
       sobEncomenda?: boolean;
+      prontaEntrega?: boolean;
     }) => data,
   )
   .handler(async ({ data }) => {
@@ -341,6 +347,7 @@ export const criarPerfume = createServerFn({ method: "POST" })
     if (data.oosThreshold != null)
       properties["OoS threshold"] = { number: data.oosThreshold };
     if (data.sobEncomenda !== undefined) properties["Sob encomenda"] = { checkbox: data.sobEncomenda };
+    if (data.prontaEntrega !== undefined) properties["Pronta entrega"] = { checkbox: data.prontaEntrega };
 
     const body: Record<string, unknown> = {
       parent: { database_id: DATABASE_ID },
