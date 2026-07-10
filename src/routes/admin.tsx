@@ -528,7 +528,7 @@ function AnalyticsTab() {
   }, [filtrados, perfumePorNome]);
 
   const porGenero = useMemo(() => {
-    const acc = { feminino: 0, masculino: 0 };
+    const acc: Record<Genero, number> = { feminino: 0, masculino: 0, unissex: 0 };
     filtrados.forEach((it) => {
       const p = perfumePorNome.get(it.perfume.toLowerCase());
       if (!p) return;
@@ -536,7 +536,7 @@ function AnalyticsTab() {
     });
     return acc;
   }, [filtrados, perfumePorNome]);
-  const totalGenero = porGenero.feminino + porGenero.masculino;
+  const totalGenero = porGenero.feminino + porGenero.masculino + porGenero.unissex;
 
 
   const totalVendas = porDia.reduce((a, b) => a + b.vendas, 0);
@@ -716,42 +716,34 @@ function AnalyticsTab() {
       </div>
 
       <div className="mt-6 rounded-2xl border border-border/60 bg-card p-5">
-        <h3 className="mb-4 font-display text-lg">Feminino vs Masculino</h3>
+        <h3 className="mb-4 font-display text-lg">Distribuição por gênero</h3>
         {totalGenero === 0 ? (
           <p className="py-8 text-center text-sm text-muted-foreground">Sem vendas no período.</p>
         ) : (
-          <>
-            <div className="flex h-4 w-full overflow-hidden rounded-full bg-border/40">
-              <div
-                className="bg-pink-400"
-                style={{ width: `${(porGenero.feminino / totalGenero) * 100}%` }}
-                title={`Feminino: ${porGenero.feminino}`}
-              />
-              <div
-                className="bg-sky-400"
-                style={{ width: `${(porGenero.masculino / totalGenero) * 100}%` }}
-                title={`Masculino: ${porGenero.masculino}`}
-              />
-            </div>
-            <div className="mt-3 flex items-center justify-between text-sm">
-              <span className="inline-flex items-center gap-2">
-                <span className="h-3 w-3 rounded-full bg-pink-400" />
-                Feminino <b className="text-pink-300">{porGenero.feminino}</b>
-                <span className="text-muted-foreground">
-                  ({Math.round((porGenero.feminino / totalGenero) * 100)}%)
-                </span>
-              </span>
-              <span className="inline-flex items-center gap-2">
-                <span className="h-3 w-3 rounded-full bg-sky-400" />
-                Masculino <b className="text-sky-300">{porGenero.masculino}</b>
-                <span className="text-muted-foreground">
-                  ({Math.round((porGenero.masculino / totalGenero) * 100)}%)
-                </span>
-              </span>
-            </div>
-          </>
+          <div className="flex flex-wrap items-center justify-center gap-8">
+            <GenderDonut data={porGenero} total={totalGenero} />
+            <ul className="space-y-2 text-sm">
+              {(
+                [
+                  ["feminino", "Feminino", "#f472b6"],
+                  ["masculino", "Masculino", "#38bdf8"],
+                  ["unissex", "Unissex", "#a78bfa"],
+                ] as const
+              ).map(([k, label, color]) => (
+                <li key={k} className="flex items-center gap-3">
+                  <span className="h-3 w-3 rounded-full" style={{ background: color }} />
+                  <span className="w-24">{label}</span>
+                  <b style={{ color }}>{porGenero[k]}</b>
+                  <span className="text-muted-foreground">
+                    ({Math.round((porGenero[k] / totalGenero) * 100)}%)
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
         )}
       </div>
+
 
     </>
   );
@@ -765,6 +757,64 @@ function KpiCard({ label, value }: { label: string; value: string }) {
     </div>
   );
 }
+
+function GenderDonut({
+  data,
+  total,
+}: {
+  data: Record<Genero, number>;
+  total: number;
+}) {
+  const size = 180;
+  const r = 70;
+  const cx = size / 2;
+  const cy = size / 2;
+  const circ = 2 * Math.PI * r;
+  const segments: Array<{ key: Genero; color: string; value: number }> = [
+    { key: "feminino", color: "#f472b6", value: data.feminino },
+    { key: "masculino", color: "#38bdf8", value: data.masculino },
+    { key: "unissex", color: "#a78bfa", value: data.unissex },
+  ];
+  let offset = 0;
+  return (
+    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} className="-rotate-90">
+      <circle cx={cx} cy={cy} r={r} fill="none" stroke="hsl(var(--border))" strokeWidth={22} opacity={0.3} />
+      {segments.map((s) => {
+        if (s.value === 0) return null;
+        const len = (s.value / total) * circ;
+        const dasharray = `${len} ${circ - len}`;
+        const el = (
+          <circle
+            key={s.key}
+            cx={cx}
+            cy={cy}
+            r={r}
+            fill="none"
+            stroke={s.color}
+            strokeWidth={22}
+            strokeDasharray={dasharray}
+            strokeDashoffset={-offset}
+          />
+        );
+        offset += len;
+        return el;
+      })}
+      <text
+        x={cx}
+        y={cy}
+        textAnchor="middle"
+        dominantBaseline="central"
+        transform={`rotate(90 ${cx} ${cy})`}
+        className="fill-foreground font-display"
+        fontSize={22}
+        fontWeight={600}
+      >
+        {total}
+      </text>
+    </svg>
+  );
+}
+
 
 /* ---------------- Perfumes CRUD ---------------- */
 
@@ -887,6 +937,9 @@ function PerfumesTab() {
               custo: null,
               amount: null,
               colecao: colTab,
+              lowThreshold: null,
+              oosThreshold: null,
+              checkbox: false,
             }}
             onCancel={() => setCriando(false)}
             onSave={async (patch) => {
@@ -905,6 +958,9 @@ function PerfumesTab() {
                   imagemUrl: patch.imagemUrl ?? null,
                   colecao: patch.colecao ?? colTab,
                   genero: patch.genero,
+                  lowThreshold: patch.lowThreshold ?? null,
+                  oosThreshold: patch.oosThreshold ?? null,
+                  checkbox: patch.checkbox,
                 },
               });
               await qc.invalidateQueries({ queryKey: ["perfumes"] });
@@ -1043,6 +1099,9 @@ function EditForm({
     imagemUrl?: string | null;
     colecao?: Colecao;
     genero?: Genero;
+    lowThreshold?: number | null;
+    oosThreshold?: number | null;
+    checkbox?: boolean;
   }) => Promise<void>;
   onCancel: () => void;
   marcasSugestoes?: string[];
@@ -1058,6 +1117,9 @@ function EditForm({
   const [marca, setMarca] = useState(perfume.marca ?? "");
   const [genero, setGenero] = useState<Genero>(perfume.genero);
   const [imagemUrl, setImagemUrl] = useState("");
+  const [lowThreshold, setLowThreshold] = useState(perfume.lowThreshold?.toString() ?? "");
+  const [oosThreshold, setOosThreshold] = useState(perfume.oosThreshold?.toString() ?? "");
+  const [checkbox, setCheckbox] = useState(perfume.checkbox);
   const [salvando, setSalvando] = useState(false);
   const [erro, setErro] = useState<string | null>(null);
 
@@ -1094,6 +1156,9 @@ function EditForm({
         marca: marca.trim() === "" ? null : marca.trim(),
         colecao,
         genero,
+        lowThreshold: lowThreshold === "" ? null : parseInt(lowThreshold, 10),
+        oosThreshold: oosThreshold === "" ? null : parseInt(oosThreshold, 10),
+        checkbox,
       };
       if (imagemUrl.trim()) patch.imagemUrl = imagemUrl.trim();
       await onSave(patch);
@@ -1183,8 +1248,8 @@ function EditForm({
         </div>
       </Field>
       <Field label="Gênero">
-        <div className="flex gap-2">
-          {(["feminino", "masculino"] as const).map((g) => (
+        <div className="flex flex-wrap gap-2">
+          {(["feminino", "masculino", "unissex"] as const).map((g) => (
             <button
               key={g}
               type="button"
@@ -1200,6 +1265,35 @@ function EditForm({
           ))}
         </div>
       </Field>
+      <div className="grid grid-cols-2 gap-2">
+        <Field label="Low threshold">
+          <input
+            value={lowThreshold}
+            onChange={(e) => setLowThreshold(e.target.value)}
+            className="input"
+            inputMode="numeric"
+            placeholder="Ex.: 3"
+          />
+        </Field>
+        <Field label="OoS threshold">
+          <input
+            value={oosThreshold}
+            onChange={(e) => setOosThreshold(e.target.value)}
+            className="input"
+            inputMode="numeric"
+            placeholder="Ex.: 0"
+          />
+        </Field>
+      </div>
+      <label className="flex items-center gap-2 text-sm">
+        <input
+          type="checkbox"
+          checked={checkbox}
+          onChange={(e) => setCheckbox(e.target.checked)}
+          className="h-4 w-4 accent-gold"
+        />
+        <span>Checkbox (Notion)</span>
+      </label>
       <Field label="Marca">
         <input
           value={marca}

@@ -3,7 +3,7 @@ import { createServerFn } from "@tanstack/react-start";
 const DATABASE_ID = "38858811-29ca-83c5-b57d-0102c05505b1";
 const GATEWAY = "https://connector-gateway.lovable.dev/notion/v1";
 
-export type Genero = "feminino" | "masculino";
+export type Genero = "feminino" | "masculino" | "unissex";
 export type Volume = "25ml" | "50ml" | "80ml" | "100ml";
 export type Colecao =
   | "Signature"
@@ -46,6 +46,9 @@ export type Perfume = {
   custo: number | null;
   amount: number | null;
   colecao: Colecao;
+  lowThreshold: number | null;
+  oosThreshold: number | null;
+  checkbox: boolean;
 };
 
 const GENERO_MAP: Record<string, Genero> = {
@@ -99,6 +102,7 @@ type NotionPage = {
       rich_text?: Array<{ plain_text: string }>;
       number?: number | null;
       select?: { name?: string } | null;
+      checkbox?: boolean;
     }
   >;
 };
@@ -167,13 +171,16 @@ export const getPerfumes = createServerFn({ method: "GET" }).handler(
       const marca = page.properties["Marca"]?.select?.name ?? null;
       const generoRaw = page.properties["Gênero"]?.select?.name?.toLowerCase() ?? "";
       const genero: Genero =
-        generoRaw === "feminino" || generoRaw === "masculino"
+        generoRaw === "feminino" || generoRaw === "masculino" || generoRaw === "unissex"
           ? (generoRaw as Genero)
           : inferirGenero(nome);
       const colecaoRaw = page.properties["Coleção"]?.select?.name ?? "";
       const colecao: Colecao = (COLECOES as string[]).includes(colecaoRaw)
         ? (colecaoRaw as Colecao)
         : "Signature";
+      const lowThreshold = page.properties["Low threshold "]?.number ?? null;
+      const oosThreshold = page.properties["OoS threshold"]?.number ?? null;
+      const checkbox = page.properties["Checkbox"]?.checkbox ?? false;
       return {
         id: page.id,
         nome,
@@ -188,6 +195,9 @@ export const getPerfumes = createServerFn({ method: "GET" }).handler(
         custo,
         amount,
         colecao,
+        lowThreshold,
+        oosThreshold,
+        checkbox,
       };
     });
   },
@@ -218,6 +228,9 @@ export const atualizarPerfume = createServerFn({ method: "POST" })
       imagemUrl?: string | null;
       colecao?: Colecao;
       genero?: Genero;
+      lowThreshold?: number | null;
+      oosThreshold?: number | null;
+      checkbox?: boolean;
     }) => data,
   )
   .handler(async ({ data }) => {
@@ -238,9 +251,12 @@ export const atualizarPerfume = createServerFn({ method: "POST" })
     if (data.colecao !== undefined)
       properties["Coleção"] = { select: { name: data.colecao } };
     if (data.genero !== undefined)
-      properties["Gênero"] = {
-        select: { name: data.genero === "feminino" ? "Feminino" : "Masculino" },
-      };
+      properties["Gênero"] = { select: { name: generoNotionName(data.genero) } };
+    if (data.lowThreshold !== undefined)
+      properties["Low threshold "] = { number: data.lowThreshold };
+    if (data.oosThreshold !== undefined)
+      properties["OoS threshold"] = { number: data.oosThreshold };
+    if (data.checkbox !== undefined) properties["Checkbox"] = { checkbox: data.checkbox };
 
     const body: Record<string, unknown> = { properties };
     if (data.imagemUrl !== undefined && data.imagemUrl) {
@@ -258,6 +274,12 @@ export const atualizarPerfume = createServerFn({ method: "POST" })
     }
     return { ok: true };
   });
+
+function generoNotionName(g: Genero): string {
+  if (g === "feminino") return "Feminino";
+  if (g === "masculino") return "Masculino";
+  return "Unissex";
+}
 
 // Ajuste direto usado internamente pelo servidor. delta negativo = baixa, positivo = devolve.
 export async function ajustarEstoqueInterno(id: string, delta: number) {
@@ -292,6 +314,9 @@ export const criarPerfume = createServerFn({ method: "POST" })
       imagemUrl?: string | null;
       colecao?: Colecao;
       genero?: Genero;
+      lowThreshold?: number | null;
+      oosThreshold?: number | null;
+      checkbox?: boolean;
     }) => data,
   )
   .handler(async ({ data }) => {
@@ -310,9 +335,12 @@ export const criarPerfume = createServerFn({ method: "POST" })
     if (data.marca) properties["Marca"] = { select: { name: data.marca } };
     if (data.colecao) properties["Coleção"] = { select: { name: data.colecao } };
     if (data.genero)
-      properties["Gênero"] = {
-        select: { name: data.genero === "feminino" ? "Feminino" : "Masculino" },
-      };
+      properties["Gênero"] = { select: { name: generoNotionName(data.genero) } };
+    if (data.lowThreshold != null)
+      properties["Low threshold "] = { number: data.lowThreshold };
+    if (data.oosThreshold != null)
+      properties["OoS threshold"] = { number: data.oosThreshold };
+    if (data.checkbox !== undefined) properties["Checkbox"] = { checkbox: data.checkbox };
 
     const body: Record<string, unknown> = {
       parent: { database_id: DATABASE_ID },
