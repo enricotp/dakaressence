@@ -301,6 +301,12 @@ export function CartDrawer() {
                     {formatBRL(total)}
                   </span>
                 </div>
+                {freteGratis && (
+                  <div className="mt-1 flex items-center justify-between text-xs">
+                    <span className="text-muted-foreground">Frete</span>
+                    <span className="font-semibold text-emerald-400">GRÁTIS 🎉</span>
+                  </div>
+                )}
                 {pagamento === "Cartão" && (
                   <p className="mt-1 text-right text-xs text-muted-foreground">
                     {parcelas}x de {formatBRL(total / parcelas)}
@@ -322,20 +328,28 @@ export function CartDrawer() {
               </span>
             </div>
           )}
+          {freteGratis && etapa === "carrinho" && (
+            <div className="flex items-center justify-between text-xs">
+              <span className="uppercase tracking-[0.2em] text-muted-foreground">Frete</span>
+              <span className="font-semibold text-emerald-400">GRÁTIS 🎉</span>
+            </div>
+          )}
 
           {etapa === "carrinho" ? (
             <>
               <button
                 type="button"
                 onClick={() => setEtapa("checkout")}
-                disabled={cartCount === 0}
+                disabled={cartCount === 0 || bloqueadoPorEncomenda}
                 className={`inline-flex w-full items-center justify-center rounded-full px-6 py-3 text-sm font-semibold transition ${
-                  cartCount === 0
+                  cartCount === 0 || bloqueadoPorEncomenda
                     ? "pointer-events-none bg-foreground/5 text-muted-foreground"
                     : "bg-gold text-primary-foreground hover:brightness-110"
                 }`}
               >
-                Continuar
+                {bloqueadoPorEncomenda
+                  ? `Adicione +${faltamParaEncomenda} p/ continuar`
+                  : "Continuar"}
               </button>
               {cartCount > 0 && (
                 <button
