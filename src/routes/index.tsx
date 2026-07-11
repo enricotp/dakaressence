@@ -305,7 +305,8 @@ function Index() {
               const i = perfumes.indexOf(p);
               const codigo = codigoDoPerfume(i);
               const imagem = p.imagem ?? imagensRotativas[i % imagensRotativas.length];
-              const indisponivel = !p.emEstoque && !p.sobEncomenda;
+              // Sem estoque agora vira automaticamente "sob encomenda"
+              const mostrarSobEncomenda = p.sobEncomenda || !p.emEstoque;
               const qtd = cart[p.id] ?? 0;
               return (
                 <article
@@ -324,7 +325,7 @@ function Index() {
                       width={800}
                       height={1000}
                       loading="lazy"
-                      className={`h-full w-full object-cover transition duration-700 group-hover:scale-105 ${indisponivel ? "opacity-40" : ""}`}
+                      className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
                     />
                     <span className="absolute left-2 top-2 flex max-w-[55%] items-center gap-1 rounded-full bg-background/85 px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.1em] text-gold backdrop-blur sm:left-4 sm:top-4 sm:max-w-none sm:gap-2 sm:px-3 sm:py-1.5 sm:text-sm sm:tracking-[0.15em]">
                       <span className="truncate">{codigo}</span>
@@ -332,26 +333,24 @@ function Index() {
                         {p.volume}
                       </span>
                     </span>
-                    {!indisponivel && (p.prontaEntrega || p.sobEncomenda) && (
-                      <div className="absolute right-2 top-2 flex max-w-[42%] flex-col items-end gap-1 sm:right-4 sm:top-4 sm:max-w-none sm:gap-1.5">
-                        {p.prontaEntrega && (
-                          <span className="rounded-full bg-emerald-500/90 px-2 py-0.5 text-[8px] uppercase tracking-[0.15em] text-black backdrop-blur sm:px-3 sm:py-1 sm:text-[10px] sm:tracking-[0.2em]">
-                            Pronta entrega
-                          </span>
-                        )}
-                        {p.sobEncomenda && (
-                          <span className="rounded-full bg-amber-500/90 px-2 py-0.5 text-[8px] uppercase tracking-[0.15em] text-black backdrop-blur sm:px-3 sm:py-1 sm:text-[10px] sm:tracking-[0.2em]">
-                            Sob encomenda
-                          </span>
-                        )}
-                      </div>
+                    {/* Pronta entrega — canto superior direito */}
+                    {p.prontaEntrega && (
+                      <span className="absolute right-2 top-2 rounded-full bg-emerald-500/90 px-2 py-0.5 text-[8px] uppercase tracking-[0.15em] text-black backdrop-blur sm:right-4 sm:top-4 sm:px-3 sm:py-1 sm:text-[10px] sm:tracking-[0.2em]">
+                        Pronta entrega
+                      </span>
                     )}
-                    {indisponivel && (
-                      <span className="absolute right-2 top-2 rounded-full bg-background/90 px-2 py-0.5 text-[8px] uppercase tracking-[0.15em] text-muted-foreground backdrop-blur sm:right-4 sm:top-4 sm:px-3 sm:py-1 sm:text-[10px] sm:tracking-[0.2em]">
-                        Esgotado
+                    {/* Sob encomenda — canto inferior direito no mobile, superior direito (empilhado) no desktop */}
+                    {mostrarSobEncomenda && (
+                      <span
+                        className={`absolute right-2 bottom-2 rounded-full bg-amber-500/90 px-2 py-0.5 text-[8px] uppercase tracking-[0.15em] text-black backdrop-blur sm:right-4 sm:bottom-auto sm:px-3 sm:py-1 sm:text-[10px] sm:tracking-[0.2em] ${
+                          p.prontaEntrega ? "sm:top-12" : "sm:top-4"
+                        }`}
+                      >
+                        Sob encomenda
                       </span>
                     )}
                   </Link>
+
                   <div className="flex flex-1 flex-col gap-3 p-4 sm:gap-4 sm:p-6">
                     <div>
                       <h3 className="font-display text-base font-semibold sm:text-xl">
