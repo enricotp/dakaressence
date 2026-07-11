@@ -47,13 +47,27 @@ function Index() {
   });
   const marcas = Array.from(new Set(perfumes.map((p) => p.marca).filter((m): m is string => !!m))).sort();
   const buscaNorm = busca.trim().toLowerCase();
-  const perfumesFiltrados = perfumes.filter((p) => {
-    if (!colecoesAtivas[p.colecao]) return false;
-    if (filtro !== "todos" && p.genero !== filtro) return false;
-    if (marca !== "todas" && p.marca !== marca) return false;
-    if (buscaNorm && !p.nome.toLowerCase().includes(buscaNorm)) return false;
-    return true;
-  });
+  const colecaoOrder: Record<Colecao, number> = {
+    Signature: 0,
+    "Brand Collection": 1,
+    "Arabic Collection": 2,
+    "Dream Brand Collection": 3,
+  };
+  const perfumesFiltrados = perfumes
+    .filter((p) => {
+      if (!colecoesAtivas[p.colecao]) return false;
+      if (filtro !== "todos" && p.genero !== filtro) return false;
+      if (marca !== "todas" && p.marca !== marca) return false;
+      if (buscaNorm && !p.nome.toLowerCase().includes(buscaNorm)) return false;
+      return true;
+    })
+    .sort((a, b) => {
+      const c = colecaoOrder[a.colecao] - colecaoOrder[b.colecao];
+      if (c !== 0) return c;
+      // Em estoque primeiro, depois os sob encomenda
+      return Number(b.emEstoque) - Number(a.emEstoque);
+    });
+
 
   const secoes = ["home", "catalogo", "sobre", "faq"] as const;
   type Secao = (typeof secoes)[number];
