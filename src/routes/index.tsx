@@ -156,17 +156,33 @@ function Index() {
             Perfumes contratipos com alta concentração e fixação premium.
             Monte seu pedido e finalize direto no WhatsApp.
           </p>
-          <div className="mt-10 flex flex-wrap justify-center gap-4">
+      {/* Hero */}
+      <section id="top" className="relative overflow-hidden">
+        <div className="mx-auto max-w-4xl px-4 py-14 text-center sm:px-6 sm:py-20 md:py-28">
+          <span className="mb-6 inline-flex items-center gap-2 rounded-full border border-gold/30 bg-gold/5 px-3 py-1 text-[11px] uppercase tracking-[0.2em] text-gold">
+            <span className="h-1 w-1 rounded-full bg-gold" /> Coleção 2026
+          </span>
+          <h1 className="font-display text-4xl font-semibold leading-[1.05] tracking-tight sm:text-5xl md:text-7xl">
+            A mesma essência,{" "}
+            <span className="bg-gradient-to-r from-gold to-gold-soft bg-clip-text text-transparent">
+              metade do preço.
+            </span>
+          </h1>
+          <p className="mx-auto mt-6 max-w-lg text-base leading-relaxed text-muted-foreground sm:text-lg">
+            Perfumes contratipos com alta concentração e fixação premium.
+            Monte seu pedido e finalize direto no WhatsApp.
+          </p>
+          <div className="mt-8 flex flex-col items-center gap-3 sm:mt-10 sm:flex-row sm:flex-wrap sm:justify-center sm:gap-4">
             <a
               href="#catalogo"
-              className="inline-flex items-center justify-center rounded-full bg-gold px-6 py-3 text-sm font-semibold text-primary-foreground transition hover:brightness-110"
+              className="inline-flex min-h-11 w-full items-center justify-center rounded-full bg-gold px-6 py-3 text-sm font-semibold text-primary-foreground transition hover:brightness-110 sm:w-auto"
             >
               Ver catálogo
             </a>
             <button
               type="button"
               onClick={open}
-              className="inline-flex items-center justify-center rounded-full border border-border px-6 py-3 text-sm font-medium transition hover:border-gold hover:text-gold"
+              className="inline-flex min-h-11 w-full items-center justify-center rounded-full border border-border px-6 py-3 text-sm font-medium transition hover:border-gold hover:text-gold sm:w-auto"
             >
               Meu carrinho ({cartCount})
             </button>
@@ -176,12 +192,12 @@ function Index() {
 
 
       {/* Catálogo */}
-      <section id="catalogo" className="border-t border-border/60 py-24">
-        <div className="mx-auto max-w-7xl px-6">
-          <div className="mb-14 flex items-end justify-between">
+      <section id="catalogo" className="border-t border-border/60 py-14 sm:py-20 md:py-24">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6">
+          <div className="mb-10 flex items-end justify-between sm:mb-14">
             <div>
               <span className="text-[11px] uppercase tracking-[0.25em] text-gold">Catálogo</span>
-              <h2 className="mt-3 font-display text-4xl font-semibold md:text-5xl">
+              <h2 className="mt-3 font-display text-3xl font-semibold sm:text-4xl md:text-5xl">
                 Nossas fragrâncias
               </h2>
             </div>
@@ -192,11 +208,11 @@ function Index() {
 
 
           {/* Filtro por gênero — segmented iOS-like */}
-          <div className="mb-10 flex justify-center">
-            <div className="relative inline-flex rounded-full border border-border/60 bg-card p-1 text-sm">
+          <div className="mb-8 flex justify-center sm:mb-10">
+            <div className="relative inline-flex w-full max-w-sm rounded-full border border-border/60 bg-card p-1 text-sm sm:w-auto">
               <span
                 aria-hidden
-                className="absolute top-1 bottom-1 w-1/3 rounded-full bg-gold transition-transform duration-300 ease-out"
+                className="absolute top-1 bottom-1 left-1 w-[calc((100%-0.5rem)/3)] rounded-full bg-gold transition-transform duration-300 ease-out sm:w-28"
                 style={{
                   transform: `translateX(${filtro === "feminino" ? "0%" : filtro === "todos" ? "100%" : "200%"})`,
                 }}
@@ -206,7 +222,7 @@ function Index() {
                   key={op}
                   type="button"
                   onClick={() => setFiltro(op)}
-                  className={`relative z-10 w-28 rounded-full px-4 py-2 font-medium capitalize transition-colors ${
+                  className={`relative z-10 flex-1 min-h-11 rounded-full px-2 py-2 text-xs font-medium capitalize transition-colors sm:w-28 sm:flex-none sm:px-4 sm:text-sm ${
                     filtro === op ? "text-primary-foreground" : "text-muted-foreground hover:text-foreground"
                   }`}
                 >
