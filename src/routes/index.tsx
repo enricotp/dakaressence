@@ -305,8 +305,8 @@ function Index() {
               const i = perfumes.indexOf(p);
               const codigo = codigoDoPerfume(i);
               const imagem = p.imagem ?? imagensRotativas[i % imagensRotativas.length];
-              // Sem estoque agora vira automaticamente "sob encomenda"
-              const mostrarSobEncomenda = p.sobEncomenda || !p.emEstoque;
+              // Só mostra "Sob encomenda" para coleções marcadas como tal — falta de estoque é interno
+              const mostrarSobEncomenda = p.sobEncomenda;
               const qtd = cart[p.id] ?? 0;
               return (
                 <article
