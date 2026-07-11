@@ -62,11 +62,11 @@ function PerfumeDetail() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <header className="sticky top-0 z-40 border-b border-border/60 bg-background/80 backdrop-blur">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-          <Link to="/" className="flex items-center" aria-label="Dakar Essence">
-            <img src={logoWhite.url} alt="Dakar Essence" className="h-20 w-auto md:h-24" />
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-3 sm:px-6 sm:py-4">
+          <Link to="/" className="flex min-w-0 items-center" aria-label="Dakar Essence">
+            <img src={logoWhite.url} alt="Dakar Essence" className="h-12 w-auto sm:h-16 md:h-24" />
           </Link>
-          <div className="flex items-center gap-4">
+          <div className="flex shrink-0 items-center gap-3 sm:gap-4">
             <Link
               to="/"
               className="hidden text-xs uppercase tracking-[0.2em] text-muted-foreground transition hover:text-gold md:inline"
