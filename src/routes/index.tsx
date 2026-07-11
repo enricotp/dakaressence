@@ -312,28 +312,28 @@ function Index() {
                       loading="lazy"
                       className={`h-full w-full object-cover transition duration-700 group-hover:scale-105 ${indisponivel ? "opacity-40" : ""}`}
                     />
-                    <span className="absolute left-4 top-4 flex items-center gap-2 rounded-full bg-background/85 px-3 py-1.5 text-sm font-semibold uppercase tracking-[0.15em] text-gold backdrop-blur">
-                      {codigo}
-                      <span className="rounded-full bg-gold/25 px-2 py-0.5 text-xs font-bold text-gold">
+                    <span className="absolute left-2 top-2 flex max-w-[55%] items-center gap-1 rounded-full bg-background/85 px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.1em] text-gold backdrop-blur sm:left-4 sm:top-4 sm:max-w-none sm:gap-2 sm:px-3 sm:py-1.5 sm:text-sm sm:tracking-[0.15em]">
+                      <span className="truncate">{codigo}</span>
+                      <span className="shrink-0 rounded-full bg-gold/25 px-1.5 py-0.5 text-[9px] font-bold text-gold sm:px-2 sm:text-xs">
                         {p.volume}
                       </span>
                     </span>
                     {!indisponivel && (p.prontaEntrega || p.sobEncomenda) && (
-                      <div className="absolute right-4 top-4 flex flex-col items-end gap-1.5">
+                      <div className="absolute right-2 top-2 flex max-w-[42%] flex-col items-end gap-1 sm:right-4 sm:top-4 sm:max-w-none sm:gap-1.5">
                         {p.prontaEntrega && (
-                          <span className="rounded-full bg-emerald-500/90 px-3 py-1 text-[10px] uppercase tracking-[0.2em] text-black backdrop-blur">
+                          <span className="rounded-full bg-emerald-500/90 px-2 py-0.5 text-[8px] uppercase tracking-[0.15em] text-black backdrop-blur sm:px-3 sm:py-1 sm:text-[10px] sm:tracking-[0.2em]">
                             Pronta entrega
                           </span>
                         )}
                         {p.sobEncomenda && (
-                          <span className="rounded-full bg-amber-500/90 px-3 py-1 text-[10px] uppercase tracking-[0.2em] text-black backdrop-blur">
+                          <span className="rounded-full bg-amber-500/90 px-2 py-0.5 text-[8px] uppercase tracking-[0.15em] text-black backdrop-blur sm:px-3 sm:py-1 sm:text-[10px] sm:tracking-[0.2em]">
                             Sob encomenda
                           </span>
                         )}
                       </div>
                     )}
                     {indisponivel && (
-                      <span className="absolute right-4 top-4 rounded-full bg-background/90 px-3 py-1 text-[10px] uppercase tracking-[0.2em] text-muted-foreground backdrop-blur">
+                      <span className="absolute right-2 top-2 rounded-full bg-background/90 px-2 py-0.5 text-[8px] uppercase tracking-[0.15em] text-muted-foreground backdrop-blur sm:right-4 sm:top-4 sm:px-3 sm:py-1 sm:text-[10px] sm:tracking-[0.2em]">
                         Esgotado
                       </span>
                     )}
