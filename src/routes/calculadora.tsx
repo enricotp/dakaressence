@@ -94,22 +94,22 @@ function Calculadora() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <header className="sticky top-0 z-40 border-b border-border/60 bg-background/80 backdrop-blur">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-          <Link to="/" className="flex items-center" aria-label="Dakar Essence">
-            <img src={logoWhite.url} alt="Dakar Essence" className="h-20 w-auto md:h-24" />
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-3 sm:px-6 sm:py-4">
+          <Link to="/" className="flex min-w-0 items-center" aria-label="Dakar Essence">
+            <img src={logoWhite.url} alt="Dakar Essence" className="h-12 w-auto sm:h-16 md:h-24" />
           </Link>
           <Link
             to="/"
-            className="text-xs uppercase tracking-[0.2em] text-muted-foreground transition hover:text-gold"
+            className="shrink-0 text-xs uppercase tracking-[0.2em] text-muted-foreground transition hover:text-gold"
           >
             ← Voltar
           </Link>
         </div>
       </header>
 
-      <section className="mx-auto max-w-3xl px-6 py-16">
+      <section className="mx-auto max-w-3xl px-4 py-10 sm:px-6 sm:py-16">
         <span className="text-[11px] uppercase tracking-[0.25em] text-gold">Interno</span>
-        <h1 className="mt-3 font-display text-4xl font-semibold md:text-5xl">
+        <h1 className="mt-3 font-display text-3xl font-semibold sm:text-4xl md:text-5xl">
           Calculadora de pedido
         </h1>
         <p className="mt-4 text-muted-foreground">

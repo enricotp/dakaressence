@@ -23,9 +23,14 @@ export function CartButton() {
     <button
       type="button"
       onClick={open}
-      className="relative inline-flex items-center gap-2 rounded-full border border-gold/40 bg-gold/10 px-4 py-2 text-xs font-medium uppercase tracking-wider text-gold transition hover:bg-gold hover:text-primary-foreground"
+      aria-label={`Abrir carrinho (${cartCount} itens)`}
+      className="relative inline-flex min-h-11 items-center gap-2 rounded-full border border-gold/40 bg-gold/10 px-3 py-2 text-xs font-medium uppercase tracking-wider text-gold transition hover:bg-gold hover:text-primary-foreground sm:px-4"
     >
-      Carrinho
+      <span className="hidden sm:inline">Carrinho</span>
+      <svg aria-hidden viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4 sm:hidden">
+        <circle cx="9" cy="21" r="1" /><circle cx="20" cy="21" r="1" />
+        <path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6" />
+      </svg>
       {cartCount > 0 && (
         <span className="ml-1 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-gold px-1.5 text-[11px] font-semibold text-primary-foreground">
           {cartCount}
@@ -148,21 +153,21 @@ export function CartDrawer() {
         className="absolute inset-0 bg-background/70 backdrop-blur-sm"
       />
       <aside className="relative flex h-full w-full max-w-md flex-col border-l border-border/60 bg-card">
-        <div className="flex items-center justify-between border-b border-border/60 px-6 py-5">
-          <h3 className="font-display text-xl font-semibold">
+        <div className="flex items-center justify-between border-b border-border/60 px-4 py-4 sm:px-6 sm:py-5">
+          <h3 className="font-display text-lg font-semibold sm:text-xl">
             {etapa === "carrinho" ? "Seu carrinho" : "Finalizar pedido"}
           </h3>
           <button
             type="button"
             onClick={close}
-            className="text-2xl text-muted-foreground transition hover:text-foreground"
+            className="inline-flex h-11 w-11 items-center justify-center text-2xl text-muted-foreground transition hover:text-foreground"
             aria-label="Fechar"
           >
             ×
           </button>
         </div>
 
-        <div className="flex-1 overflow-y-auto px-6 py-4">
+        <div className="flex-1 overflow-y-auto px-4 py-4 sm:px-6">
           {cartCount === 0 ? (
             <p className="mt-16 text-center text-sm text-muted-foreground">
               Seu carrinho está vazio.
@@ -207,7 +212,8 @@ export function CartDrawer() {
                           <button
                             type="button"
                             onClick={() => remove(id)}
-                            className="h-7 w-7 rounded-full bg-background text-sm font-semibold transition hover:bg-gold hover:text-primary-foreground"
+                            aria-label="Remover"
+                            className="h-11 w-11 rounded-full bg-background text-sm font-semibold transition hover:bg-gold hover:text-primary-foreground"
                           >
                             −
                           </button>
@@ -215,7 +221,8 @@ export function CartDrawer() {
                           <button
                             type="button"
                             onClick={() => add(id)}
-                            className="h-7 w-7 rounded-full bg-background text-sm font-semibold transition hover:bg-gold hover:text-primary-foreground"
+                            aria-label="Adicionar"
+                            className="h-11 w-11 rounded-full bg-background text-sm font-semibold transition hover:bg-gold hover:text-primary-foreground"
                           >
                             +
                           </button>
@@ -319,7 +326,7 @@ export function CartDrawer() {
           )}
         </div>
 
-        <div className="border-t border-border/60 px-6 py-5 space-y-3">
+        <div className="border-t border-border/60 px-4 py-4 space-y-3 sm:px-6 sm:py-5">
           {cartCount > 0 && total > 0 && etapa === "carrinho" && (
             <div className="flex items-center justify-between text-sm">
               <span className="uppercase tracking-[0.2em] text-muted-foreground">Total</span>

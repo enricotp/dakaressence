@@ -83,9 +83,9 @@ function Index() {
     <div className="min-h-screen bg-background text-foreground">
       {/* Nav */}
       <header className="sticky top-0 z-40 border-b border-border/60 bg-background/80 backdrop-blur">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-          <a href="#top" className="flex items-center" aria-label="Dakar Essence">
-            <img src={logoWhite.url} alt="Dakar Essence" className="h-20 w-auto md:h-24" />
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-3 sm:px-6 sm:py-4">
+          <a href="#top" className="flex min-w-0 items-center" aria-label="Dakar Essence">
+            <img src={logoWhite.url} alt="Dakar Essence" className="h-12 w-auto sm:h-16 md:h-24" />
           </a>
           <nav className="hidden md:flex">
             <div className="relative inline-flex rounded-full border border-border/60 bg-card p-1 text-sm">
@@ -115,38 +115,58 @@ function Index() {
             </div>
           </nav>
 
-          <CartButton />
+          <div className="shrink-0">
+            <CartButton />
+          </div>
 
         </div>
+        <nav className="flex gap-1 border-t border-border/60 px-2 py-2 md:hidden">
+          {([
+            { id: "top", secao: "home", label: "Home" },
+            { id: "catalogo", secao: "catalogo", label: "Catálogo" },
+            { id: "sobre", secao: "sobre", label: "Sobre" },
+            { id: "faq", secao: "faq", label: "FAQ" },
+          ] as const).map((s) => (
+            <a
+              key={s.id}
+              href={`#${s.id}`}
+              className={`flex-1 min-h-11 inline-flex items-center justify-center rounded-full px-2 text-xs font-medium transition ${
+                secaoAtiva === s.secao ? "bg-gold text-primary-foreground" : "text-muted-foreground"
+              }`}
+            >
+              {s.label}
+            </a>
+          ))}
+        </nav>
       </header>
 
       {/* Hero */}
       <section id="top" className="relative overflow-hidden">
-        <div className="mx-auto max-w-4xl px-6 py-20 text-center md:py-28">
+        <div className="mx-auto max-w-4xl px-4 py-14 text-center sm:px-6 sm:py-20 md:py-28">
           <span className="mb-6 inline-flex items-center gap-2 rounded-full border border-gold/30 bg-gold/5 px-3 py-1 text-[11px] uppercase tracking-[0.2em] text-gold">
             <span className="h-1 w-1 rounded-full bg-gold" /> Coleção 2026
           </span>
-          <h1 className="font-display text-5xl font-semibold leading-[1.05] tracking-tight md:text-7xl">
+          <h1 className="font-display text-4xl font-semibold leading-[1.05] tracking-tight sm:text-5xl md:text-7xl">
             A mesma essência,{" "}
             <span className="bg-gradient-to-r from-gold to-gold-soft bg-clip-text text-transparent">
               metade do preço.
             </span>
           </h1>
-          <p className="mx-auto mt-6 max-w-lg text-lg leading-relaxed text-muted-foreground">
+          <p className="mx-auto mt-6 max-w-lg text-base leading-relaxed text-muted-foreground sm:text-lg">
             Perfumes contratipos com alta concentração e fixação premium.
             Monte seu pedido e finalize direto no WhatsApp.
           </p>
-          <div className="mt-10 flex flex-wrap justify-center gap-4">
+          <div className="mt-8 flex flex-col items-center gap-3 sm:mt-10 sm:flex-row sm:flex-wrap sm:justify-center sm:gap-4">
             <a
               href="#catalogo"
-              className="inline-flex items-center justify-center rounded-full bg-gold px-6 py-3 text-sm font-semibold text-primary-foreground transition hover:brightness-110"
+              className="inline-flex min-h-11 w-full items-center justify-center rounded-full bg-gold px-6 py-3 text-sm font-semibold text-primary-foreground transition hover:brightness-110 sm:w-auto"
             >
               Ver catálogo
             </a>
             <button
               type="button"
               onClick={open}
-              className="inline-flex items-center justify-center rounded-full border border-border px-6 py-3 text-sm font-medium transition hover:border-gold hover:text-gold"
+              className="inline-flex min-h-11 w-full items-center justify-center rounded-full border border-border px-6 py-3 text-sm font-medium transition hover:border-gold hover:text-gold sm:w-auto"
             >
               Meu carrinho ({cartCount})
             </button>
@@ -156,12 +176,12 @@ function Index() {
 
 
       {/* Catálogo */}
-      <section id="catalogo" className="border-t border-border/60 py-24">
-        <div className="mx-auto max-w-7xl px-6">
-          <div className="mb-14 flex items-end justify-between">
+      <section id="catalogo" className="border-t border-border/60 py-14 sm:py-20 md:py-24">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6">
+          <div className="mb-10 flex items-end justify-between sm:mb-14">
             <div>
               <span className="text-[11px] uppercase tracking-[0.25em] text-gold">Catálogo</span>
-              <h2 className="mt-3 font-display text-4xl font-semibold md:text-5xl">
+              <h2 className="mt-3 font-display text-3xl font-semibold sm:text-4xl md:text-5xl">
                 Nossas fragrâncias
               </h2>
             </div>
@@ -172,11 +192,11 @@ function Index() {
 
 
           {/* Filtro por gênero — segmented iOS-like */}
-          <div className="mb-10 flex justify-center">
-            <div className="relative inline-flex rounded-full border border-border/60 bg-card p-1 text-sm">
+          <div className="mb-8 flex justify-center sm:mb-10">
+            <div className="relative inline-flex w-full max-w-sm rounded-full border border-border/60 bg-card p-1 text-sm sm:w-auto">
               <span
                 aria-hidden
-                className="absolute top-1 bottom-1 w-1/3 rounded-full bg-gold transition-transform duration-300 ease-out"
+                className="absolute top-1 bottom-1 left-1 w-[calc((100%-0.5rem)/3)] rounded-full bg-gold transition-transform duration-300 ease-out sm:w-28"
                 style={{
                   transform: `translateX(${filtro === "feminino" ? "0%" : filtro === "todos" ? "100%" : "200%"})`,
                 }}
@@ -186,7 +206,7 @@ function Index() {
                   key={op}
                   type="button"
                   onClick={() => setFiltro(op)}
-                  className={`relative z-10 w-28 rounded-full px-4 py-2 font-medium capitalize transition-colors ${
+                  className={`relative z-10 flex-1 min-h-11 rounded-full px-2 py-2 text-xs font-medium capitalize transition-colors sm:w-28 sm:flex-none sm:px-4 sm:text-sm ${
                     filtro === op ? "text-primary-foreground" : "text-muted-foreground hover:text-foreground"
                   }`}
                 >
@@ -355,18 +375,18 @@ function Index() {
                         <button
                           type="button"
                           onClick={() => remove(p.id)}
-                          className="h-9 w-9 rounded-full bg-background text-lg font-semibold text-foreground transition hover:bg-gold hover:text-primary-foreground"
+                          className="h-11 w-11 rounded-full bg-background text-lg font-semibold text-foreground transition hover:bg-gold hover:text-primary-foreground"
                           aria-label="Remover um"
                         >
                           −
                         </button>
-                        <span className="text-sm font-semibold text-gold">
+                        <span className="text-xs font-semibold text-gold sm:text-sm">
                           {qtd} no carrinho
                         </span>
                         <button
                           type="button"
                           onClick={() => add(p.id)}
-                          className="h-9 w-9 rounded-full bg-background text-lg font-semibold text-foreground transition hover:bg-gold hover:text-primary-foreground"
+                          className="h-11 w-11 rounded-full bg-background text-lg font-semibold text-foreground transition hover:bg-gold hover:text-primary-foreground"
                           aria-label="Adicionar mais um"
                         >
                           +
@@ -382,11 +402,11 @@ function Index() {
       </section>
 
       {/* Sobre */}
-      <section id="sobre" className="border-t border-border/60 bg-card/40 py-24">
-        <div className="mx-auto grid max-w-7xl gap-12 px-6 md:grid-cols-2">
+      <section id="sobre" className="border-t border-border/60 bg-card/40 py-14 sm:py-20 md:py-24">
+        <div className="mx-auto grid max-w-7xl gap-8 px-4 sm:px-6 md:grid-cols-2 md:gap-12">
           <div>
             <span className="text-[11px] uppercase tracking-[0.25em] text-gold">Sobre nós</span>
-            <h2 className="mt-3 font-display text-4xl font-semibold leading-tight md:text-5xl">
+            <h2 className="mt-3 font-display text-3xl font-semibold leading-tight sm:text-4xl md:text-5xl">
               Fragrâncias de luxo, sem o preço do luxo.
             </h2>
           </div>
@@ -405,38 +425,38 @@ function Index() {
       </section>
 
       {/* FAQ */}
-      <section id="faq" className="border-t border-border/60 py-24">
-        <div className="mx-auto max-w-4xl px-6">
+      <section id="faq" className="border-t border-border/60 py-14 sm:py-20 md:py-24">
+        <div className="mx-auto max-w-4xl px-4 sm:px-6">
           <span className="text-[11px] uppercase tracking-[0.25em] text-gold">Dúvidas</span>
-          <h2 className="mt-3 font-display text-4xl font-semibold md:text-5xl">
+          <h2 className="mt-3 font-display text-3xl font-semibold sm:text-4xl md:text-5xl">
             Perguntas frequentes
           </h2>
-          <div className="mt-12 divide-y divide-border/60">
+          <div className="mt-10 divide-y divide-border/60 sm:mt-12">
             {[
               { q: "Como faço meu pedido?", a: "Adicione os perfumes ao carrinho, abra o carrinho e clique em Pedir no WhatsApp. A mensagem já vai pronta com o que você escolheu." },
               { q: "Qual a fixação?", a: "Em média 10 a 14 horas, com 30% de concentração." },
               { q: "Do que são feitos os perfumes?", a: "Todos os perfumes são à base de óleo e linalol, com fixador importado." },
               { q: "Entregam para todo o Brasil?", a: "Por enquanto entregamos apenas para Sorocaba e região." },
             ].map((item) => (
-              <details key={item.q} className="group py-6">
-                <summary className="flex cursor-pointer items-center justify-between font-display text-lg font-medium">
-                  {item.q}
-                  <span className="ml-4 text-gold transition group-open:rotate-45">+</span>
+              <details key={item.q} className="group py-5 sm:py-6">
+                <summary className="flex cursor-pointer items-center justify-between gap-4 font-display text-base font-medium sm:text-lg">
+                  <span className="min-w-0">{item.q}</span>
+                  <span className="shrink-0 text-gold transition group-open:rotate-45">+</span>
                 </summary>
-                <p className="mt-3 text-muted-foreground">{item.a}</p>
+                <p className="mt-3 text-sm text-muted-foreground sm:text-base">{item.a}</p>
               </details>
             ))}
           </div>
         </div>
       </section>
 
-      <footer className="border-t border-border/60 py-10">
-        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-6 text-sm text-muted-foreground md:flex-row">
+      <footer className="border-t border-border/60 py-8 pb-24 sm:py-10 md:pb-10">
+        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-4 text-sm text-muted-foreground sm:px-6 md:flex-row">
           <div className="flex items-center">
-            <img src={logoWhite.url} alt="Dakar Essence" className="h-16 w-auto" />
+            <img src={logoWhite.url} alt="Dakar Essence" className="h-12 w-auto sm:h-16" />
           </div>
-          <p>© {new Date().getFullYear()} Dakar Essence. Todos os direitos reservados.</p>
-          <div className="flex flex-col items-center gap-1 md:items-end">
+          <p className="text-center text-xs sm:text-sm">© {new Date().getFullYear()} Dakar Essence. Todos os direitos reservados.</p>
+          <div className="flex flex-row items-center gap-4 md:flex-col md:items-end md:gap-1">
             <Link to="/calculadora" className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground/60 transition hover:text-gold">
               calculadora
             </Link>

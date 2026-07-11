@@ -62,11 +62,11 @@ function PerfumeDetail() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <header className="sticky top-0 z-40 border-b border-border/60 bg-background/80 backdrop-blur">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-          <Link to="/" className="flex items-center" aria-label="Dakar Essence">
-            <img src={logoWhite.url} alt="Dakar Essence" className="h-20 w-auto md:h-24" />
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-3 sm:px-6 sm:py-4">
+          <Link to="/" className="flex min-w-0 items-center" aria-label="Dakar Essence">
+            <img src={logoWhite.url} alt="Dakar Essence" className="h-12 w-auto sm:h-16 md:h-24" />
           </Link>
-          <div className="flex items-center gap-4">
+          <div className="flex shrink-0 items-center gap-3 sm:gap-4">
             <Link
               to="/"
               className="hidden text-xs uppercase tracking-[0.2em] text-muted-foreground transition hover:text-gold md:inline"
@@ -78,7 +78,7 @@ function PerfumeDetail() {
         </div>
       </header>
 
-      <section className="mx-auto grid max-w-6xl gap-12 px-6 py-16 md:grid-cols-2 md:py-24">
+      <section className="mx-auto grid max-w-6xl gap-8 px-4 py-10 sm:px-6 sm:py-16 md:grid-cols-2 md:gap-12 md:py-24">
         <div className="relative">
           <div className="absolute -inset-8 rounded-3xl bg-gradient-to-br from-gold/20 via-transparent to-transparent blur-3xl" />
           <div className="relative overflow-hidden rounded-2xl border border-border/60">
@@ -115,11 +115,11 @@ function PerfumeDetail() {
               </span>
             )}
           </div>
-          <h1 className="mt-3 font-display text-5xl font-semibold leading-tight md:text-6xl">
+          <h1 className="mt-3 font-display text-3xl font-semibold leading-tight sm:text-5xl md:text-6xl">
             {p.nome}
           </h1>
           {p.preco != null && (
-            <p className="mt-4 font-display text-3xl font-semibold text-gold">
+            <p className="mt-4 font-display text-2xl font-semibold text-gold sm:text-3xl">
               {formatBRL(p.preco)}
             </p>
           )}
@@ -211,13 +211,13 @@ function PerfumeDetail() {
       </section>
 
       {outros.length > 0 && (
-        <section className="mx-auto max-w-6xl px-6 pb-24">
-          <div className="mb-8 flex items-end justify-between">
+        <section className="mx-auto max-w-6xl px-4 pb-16 sm:px-6 sm:pb-24">
+          <div className="mb-6 flex items-end justify-between sm:mb-8">
             <div>
               <span className="text-[11px] uppercase tracking-[0.25em] text-gold">
                 {p.colecao}
               </span>
-              <h2 className="mt-2 font-display text-2xl font-semibold md:text-3xl">
+              <h2 className="mt-2 font-display text-xl font-semibold sm:text-2xl md:text-3xl">
                 Outros da mesma coleção
               </h2>
             </div>
