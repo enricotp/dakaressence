@@ -211,13 +211,13 @@ function PerfumeDetail() {
       </section>
 
       {outros.length > 0 && (
-        <section className="mx-auto max-w-6xl px-6 pb-24">
-          <div className="mb-8 flex items-end justify-between">
+        <section className="mx-auto max-w-6xl px-4 pb-16 sm:px-6 sm:pb-24">
+          <div className="mb-6 flex items-end justify-between sm:mb-8">
             <div>
               <span className="text-[11px] uppercase tracking-[0.25em] text-gold">
                 {p.colecao}
               </span>
-              <h2 className="mt-2 font-display text-2xl font-semibold md:text-3xl">
+              <h2 className="mt-2 font-display text-xl font-semibold sm:text-2xl md:text-3xl">
                 Outros da mesma coleção
               </h2>
             </div>
