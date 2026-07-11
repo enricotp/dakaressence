@@ -153,14 +153,14 @@ export function CartDrawer() {
         className="absolute inset-0 bg-background/70 backdrop-blur-sm"
       />
       <aside className="relative flex h-full w-full max-w-md flex-col border-l border-border/60 bg-card">
-        <div className="flex items-center justify-between border-b border-border/60 px-6 py-5">
-          <h3 className="font-display text-xl font-semibold">
+        <div className="flex items-center justify-between border-b border-border/60 px-4 py-4 sm:px-6 sm:py-5">
+          <h3 className="font-display text-lg font-semibold sm:text-xl">
             {etapa === "carrinho" ? "Seu carrinho" : "Finalizar pedido"}
           </h3>
           <button
             type="button"
             onClick={close}
-            className="text-2xl text-muted-foreground transition hover:text-foreground"
+            className="inline-flex h-11 w-11 items-center justify-center text-2xl text-muted-foreground transition hover:text-foreground"
             aria-label="Fechar"
           >
             ×
