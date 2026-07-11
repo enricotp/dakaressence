@@ -109,7 +109,7 @@ function Calculadora() {
 
       <section className="mx-auto max-w-3xl px-4 py-10 sm:px-6 sm:py-16">
         <span className="text-[11px] uppercase tracking-[0.25em] text-gold">Interno</span>
-        <h1 className="mt-3 font-display text-4xl font-semibold md:text-5xl">
+        <h1 className="mt-3 font-display text-3xl font-semibold sm:text-4xl md:text-5xl">
           Calculadora de pedido
         </h1>
         <p className="mt-4 text-muted-foreground">
