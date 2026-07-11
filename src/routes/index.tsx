@@ -359,7 +359,7 @@ function Index() {
                         </Link>
                       </h3>
                       <p className="mt-1 line-clamp-2 text-xs text-muted-foreground sm:text-sm">
-                        {p.descricao || p.status || "Contratipo exclusivo"}
+                        {p.descricao || "Contratipo exclusivo"}
                       </p>
                       {p.preco != null && (
                         <p className="mt-2 text-sm font-semibold text-gold sm:text-base">
