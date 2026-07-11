@@ -212,7 +212,8 @@ export function CartDrawer() {
                           <button
                             type="button"
                             onClick={() => remove(id)}
-                            className="h-7 w-7 rounded-full bg-background text-sm font-semibold transition hover:bg-gold hover:text-primary-foreground"
+                            aria-label="Remover"
+                            className="h-11 w-11 rounded-full bg-background text-sm font-semibold transition hover:bg-gold hover:text-primary-foreground"
                           >
                             −
                           </button>
@@ -220,7 +221,8 @@ export function CartDrawer() {
                           <button
                             type="button"
                             onClick={() => add(id)}
-                            className="h-7 w-7 rounded-full bg-background text-sm font-semibold transition hover:bg-gold hover:text-primary-foreground"
+                            aria-label="Adicionar"
+                            className="h-11 w-11 rounded-full bg-background text-sm font-semibold transition hover:bg-gold hover:text-primary-foreground"
                           >
                             +
                           </button>
