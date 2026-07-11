@@ -83,9 +83,9 @@ function Index() {
     <div className="min-h-screen bg-background text-foreground">
       {/* Nav */}
       <header className="sticky top-0 z-40 border-b border-border/60 bg-background/80 backdrop-blur">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-          <a href="#top" className="flex items-center" aria-label="Dakar Essence">
-            <img src={logoWhite.url} alt="Dakar Essence" className="h-20 w-auto md:h-24" />
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-3 sm:px-6 sm:py-4">
+          <a href="#top" className="flex min-w-0 items-center" aria-label="Dakar Essence">
+            <img src={logoWhite.url} alt="Dakar Essence" className="h-12 w-auto sm:h-16 md:h-24" />
           </a>
           <nav className="hidden md:flex">
             <div className="relative inline-flex rounded-full border border-border/60 bg-card p-1 text-sm">
@@ -115,9 +115,29 @@ function Index() {
             </div>
           </nav>
 
-          <CartButton />
+          <div className="shrink-0">
+            <CartButton />
+          </div>
 
         </div>
+        <nav className="flex gap-1 border-t border-border/60 px-2 py-2 md:hidden">
+          {([
+            { id: "top", secao: "home", label: "Home" },
+            { id: "catalogo", secao: "catalogo", label: "Catálogo" },
+            { id: "sobre", secao: "sobre", label: "Sobre" },
+            { id: "faq", secao: "faq", label: "FAQ" },
+          ] as const).map((s) => (
+            <a
+              key={s.id}
+              href={`#${s.id}`}
+              className={`flex-1 min-h-11 inline-flex items-center justify-center rounded-full px-2 text-xs font-medium transition ${
+                secaoAtiva === s.secao ? "bg-gold text-primary-foreground" : "text-muted-foreground"
+              }`}
+            >
+              {s.label}
+            </a>
+          ))}
+        </nav>
       </header>
 
       {/* Hero */}
