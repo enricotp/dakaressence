@@ -78,7 +78,7 @@ function PerfumeDetail() {
         </div>
       </header>
 
-      <section className="mx-auto grid max-w-6xl gap-12 px-6 py-16 md:grid-cols-2 md:py-24">
+      <section className="mx-auto grid max-w-6xl gap-8 px-4 py-10 sm:px-6 sm:py-16 md:grid-cols-2 md:gap-12 md:py-24">
         <div className="relative">
           <div className="absolute -inset-8 rounded-3xl bg-gradient-to-br from-gold/20 via-transparent to-transparent blur-3xl" />
           <div className="relative overflow-hidden rounded-2xl border border-border/60">
