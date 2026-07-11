@@ -367,15 +367,8 @@ function Index() {
                         </p>
                       )}
                     </div>
-                    {indisponivel ? (
-                      <button
-                        type="button"
-                        disabled
-                        className="mt-auto inline-flex cursor-not-allowed items-center justify-center rounded-full bg-foreground/5 py-3 text-sm font-medium text-muted-foreground"
-                      >
-                        Indisponível
-                      </button>
-                    ) : qtd === 0 ? (
+                    {qtd === 0 ? (
+
                       <button
                         type="button"
                         onClick={() => add(p.id)}
