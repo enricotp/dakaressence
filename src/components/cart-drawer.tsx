@@ -326,7 +326,7 @@ export function CartDrawer() {
           )}
         </div>
 
-        <div className="border-t border-border/60 px-6 py-5 space-y-3">
+        <div className="border-t border-border/60 px-4 py-4 space-y-3 sm:px-6 sm:py-5">
           {cartCount > 0 && total > 0 && etapa === "carrinho" && (
             <div className="flex items-center justify-between text-sm">
               <span className="uppercase tracking-[0.2em] text-muted-foreground">Total</span>
