@@ -375,18 +375,18 @@ function Index() {
                         <button
                           type="button"
                           onClick={() => remove(p.id)}
-                          className="h-9 w-9 rounded-full bg-background text-lg font-semibold text-foreground transition hover:bg-gold hover:text-primary-foreground"
+                          className="h-11 w-11 rounded-full bg-background text-lg font-semibold text-foreground transition hover:bg-gold hover:text-primary-foreground"
                           aria-label="Remover um"
                         >
                           −
                         </button>
-                        <span className="text-sm font-semibold text-gold">
+                        <span className="text-xs font-semibold text-gold sm:text-sm">
                           {qtd} no carrinho
                         </span>
                         <button
                           type="button"
                           onClick={() => add(p.id)}
-                          className="h-9 w-9 rounded-full bg-background text-lg font-semibold text-foreground transition hover:bg-gold hover:text-primary-foreground"
+                          className="h-11 w-11 rounded-full bg-background text-lg font-semibold text-foreground transition hover:bg-gold hover:text-primary-foreground"
                           aria-label="Adicionar mais um"
                         >
                           +
