@@ -167,7 +167,7 @@ export function CartDrawer() {
           </button>
         </div>
 
-        <div className="flex-1 overflow-y-auto px-6 py-4">
+        <div className="flex-1 overflow-y-auto px-4 py-4 sm:px-6">
           {cartCount === 0 ? (
             <p className="mt-16 text-center text-sm text-muted-foreground">
               Seu carrinho está vazio.
