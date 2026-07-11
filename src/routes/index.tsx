@@ -142,22 +142,6 @@ function Index() {
 
       {/* Hero */}
       <section id="top" className="relative overflow-hidden">
-        <div className="mx-auto max-w-4xl px-6 py-20 text-center md:py-28">
-          <span className="mb-6 inline-flex items-center gap-2 rounded-full border border-gold/30 bg-gold/5 px-3 py-1 text-[11px] uppercase tracking-[0.2em] text-gold">
-            <span className="h-1 w-1 rounded-full bg-gold" /> Coleção 2026
-          </span>
-          <h1 className="font-display text-5xl font-semibold leading-[1.05] tracking-tight md:text-7xl">
-            A mesma essência,{" "}
-            <span className="bg-gradient-to-r from-gold to-gold-soft bg-clip-text text-transparent">
-              metade do preço.
-            </span>
-          </h1>
-          <p className="mx-auto mt-6 max-w-lg text-lg leading-relaxed text-muted-foreground">
-            Perfumes contratipos com alta concentração e fixação premium.
-            Monte seu pedido e finalize direto no WhatsApp.
-          </p>
-      {/* Hero */}
-      <section id="top" className="relative overflow-hidden">
         <div className="mx-auto max-w-4xl px-4 py-14 text-center sm:px-6 sm:py-20 md:py-28">
           <span className="mb-6 inline-flex items-center gap-2 rounded-full border border-gold/30 bg-gold/5 px-3 py-1 text-[11px] uppercase tracking-[0.2em] text-gold">
             <span className="h-1 w-1 rounded-full bg-gold" /> Coleção 2026
