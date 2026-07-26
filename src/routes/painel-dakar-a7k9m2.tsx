@@ -967,6 +967,7 @@ function PerfumesTab() {
   const listar = useServerFn(getPerfumes);
   const atualizar = useServerFn(atualizarPerfume);
   const criar = useServerFn(criarPerfume);
+  const aplicarCustos = useServerFn(aplicarCustosPadrao);
   const qc = useQueryClient();
 
   const { data: perfumes = [], isLoading } = useQuery({
