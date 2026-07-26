@@ -52,7 +52,7 @@ export const Route = createFileRoute("/painel-dakar-a7k9m2")({
   }),
 });
 
-type Tab = "pedidos" | "analytics" | "perfumes" | "funcionarios";
+type Tab = "pedidos" | "analytics" | "perfumes" | "calculadora" | "funcionarios";
 
 function AdminPage() {
   const check = useServerFn(isAdmin);
