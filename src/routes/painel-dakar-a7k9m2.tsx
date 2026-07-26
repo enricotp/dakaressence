@@ -33,6 +33,7 @@ import {
   getPerfumes,
   atualizarPerfume,
   criarPerfume,
+  excluirPerfume,
   aplicarCustosPadrao,
   COLECOES,
   COLECAO_INFO,
@@ -971,6 +972,7 @@ function PerfumesTab() {
   const atualizar = useServerFn(atualizarPerfume);
   const criar = useServerFn(criarPerfume);
   const aplicarCustos = useServerFn(aplicarCustosPadrao);
+  const excluir = useServerFn(excluirPerfume);
   const qc = useQueryClient();
 
   const { data: perfumes = [], isLoading } = useQuery({
@@ -1254,6 +1256,17 @@ function PerfumesTab() {
                         title="Cria um novo perfume com os mesmos dados (estoque zerado)"
                       >
                         Duplicar
+                      </button>
+                      <button
+                        onClick={async () => {
+                          if (!confirm(`Excluir "${p.nome}"? Essa ação arquiva o perfume no Notion.`)) return;
+                          await excluir({ data: { id: p.id } });
+                          await qc.invalidateQueries({ queryKey: ["perfumes"] });
+                        }}
+                        className="rounded-full border border-red-500/40 px-3 py-1 text-xs uppercase tracking-wider text-red-400 hover:border-red-500 hover:bg-red-500/10"
+                        title="Arquiva o perfume no Notion (pode ser restaurado por lá)"
+                      >
+                        Excluir
                       </button>
                     </div>
                   </div>
