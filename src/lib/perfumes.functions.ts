@@ -417,3 +417,48 @@ export const criarPerfume = createServerFn({ method: "POST" })
     return { ok: true, id: created.id };
   });
 
+// Custos padrão por coleção/volume (definidos pelo dono).
+export function custoPadrao(colecao: Colecao, volume: Volume): number | null {
+  if (colecao === "Signature") {
+    if (volume === "50ml") return 17;
+    if (volume === "100ml") return 19;
+    return null;
+  }
+  if (colecao === "Brand Collection") return 45;
+  if (colecao === "Arabic Collection") return 60;
+  if (colecao === "Dream Brand Collection") return 120;
+  return null;
+}
+
+export const aplicarCustosPadrao = createServerFn({ method: "POST" })
+  .validator((data: { sobrescrever?: boolean }) => data)
+  .handler(async ({ data }) => {
+    const { requireAdmin } = await import("./admin.server");
+    await requireAdmin();
+    const perfumes = await getPerfumes();
+    let atualizados = 0;
+    let pulados = 0;
+    for (const p of perfumes) {
+      const alvo = custoPadrao(p.colecao, p.volume);
+      if (alvo == null) {
+        pulados++;
+        continue;
+      }
+      if (!data.sobrescrever && p.custo != null) {
+        pulados++;
+        continue;
+      }
+      if (p.custo === alvo) {
+        pulados++;
+        continue;
+      }
+      const res = await fetch(`${GATEWAY}/pages/${p.id}`, {
+        method: "PATCH",
+        headers: notionHeaders(),
+        body: JSON.stringify({ properties: { Custo: { number: alvo } } }),
+      });
+      if (res.ok) atualizados++;
+    }
+    return { ok: true, atualizados, pulados, total: perfumes.length };
+  });
+
