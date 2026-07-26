@@ -1257,6 +1257,17 @@ function PerfumesTab() {
                       >
                         Duplicar
                       </button>
+                      <button
+                        onClick={async () => {
+                          if (!confirm(`Excluir "${p.nome}"? Essa ação arquiva o perfume no Notion.`)) return;
+                          await excluir({ data: { id: p.id } });
+                          await qc.invalidateQueries({ queryKey: ["perfumes"] });
+                        }}
+                        className="rounded-full border border-red-500/40 px-3 py-1 text-xs uppercase tracking-wider text-red-400 hover:border-red-500 hover:bg-red-500/10"
+                        title="Arquiva o perfume no Notion (pode ser restaurado por lá)"
+                      >
+                        Excluir
+                      </button>
                     </div>
                   </div>
                 </div>
