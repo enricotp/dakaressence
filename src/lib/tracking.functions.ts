@@ -23,12 +23,13 @@ export type PedidoPublico = {
   pagamento: string;
   parcelas: string;
   status: string;
+  rastreio: string;
 };
 
 export const rastrearPedido = createServerFn({ method: "GET" })
   .validator((data: { id: string }) => data)
   .handler(async ({ data }): Promise<PedidoPublico | null> => {
-    const url = `${GATEWAY}/spreadsheets/${SHEET_ID}/values/${SHEET_NAME}!A2:H10000`;
+    const url = `${GATEWAY}/spreadsheets/${SHEET_ID}/values/${SHEET_NAME}!A2:I10000`;
     const res = await fetch(url, { headers: sheetsHeaders() });
     if (!res.ok) return null;
     const json = (await res.json()) as { values?: string[][] };
@@ -40,12 +41,13 @@ export const rastrearPedido = createServerFn({ method: "GET" })
     return {
       id: row[0] ?? "",
       data: row[1] ?? "",
-      // Retorna só o primeiro nome para preservar privacidade em rota pública.
       cliente: (row[2] ?? "").split(" ")[0] ?? "",
       itens: row[3] ?? "",
       total: parseFloat(totalRaw) || 0,
       pagamento: row[5] ?? "",
       parcelas: row[6] ?? "",
       status: row[7] ?? "Pendente",
+      rastreio: (row[8] ?? "").trim(),
     };
   });
+
