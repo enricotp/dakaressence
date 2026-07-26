@@ -29,8 +29,10 @@ export type Pedido = {
   pagamento: string;
   parcelas: string;
   status: string;
+  rastreio: string;
   row: number;
 };
+
 
 export const criarPedido = createServerFn({ method: "POST" })
   .validator(
