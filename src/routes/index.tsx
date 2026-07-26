@@ -497,8 +497,8 @@ function Index() {
             <Link to="/calculadora" className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground/60 transition hover:text-gold">
               calculadora
             </Link>
-            <Link to="/admin" className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground/60 transition hover:text-gold">
-              admin
+            <Link to="/rastrear" className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground/60 transition hover:text-gold">
+              rastrear pedido
             </Link>
           </div>
         </div>

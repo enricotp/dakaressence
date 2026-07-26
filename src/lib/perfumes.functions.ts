@@ -264,7 +264,7 @@ export const atualizarPerfume = createServerFn({ method: "POST" })
     }) => data,
   )
   .handler(async ({ data }) => {
-    const { requireAdmin } = await import("./admin.server");
+    const { requireAdmin, currentAdmin } = await import("./admin.server");
     await requireAdmin();
 
     const properties: Record<string, unknown> = {};
@@ -309,6 +309,12 @@ export const atualizarPerfume = createServerFn({ method: "POST" })
       const text = await res.text();
       throw new Error(`Notion update failed [${res.status}]: ${text}`);
     }
+    try {
+      const { appendLog } = await import("./logs.server");
+      const me = await currentAdmin();
+      const campos = Object.keys(data).filter((k) => k !== "id").join(", ");
+      appendLog({ usuario: me?.login, role: me?.role, acao: "atualizar", entidade: "perfume", id: data.id, depois: campos });
+    } catch {}
     return { ok: true };
   });
 

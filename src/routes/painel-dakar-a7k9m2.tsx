@@ -15,6 +15,12 @@ import {
 
 import { isAdmin, loginAdmin, logoutAdmin } from "@/lib/admin.functions";
 import {
+  listarFuncionarios,
+  criarFuncionario,
+  atualizarFuncionario,
+  removerFuncionario,
+} from "@/lib/users.functions";
+import {
   listarPedidos,
   atualizarStatusPedido,
   listarItensVendidos,
@@ -34,17 +40,17 @@ import {
 } from "@/lib/perfumes.functions";
 import { formatBRL } from "@/lib/format";
 
-export const Route = createFileRoute("/admin")({
+export const Route = createFileRoute("/painel-dakar-a7k9m2")({
   component: AdminPage,
   head: () => ({
     meta: [
-      { title: "Admin — Dakar Essence" },
+      { title: "Painel — Dakar Essence" },
       { name: "robots", content: "noindex, nofollow" },
     ],
   }),
 });
 
-type Tab = "pedidos" | "analytics" | "perfumes";
+type Tab = "pedidos" | "analytics" | "perfumes" | "funcionarios";
 
 function AdminPage() {
   const check = useServerFn(isAdmin);
@@ -66,11 +72,18 @@ function AdminPage() {
     return <LoginForm onSuccess={() => refetch()} />;
   }
 
-  return <AdminPanel onLogout={() => refetch()} />;
+  return (
+    <AdminPanel
+      nome={data.nome ?? "Admin"}
+      role={(data.role as "dono" | "gerente" | "vendedor") ?? "vendedor"}
+      onLogout={() => refetch()}
+    />
+  );
 }
 
 function LoginForm({ onSuccess }: { onSuccess: () => void }) {
   const login = useServerFn(loginAdmin);
+  const [loginId, setLoginId] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -80,7 +93,7 @@ function LoginForm({ onSuccess }: { onSuccess: () => void }) {
     setLoading(true);
     setError(false);
     try {
-      const res = await login({ data: { password } });
+      const res = await login({ data: { login: loginId, password } });
       if (res.ok) onSuccess();
       else setError(true);
     } catch {
@@ -99,14 +112,22 @@ function LoginForm({ onSuccess }: { onSuccess: () => void }) {
         <h1 className="font-display text-2xl font-semibold">Painel Dakar</h1>
         <p className="mt-1 text-sm text-muted-foreground">Área restrita</p>
         <input
+          type="text"
+          value={loginId}
+          onChange={(e) => setLoginId(e.target.value)}
+          placeholder="Login (deixe vazio para dono)"
+          autoComplete="username"
+          className="mt-6 w-full rounded-lg border border-border/60 bg-background px-4 py-3 text-sm focus:border-gold focus:outline-none"
+        />
+        <input
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           placeholder="Senha"
           autoComplete="current-password"
-          className="mt-6 w-full rounded-lg border border-border/60 bg-background px-4 py-3 text-sm focus:border-gold focus:outline-none"
+          className="mt-3 w-full rounded-lg border border-border/60 bg-background px-4 py-3 text-sm focus:border-gold focus:outline-none"
         />
-        {error && <p className="mt-3 text-xs text-destructive">Senha incorreta.</p>}
+        {error && <p className="mt-3 text-xs text-destructive">Login ou senha incorretos.</p>}
         <button
           type="submit"
           disabled={loading || !password}
@@ -119,7 +140,7 @@ function LoginForm({ onSuccess }: { onSuccess: () => void }) {
   );
 }
 
-function AdminPanel({ onLogout }: { onLogout: () => void }) {
+function AdminPanel({ nome, role, onLogout }: { nome: string; role: "dono" | "gerente" | "vendedor"; onLogout: () => void }) {
   const logout = useServerFn(logoutAdmin);
   const listarPerfs = useServerFn(getPerfumes);
   const [tab, setTab] = useState<Tab>("pedidos");
@@ -139,18 +160,24 @@ function AdminPanel({ onLogout }: { onLogout: () => void }) {
     <div className="min-h-screen bg-background text-foreground">
       <header className="sticky top-0 z-40 border-b border-border/60 bg-background/80 backdrop-blur">
         <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-6 py-4">
-          <h1 className="font-display text-xl font-semibold">Painel Dakar</h1>
-          <nav className="flex items-center gap-1">
+          <div>
+            <h1 className="font-display text-xl font-semibold">Painel Dakar</h1>
+            <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+              {nome} · {role}
+            </p>
+          </div>
+          <nav className="flex flex-wrap items-center gap-1">
             {(
               [
                 ["pedidos", "Pedidos"],
                 ["analytics", "Analytics"],
                 ["perfumes", "Perfumes"],
+                ...(role === "dono" ? ([["funcionarios", "Funcionários"]] as const) : []),
               ] as const
             ).map(([k, label]) => (
               <button
                 key={k}
-                onClick={() => setTab(k)}
+                onClick={() => setTab(k as Tab)}
                 className={`relative rounded-full px-4 py-1.5 text-xs uppercase tracking-wider transition ${
                   tab === k
                     ? "bg-gold text-primary-foreground"
@@ -192,6 +219,7 @@ function AdminPanel({ onLogout }: { onLogout: () => void }) {
         {tab === "pedidos" && <PedidosTab />}
         {tab === "analytics" && <AnalyticsTab />}
         {tab === "perfumes" && <PerfumesTab />}
+        {tab === "funcionarios" && role === "dono" && <FuncionariosTab />}
       </section>
     </div>
   );
@@ -1509,4 +1537,241 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
     </label>
   );
 }
+
+/* ---------------- Funcionários (dono) ---------------- */
+
+function FuncionariosTab() {
+  const listar = useServerFn(listarFuncionarios);
+  const criar = useServerFn(criarFuncionario);
+  const atualizar = useServerFn(atualizarFuncionario);
+  const remover = useServerFn(removerFuncionario);
+  const qc = useQueryClient();
+
+  const { data: funcs = [], isLoading } = useQuery({
+    queryKey: ["funcionarios"],
+    queryFn: () => listar(),
+  });
+
+  const [criando, setCriando] = useState(false);
+  const [novo, setNovo] = useState({
+    nome: "",
+    login: "",
+    password: "",
+    role: "vendedor" as "dono" | "gerente" | "vendedor",
+  });
+  const [editandoId, setEditandoId] = useState<string | null>(null);
+  const [novaSenha, setNovaSenha] = useState("");
+  const [erro, setErro] = useState<string | null>(null);
+
+  async function submitNovo(e: React.FormEvent) {
+    e.preventDefault();
+    setErro(null);
+    try {
+      await criar({ data: { ...novo, ativo: true } });
+      setNovo({ nome: "", login: "", password: "", role: "vendedor" });
+      setCriando(false);
+      await qc.invalidateQueries({ queryKey: ["funcionarios"] });
+    } catch (err) {
+      setErro(err instanceof Error ? err.message : "Erro ao criar");
+    }
+  }
+
+  return (
+    <>
+      <div className="mb-4 flex items-center justify-between">
+        <div>
+          <h2 className="font-display text-lg">Funcionários</h2>
+          <p className="text-xs text-muted-foreground">
+            Login individual, senhas criptografadas. Dono tem acesso total; gerente vê tudo menos esta aba; vendedor futuramente restrito.
+          </p>
+        </div>
+        <button
+          onClick={() => setCriando((v) => !v)}
+          className="rounded-full bg-gold px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-primary-foreground hover:brightness-110"
+        >
+          {criando ? "Fechar" : "+ Novo"}
+        </button>
+      </div>
+
+      {criando && (
+        <form
+          onSubmit={submitNovo}
+          className="mb-6 grid gap-3 rounded-2xl border border-gold/40 bg-card p-4 sm:grid-cols-2"
+        >
+          <label className="block text-xs">
+            <span className="uppercase tracking-wider text-muted-foreground">Nome</span>
+            <input
+              value={novo.nome}
+              onChange={(e) => setNovo({ ...novo, nome: e.target.value })}
+              required
+              className="mt-1 w-full rounded-lg border border-border/60 bg-background px-3 py-2 text-sm"
+            />
+          </label>
+          <label className="block text-xs">
+            <span className="uppercase tracking-wider text-muted-foreground">Login</span>
+            <input
+              value={novo.login}
+              onChange={(e) => setNovo({ ...novo, login: e.target.value })}
+              required
+              autoComplete="off"
+              className="mt-1 w-full rounded-lg border border-border/60 bg-background px-3 py-2 text-sm"
+            />
+          </label>
+          <label className="block text-xs">
+            <span className="uppercase tracking-wider text-muted-foreground">Senha</span>
+            <input
+              type="password"
+              value={novo.password}
+              onChange={(e) => setNovo({ ...novo, password: e.target.value })}
+              required
+              minLength={6}
+              autoComplete="new-password"
+              className="mt-1 w-full rounded-lg border border-border/60 bg-background px-3 py-2 text-sm"
+            />
+          </label>
+          <label className="block text-xs">
+            <span className="uppercase tracking-wider text-muted-foreground">Nível</span>
+            <select
+              value={novo.role}
+              onChange={(e) =>
+                setNovo({ ...novo, role: e.target.value as typeof novo.role })
+              }
+              style={{ colorScheme: "dark" }}
+              className="mt-1 w-full rounded-lg border border-border/60 bg-background px-3 py-2 text-sm text-foreground"
+            >
+              <option value="vendedor">Vendedor</option>
+              <option value="gerente">Gerente</option>
+              <option value="dono">Dono</option>
+            </select>
+          </label>
+          {erro && <p className="text-xs text-destructive sm:col-span-2">{erro}</p>}
+          <div className="flex justify-end sm:col-span-2">
+            <button
+              type="submit"
+              className="rounded-full bg-gold px-5 py-2 text-xs font-semibold uppercase tracking-wider text-primary-foreground"
+            >
+              Criar
+            </button>
+          </div>
+        </form>
+      )}
+
+      {isLoading ? (
+        <p className="text-sm text-muted-foreground">Carregando…</p>
+      ) : funcs.length === 0 ? (
+        <p className="text-sm text-muted-foreground">
+          Nenhum funcionário cadastrado ainda. O login do dono continua funcionando via senha do sistema.
+        </p>
+      ) : (
+        <ul className="space-y-3">
+          {funcs.map((f) => (
+            <li
+              key={f.id}
+              className="rounded-2xl border border-border/60 bg-card p-4"
+            >
+              <div className="flex flex-wrap items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <p className="font-semibold">
+                    {f.nome}{" "}
+                    <span className="ml-1 rounded-full bg-gold/15 px-2 py-0.5 text-[10px] uppercase tracking-wider text-gold">
+                      {f.role}
+                    </span>
+                    {!f.ativo && (
+                      <span className="ml-1 rounded-full bg-red-500/15 px-2 py-0.5 text-[10px] uppercase tracking-wider text-red-400">
+                        inativo
+                      </span>
+                    )}
+                  </p>
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    Login: <b>{f.login || "—"}</b>
+                    {f.ultimoAcesso && (
+                      <>
+                        {" · "}último acesso:{" "}
+                        {new Date(f.ultimoAcesso).toLocaleString("pt-BR", {
+                          timeZone: "America/Sao_Paulo",
+                        })}
+                      </>
+                    )}
+                  </p>
+                </div>
+                <div className="flex flex-wrap items-center gap-2">
+                  <select
+                    value={f.role}
+                    onChange={async (e) => {
+                      await atualizar({
+                        data: {
+                          id: f.id,
+                          role: e.target.value as "dono" | "gerente" | "vendedor",
+                        },
+                      });
+                      await qc.invalidateQueries({ queryKey: ["funcionarios"] });
+                    }}
+                    style={{ colorScheme: "dark" }}
+                    className="rounded-full border border-border/60 bg-background px-3 py-1 text-xs text-foreground"
+                  >
+                    <option value="vendedor">Vendedor</option>
+                    <option value="gerente">Gerente</option>
+                    <option value="dono">Dono</option>
+                  </select>
+                  <button
+                    onClick={async () => {
+                      await atualizar({ data: { id: f.id, ativo: !f.ativo } });
+                      await qc.invalidateQueries({ queryKey: ["funcionarios"] });
+                    }}
+                    className="rounded-full border border-border/60 px-3 py-1 text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground"
+                  >
+                    {f.ativo ? "Desativar" : "Ativar"}
+                  </button>
+                  <button
+                    onClick={() => {
+                      setEditandoId(editandoId === f.id ? null : f.id);
+                      setNovaSenha("");
+                    }}
+                    className="rounded-full border border-border/60 px-3 py-1 text-xs uppercase tracking-wider text-muted-foreground hover:text-gold"
+                  >
+                    Trocar senha
+                  </button>
+                  <button
+                    onClick={async () => {
+                      if (!confirm(`Remover ${f.nome}?`)) return;
+                      await remover({ data: { id: f.id } });
+                      await qc.invalidateQueries({ queryKey: ["funcionarios"] });
+                    }}
+                    className="rounded-full border border-border/60 px-3 py-1 text-xs uppercase tracking-wider text-muted-foreground hover:border-destructive hover:text-destructive"
+                  >
+                    Remover
+                  </button>
+                </div>
+              </div>
+              {editandoId === f.id && (
+                <div className="mt-3 flex gap-2">
+                  <input
+                    type="password"
+                    value={novaSenha}
+                    onChange={(e) => setNovaSenha(e.target.value)}
+                    placeholder="Nova senha (mín. 6)"
+                    minLength={6}
+                    className="flex-1 rounded-lg border border-border/60 bg-background px-3 py-2 text-sm"
+                  />
+                  <button
+                    onClick={async () => {
+                      if (novaSenha.length < 6) return;
+                      await atualizar({ data: { id: f.id, password: novaSenha } });
+                      setEditandoId(null);
+                      setNovaSenha("");
+                    }}
+                    className="rounded-full bg-gold px-4 py-2 text-xs font-semibold uppercase tracking-wider text-primary-foreground"
+                  >
+                    Salvar
+                  </button>
+                </div>
+              )}
+            </li>
+          ))}
+        </ul>
+      )}
+    </>
+  );
+}
+
 

@@ -9,19 +9,26 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as RastrearRouteImport } from './routes/rastrear'
+import { Route as PainelDakarA7k9m2RouteImport } from './routes/painel-dakar-a7k9m2'
 import { Route as CalculadoraRouteImport } from './routes/calculadora'
-import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PerfumeIdRouteImport } from './routes/perfume.$id'
+import { Route as PedidoIdRouteImport } from './routes/pedido.$id'
 
+const RastrearRoute = RastrearRouteImport.update({
+  id: '/rastrear',
+  path: '/rastrear',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PainelDakarA7k9m2Route = PainelDakarA7k9m2RouteImport.update({
+  id: '/painel-dakar-a7k9m2',
+  path: '/painel-dakar-a7k9m2',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CalculadoraRoute = CalculadoraRouteImport.update({
   id: '/calculadora',
   path: '/calculadora',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AdminRoute = AdminRouteImport.update({
-  id: '/admin',
-  path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -34,55 +41,94 @@ const PerfumeIdRoute = PerfumeIdRouteImport.update({
   path: '/perfume/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PedidoIdRoute = PedidoIdRouteImport.update({
+  id: '/pedido/$id',
+  path: '/pedido/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/admin': typeof AdminRoute
   '/calculadora': typeof CalculadoraRoute
+  '/painel-dakar-a7k9m2': typeof PainelDakarA7k9m2Route
+  '/rastrear': typeof RastrearRoute
+  '/pedido/$id': typeof PedidoIdRoute
   '/perfume/$id': typeof PerfumeIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/admin': typeof AdminRoute
   '/calculadora': typeof CalculadoraRoute
+  '/painel-dakar-a7k9m2': typeof PainelDakarA7k9m2Route
+  '/rastrear': typeof RastrearRoute
+  '/pedido/$id': typeof PedidoIdRoute
   '/perfume/$id': typeof PerfumeIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/admin': typeof AdminRoute
   '/calculadora': typeof CalculadoraRoute
+  '/painel-dakar-a7k9m2': typeof PainelDakarA7k9m2Route
+  '/rastrear': typeof RastrearRoute
+  '/pedido/$id': typeof PedidoIdRoute
   '/perfume/$id': typeof PerfumeIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/admin' | '/calculadora' | '/perfume/$id'
+  fullPaths:
+    | '/'
+    | '/calculadora'
+    | '/painel-dakar-a7k9m2'
+    | '/rastrear'
+    | '/pedido/$id'
+    | '/perfume/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/admin' | '/calculadora' | '/perfume/$id'
-  id: '__root__' | '/' | '/admin' | '/calculadora' | '/perfume/$id'
+  to:
+    | '/'
+    | '/calculadora'
+    | '/painel-dakar-a7k9m2'
+    | '/rastrear'
+    | '/pedido/$id'
+    | '/perfume/$id'
+  id:
+    | '__root__'
+    | '/'
+    | '/calculadora'
+    | '/painel-dakar-a7k9m2'
+    | '/rastrear'
+    | '/pedido/$id'
+    | '/perfume/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AdminRoute: typeof AdminRoute
   CalculadoraRoute: typeof CalculadoraRoute
+  PainelDakarA7k9m2Route: typeof PainelDakarA7k9m2Route
+  RastrearRoute: typeof RastrearRoute
+  PedidoIdRoute: typeof PedidoIdRoute
   PerfumeIdRoute: typeof PerfumeIdRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/rastrear': {
+      id: '/rastrear'
+      path: '/rastrear'
+      fullPath: '/rastrear'
+      preLoaderRoute: typeof RastrearRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/painel-dakar-a7k9m2': {
+      id: '/painel-dakar-a7k9m2'
+      path: '/painel-dakar-a7k9m2'
+      fullPath: '/painel-dakar-a7k9m2'
+      preLoaderRoute: typeof PainelDakarA7k9m2RouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/calculadora': {
       id: '/calculadora'
       path: '/calculadora'
       fullPath: '/calculadora'
       preLoaderRoute: typeof CalculadoraRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/admin': {
-      id: '/admin'
-      path: '/admin'
-      fullPath: '/admin'
-      preLoaderRoute: typeof AdminRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -99,25 +145,24 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PerfumeIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/pedido/$id': {
+      id: '/pedido/$id'
+      path: '/pedido/$id'
+      fullPath: '/pedido/$id'
+      preLoaderRoute: typeof PedidoIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AdminRoute: AdminRoute,
   CalculadoraRoute: CalculadoraRoute,
+  PainelDakarA7k9m2Route: PainelDakarA7k9m2Route,
+  RastrearRoute: RastrearRoute,
+  PedidoIdRoute: PedidoIdRoute,
   PerfumeIdRoute: PerfumeIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

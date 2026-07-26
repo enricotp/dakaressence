@@ -267,7 +267,7 @@ export const atualizarStatusPedido = createServerFn({ method: "POST" })
     }) => data,
   )
   .handler(async ({ data }) => {
-    const { requireAdmin } = await import("./admin.server");
+    const { requireAdmin, currentAdmin } = await import("./admin.server");
     await requireAdmin();
     const url = `${GATEWAY}/spreadsheets/${SHEET_ID}/values/${SHEET_NAME}!H${data.row}?valueInputOption=USER_ENTERED`;
     const res = await fetch(url, {
@@ -279,6 +279,20 @@ export const atualizarStatusPedido = createServerFn({ method: "POST" })
       const text = await res.text();
       throw new Error(`Sheets update failed [${res.status}]: ${text}`);
     }
+
+    try {
+      const { appendLog } = await import("./logs.server");
+      const me = await currentAdmin();
+      appendLog({
+        usuario: me?.login,
+        role: me?.role,
+        acao: "atualizar",
+        entidade: "pedido",
+        id: data.pedidoId,
+        antes: data.statusAtual,
+        depois: data.status,
+      });
+    } catch {}
 
     // Ajuste de estoque conforme transição (idempotente por transição).
     // Concluído → baixa. Sair de Concluído (Cancelado/Pendente) → devolve.
