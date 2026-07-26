@@ -264,7 +264,7 @@ export const atualizarPerfume = createServerFn({ method: "POST" })
     }) => data,
   )
   .handler(async ({ data }) => {
-    const { requireAdmin } = await import("./admin.server");
+    const { requireAdmin, currentAdmin } = await import("./admin.server");
     await requireAdmin();
 
     const properties: Record<string, unknown> = {};
