@@ -34,7 +34,7 @@ import {
 } from "@/lib/perfumes.functions";
 import { formatBRL } from "@/lib/format";
 
-export const Route = createFileRoute("/admin")({
+export const Route = createFileRoute("/painel-dakar-a7k9m2")({
   component: AdminPage,
   head: () => ({
     meta: [
