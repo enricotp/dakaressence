@@ -106,9 +106,21 @@ function PedidoPage() {
                 <p className="text-xs uppercase tracking-wider text-muted-foreground">
                   Código de rastreio
                 </p>
-                <p className="mt-1 font-mono text-lg font-semibold tracking-wider text-gold">
-                  {data.rastreio}
-                </p>
+                <div className="mt-1 flex items-center gap-2">
+                  <p className="font-mono text-lg font-semibold tracking-wider text-gold">
+                    {data.rastreio}
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => copiarCodigo(data.rastreio!)}
+                    aria-label="Copiar código de rastreio"
+                    title={copiado ? "Copiado!" : "Copiar código"}
+                    className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-border/60 text-muted-foreground transition hover:border-gold hover:text-gold"
+                  >
+                    {copiado ? <Check size={14} /> : <Copy size={14} />}
+                  </button>
+                </div>
+
                 <a
                   href={`https://rastreamento.correios.com.br/app/index.php?objeto=${encodeURIComponent(data.rastreio)}`}
                   target="_blank"
