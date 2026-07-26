@@ -271,6 +271,7 @@ function EstoqueBadge({ nivel }: { nivel: "low" | "out" }) {
 function PedidosTab() {
   const listar = useServerFn(listarPedidos);
   const atualizar = useServerFn(atualizarStatusPedido);
+  const salvarRastreio = useServerFn(atualizarRastreio);
   const qc = useQueryClient();
 
   const [filtro, setFiltro] = useState<"todos" | "Pendente" | "Concluído" | "Cancelado">(
@@ -278,6 +279,8 @@ function PedidosTab() {
   );
   const [busca, setBusca] = useState("");
   const [dataFiltro, setDataFiltro] = useState("");
+  const [rastreioEdit, setRastreioEdit] = useState<Record<string, string>>({});
+  const [savingRastreio, setSavingRastreio] = useState<string | null>(null);
 
   const { data: pedidos = [], isLoading } = useQuery({
     queryKey: ["pedidos"],
@@ -314,6 +317,21 @@ function PedidosTab() {
     qc.invalidateQueries({ queryKey: ["itens-vendidos"] });
     qc.invalidateQueries({ queryKey: ["perfumes"] });
   }
+
+  async function salvarCodigo(p: Pedido) {
+    const novo = (rastreioEdit[p.id] ?? p.rastreio ?? "").trim();
+    if (novo === (p.rastreio ?? "").trim()) return;
+    setSavingRastreio(p.id);
+    try {
+      await salvarRastreio({
+        data: { row: p.row, pedidoId: p.id, rastreio: novo, rastreioAtual: p.rastreio ?? "" },
+      });
+      qc.invalidateQueries({ queryKey: ["pedidos"] });
+    } finally {
+      setSavingRastreio(null);
+    }
+  }
+
 
   return (
     <>
