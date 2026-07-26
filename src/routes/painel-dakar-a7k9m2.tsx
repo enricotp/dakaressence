@@ -72,7 +72,13 @@ function AdminPage() {
     return <LoginForm onSuccess={() => refetch()} />;
   }
 
-  return <AdminPanel onLogout={() => refetch()} />;
+  return (
+    <AdminPanel
+      nome={data.nome ?? "Admin"}
+      role={(data.role as "dono" | "gerente" | "vendedor") ?? "vendedor"}
+      onLogout={() => refetch()}
+    />
+  );
 }
 
 function LoginForm({ onSuccess }: { onSuccess: () => void }) {
