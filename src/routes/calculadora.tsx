@@ -81,6 +81,16 @@ function parseTexto(texto: string, perfumes: Perfume[]): LinhaCalculada[] {
   return resultado;
 }
 
+function extrairPedidoId(texto: string): string | null {
+  const m = texto.match(/PED-[A-Z0-9]+/i);
+  return m ? m[0].toUpperCase() : null;
+}
+
+function extrairNome(texto: string): string | null {
+  const m = texto.match(/^\s*Nome:\s*(.+?)\s*$/im);
+  return m ? m[1].trim() : null;
+}
+
 function Calculadora() {
   const { data: perfumes } = useSuspenseQuery(perfumesQuery);
   const [texto, setTexto] = useState("");
@@ -88,8 +98,11 @@ function Calculadora() {
   const [parcelas, setParcelas] = useState(1);
 
   const linhas = useMemo(() => parseTexto(texto, perfumes), [texto, perfumes]);
+  const pedidoId = useMemo(() => extrairPedidoId(texto), [texto]);
+  const nomeCliente = useMemo(() => extrairNome(texto), [texto]);
   const total = linhas.reduce((acc, l) => acc + (l.subtotal ?? 0), 0);
   const semPreco = linhas.some((l) => l.subtotal == null);
+
 
   return (
     <div className="min-h-screen bg-background text-foreground">
