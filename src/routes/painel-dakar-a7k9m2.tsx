@@ -77,6 +77,7 @@ function AdminPage() {
 
 function LoginForm({ onSuccess }: { onSuccess: () => void }) {
   const login = useServerFn(loginAdmin);
+  const [loginId, setLoginId] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -86,7 +87,7 @@ function LoginForm({ onSuccess }: { onSuccess: () => void }) {
     setLoading(true);
     setError(false);
     try {
-      const res = await login({ data: { password } });
+      const res = await login({ data: { login: loginId, password } });
       if (res.ok) onSuccess();
       else setError(true);
     } catch {
@@ -105,14 +106,22 @@ function LoginForm({ onSuccess }: { onSuccess: () => void }) {
         <h1 className="font-display text-2xl font-semibold">Painel Dakar</h1>
         <p className="mt-1 text-sm text-muted-foreground">Área restrita</p>
         <input
+          type="text"
+          value={loginId}
+          onChange={(e) => setLoginId(e.target.value)}
+          placeholder="Login (deixe vazio para dono)"
+          autoComplete="username"
+          className="mt-6 w-full rounded-lg border border-border/60 bg-background px-4 py-3 text-sm focus:border-gold focus:outline-none"
+        />
+        <input
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           placeholder="Senha"
           autoComplete="current-password"
-          className="mt-6 w-full rounded-lg border border-border/60 bg-background px-4 py-3 text-sm focus:border-gold focus:outline-none"
+          className="mt-3 w-full rounded-lg border border-border/60 bg-background px-4 py-3 text-sm focus:border-gold focus:outline-none"
         />
-        {error && <p className="mt-3 text-xs text-destructive">Senha incorreta.</p>}
+        {error && <p className="mt-3 text-xs text-destructive">Login ou senha incorretos.</p>}
         <button
           type="submit"
           disabled={loading || !password}
