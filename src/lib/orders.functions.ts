@@ -120,7 +120,7 @@ export const listarPedidos = createServerFn({ method: "GET" }).handler(
   async (): Promise<Pedido[]> => {
     const { requireAdmin } = await import("./admin.server");
     await requireAdmin();
-    const url = `${GATEWAY}/spreadsheets/${SHEET_ID}/values/${SHEET_NAME}!A2:H10000`;
+    const url = `${GATEWAY}/spreadsheets/${SHEET_ID}/values/${SHEET_NAME}!A2:I10000`;
     const res = await fetch(url, { headers: sheetsHeaders() });
     if (!res.ok) {
       const text = await res.text();
@@ -141,10 +141,12 @@ export const listarPedidos = createServerFn({ method: "GET" }).handler(
           pagamento: r[5] ?? "",
           parcelas: r[6] ?? "",
           status: r[7] ?? "",
+          rastreio: r[8] ?? "",
           row: i + 2,
         };
       })
       .filter((p) => p.id);
+
   },
 );
 
