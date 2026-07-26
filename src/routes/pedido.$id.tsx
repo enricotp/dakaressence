@@ -1,8 +1,11 @@
 import { createFileRoute, Link, useParams } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
+import { useState } from "react";
+import { Copy, Check } from "lucide-react";
 import { rastrearPedido } from "@/lib/tracking.functions";
 import { formatBRL } from "@/lib/format";
+
 
 export const Route = createFileRoute("/pedido/$id")({
   component: PedidoPage,
@@ -24,10 +27,20 @@ const ETAPAS = ["Pendente", "Concluído"] as const;
 function PedidoPage() {
   const { id } = useParams({ from: "/pedido/$id" });
   const rastrear = useServerFn(rastrearPedido);
+  const [copiado, setCopiado] = useState(false);
   const { data, isLoading } = useQuery({
     queryKey: ["pedido", id],
     queryFn: () => rastrear({ data: { id } }),
   });
+
+  async function copiarCodigo(codigo: string) {
+    try {
+      await navigator.clipboard.writeText(codigo);
+      setCopiado(true);
+      setTimeout(() => setCopiado(false), 2000);
+    } catch {}
+  }
+
 
   return (
     <div className="min-h-screen bg-background px-4 py-16 text-foreground">
@@ -93,9 +106,21 @@ function PedidoPage() {
                 <p className="text-xs uppercase tracking-wider text-muted-foreground">
                   Código de rastreio
                 </p>
-                <p className="mt-1 font-mono text-lg font-semibold tracking-wider text-gold">
-                  {data.rastreio}
-                </p>
+                <div className="mt-1 flex items-center gap-2">
+                  <p className="font-mono text-lg font-semibold tracking-wider text-gold">
+                    {data.rastreio}
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => copiarCodigo(data.rastreio!)}
+                    aria-label="Copiar código de rastreio"
+                    title={copiado ? "Copiado!" : "Copiar código"}
+                    className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-border/60 text-muted-foreground transition hover:border-gold hover:text-gold"
+                  >
+                    {copiado ? <Check size={14} /> : <Copy size={14} />}
+                  </button>
+                </div>
+
                 <a
                   href={`https://rastreamento.correios.com.br/app/index.php?objeto=${encodeURIComponent(data.rastreio)}`}
                   target="_blank"
