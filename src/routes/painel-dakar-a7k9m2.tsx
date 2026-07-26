@@ -160,18 +160,24 @@ function AdminPanel({ nome, role, onLogout }: { nome: string; role: "dono" | "ge
     <div className="min-h-screen bg-background text-foreground">
       <header className="sticky top-0 z-40 border-b border-border/60 bg-background/80 backdrop-blur">
         <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-6 py-4">
-          <h1 className="font-display text-xl font-semibold">Painel Dakar</h1>
-          <nav className="flex items-center gap-1">
+          <div>
+            <h1 className="font-display text-xl font-semibold">Painel Dakar</h1>
+            <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+              {nome} · {role}
+            </p>
+          </div>
+          <nav className="flex flex-wrap items-center gap-1">
             {(
               [
                 ["pedidos", "Pedidos"],
                 ["analytics", "Analytics"],
                 ["perfumes", "Perfumes"],
+                ...(role === "dono" ? ([["funcionarios", "Funcionários"]] as const) : []),
               ] as const
             ).map(([k, label]) => (
               <button
                 key={k}
-                onClick={() => setTab(k)}
+                onClick={() => setTab(k as Tab)}
                 className={`relative rounded-full px-4 py-1.5 text-xs uppercase tracking-wider transition ${
                   tab === k
                     ? "bg-gold text-primary-foreground"
@@ -213,6 +219,7 @@ function AdminPanel({ nome, role, onLogout }: { nome: string; role: "dono" | "ge
         {tab === "pedidos" && <PedidosTab />}
         {tab === "analytics" && <AnalyticsTab />}
         {tab === "perfumes" && <PerfumesTab />}
+        {tab === "funcionarios" && role === "dono" && <FuncionariosTab />}
       </section>
     </div>
   );
