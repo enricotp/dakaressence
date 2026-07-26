@@ -318,6 +318,28 @@ export const atualizarPerfume = createServerFn({ method: "POST" })
     return { ok: true };
   });
 
+export const excluirPerfume = createServerFn({ method: "POST" })
+  .validator((data: { id: string }) => data)
+  .handler(async ({ data }) => {
+    const { requireAdmin, currentAdmin } = await import("./admin.server");
+    await requireAdmin();
+    const res = await fetch(`${GATEWAY}/pages/${data.id}`, {
+      method: "PATCH",
+      headers: notionHeaders(),
+      body: JSON.stringify({ archived: true }),
+    });
+    if (!res.ok) {
+      const text = await res.text();
+      throw new Error(`Notion archive failed [${res.status}]: ${text}`);
+    }
+    try {
+      const { appendLog } = await import("./logs.server");
+      const me = await currentAdmin();
+      appendLog({ usuario: me?.login, role: me?.role, acao: "excluir", entidade: "perfume", id: data.id });
+    } catch {}
+    return { ok: true };
+  });
+
 function generoNotionName(g: Genero): string {
   if (g === "feminino") return "Feminino";
   if (g === "masculino") return "Masculino";
