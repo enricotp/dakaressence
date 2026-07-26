@@ -21,7 +21,8 @@ import {
   removerFuncionario,
 } from "@/lib/users.functions";
 import {
-  listarPedidos,
+ listarPedidos,
+ atualizarRastreio,
   atualizarStatusPedido,
   listarItensVendidos,
   type Pedido,
