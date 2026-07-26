@@ -186,6 +186,7 @@ function AdminPanel({ nome, role, onLogout }: { nome: string; role: "dono" | "ge
                 ["pedidos", "Pedidos"],
                 ["analytics", "Analytics"],
                 ["perfumes", "Perfumes"],
+                ["calculadora", "Calculadora"],
                 ...(role === "dono" ? ([["funcionarios", "Funcionários"]] as const) : []),
               ] as const
             ).map(([k, label]) => (
