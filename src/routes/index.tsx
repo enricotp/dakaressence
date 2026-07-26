@@ -9,6 +9,7 @@ import logoWhite from "@/assets/dakar-essence-white.png.asset.json";
 import { getPerfumes, COLECOES, COLECAO_INFO, type Colecao } from "@/lib/perfumes.functions";
 import { formatBRL } from "@/lib/format";
 import { useCart } from "@/lib/cart-context";
+import { useWishlist } from "@/lib/wishlist-context";
 import { CartButton } from "@/components/cart-drawer";
 
 const perfumesQuery = queryOptions({
@@ -35,6 +36,8 @@ const codigoDoPerfume = (index: number) => `Nº ${String(index + 1).padStart(3, 
 function Index() {
   const { data: perfumes } = useSuspenseQuery(perfumesQuery);
   const { cart, cartCount, add, remove, open } = useCart();
+  const wishlist = useWishlist();
+  const [soFavoritos, setSoFavoritos] = useState(false);
   const [filtro, setFiltro] = useState<"todos" | "feminino" | "masculino">("todos");
   const [busca, setBusca] = useState("");
   const [marca, setMarca] = useState<string>("todas");
@@ -55,6 +58,7 @@ function Index() {
   };
   const perfumesFiltrados = perfumes
     .filter((p) => {
+      if (soFavoritos && !wishlist.has(p.id)) return false;
       if (!colecoesAtivas[p.colecao]) return false;
       if (filtro !== "todos" && p.genero !== filtro) return false;
       if (marca !== "todas" && p.marca !== marca) return false;
