@@ -15,6 +15,12 @@ import {
 
 import { isAdmin, loginAdmin, logoutAdmin } from "@/lib/admin.functions";
 import {
+  listarFuncionarios,
+  criarFuncionario,
+  atualizarFuncionario,
+  removerFuncionario,
+} from "@/lib/users.functions";
+import {
   listarPedidos,
   atualizarStatusPedido,
   listarItensVendidos,
@@ -38,13 +44,13 @@ export const Route = createFileRoute("/painel-dakar-a7k9m2")({
   component: AdminPage,
   head: () => ({
     meta: [
-      { title: "Admin — Dakar Essence" },
+      { title: "Painel — Dakar Essence" },
       { name: "robots", content: "noindex, nofollow" },
     ],
   }),
 });
 
-type Tab = "pedidos" | "analytics" | "perfumes";
+type Tab = "pedidos" | "analytics" | "perfumes" | "funcionarios";
 
 function AdminPage() {
   const check = useServerFn(isAdmin);
