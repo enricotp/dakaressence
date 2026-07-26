@@ -300,6 +300,19 @@ function Index() {
                 <option key={m} value={m}>{m}</option>
               ))}
             </select>
+            <button
+              type="button"
+              onClick={() => setSoFavoritos((v) => !v)}
+              aria-pressed={soFavoritos}
+              className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm transition ${
+                soFavoritos
+                  ? "border-gold bg-gold text-primary-foreground"
+                  : "border-border/60 bg-card text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              <span aria-hidden>♥</span>
+              Favoritos{wishlist.count > 0 ? ` (${wishlist.count})` : ""}
+            </button>
           </div>
 
 
