@@ -32,6 +32,7 @@ import {
   getPerfumes,
   atualizarPerfume,
   criarPerfume,
+  aplicarCustosPadrao,
   COLECOES,
   COLECAO_INFO,
   type Perfume,
