@@ -9,6 +9,7 @@ import logoWhite from "@/assets/dakar-essence-white.png.asset.json";
 import { getPerfumes, COLECOES, COLECAO_INFO, type Colecao } from "@/lib/perfumes.functions";
 import { formatBRL } from "@/lib/format";
 import { useCart } from "@/lib/cart-context";
+import { useWishlist } from "@/lib/wishlist-context";
 import { CartButton } from "@/components/cart-drawer";
 
 const perfumesQuery = queryOptions({
@@ -35,6 +36,8 @@ const codigoDoPerfume = (index: number) => `Nº ${String(index + 1).padStart(3, 
 function Index() {
   const { data: perfumes } = useSuspenseQuery(perfumesQuery);
   const { cart, cartCount, add, remove, open } = useCart();
+  const wishlist = useWishlist();
+  const [soFavoritos, setSoFavoritos] = useState(false);
   const [filtro, setFiltro] = useState<"todos" | "feminino" | "masculino">("todos");
   const [busca, setBusca] = useState("");
   const [marca, setMarca] = useState<string>("todas");
@@ -55,6 +58,7 @@ function Index() {
   };
   const perfumesFiltrados = perfumes
     .filter((p) => {
+      if (soFavoritos && !wishlist.has(p.id)) return false;
       if (!colecoesAtivas[p.colecao]) return false;
       if (filtro !== "todos" && p.genero !== filtro) return false;
       if (marca !== "todas" && p.marca !== marca) return false;
@@ -296,6 +300,19 @@ function Index() {
                 <option key={m} value={m}>{m}</option>
               ))}
             </select>
+            <button
+              type="button"
+              onClick={() => setSoFavoritos((v) => !v)}
+              aria-pressed={soFavoritos}
+              className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm transition ${
+                soFavoritos
+                  ? "border-gold bg-gold text-primary-foreground"
+                  : "border-border/60 bg-card text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              <span aria-hidden>♥</span>
+              Favoritos{wishlist.count > 0 ? ` (${wishlist.count})` : ""}
+            </button>
           </div>
 
 
@@ -313,6 +330,20 @@ function Index() {
                   key={p.id}
                   className="group relative flex flex-col overflow-hidden rounded-2xl border border-border/60 bg-card transition hover:border-gold/50"
                 >
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      wishlist.toggle(p.id);
+                    }}
+                    aria-label={wishlist.has(p.id) ? "Remover dos favoritos" : "Adicionar aos favoritos"}
+                    aria-pressed={wishlist.has(p.id)}
+                    className={`absolute right-2 top-2 z-10 flex h-9 w-9 items-center justify-center rounded-full bg-background/85 text-lg backdrop-blur transition sm:h-10 sm:w-10 sm:text-xl ${
+                      wishlist.has(p.id) ? "text-rose-500" : "text-muted-foreground hover:text-rose-500"
+                    } ${p.prontaEntrega ? "top-12 sm:top-14" : "top-2 sm:top-4"} right-2 sm:right-4`}
+                  >
+                    {wishlist.has(p.id) ? "♥" : "♡"}
+                  </button>
                   <Link
                     to="/perfume/$id"
                     params={{ id: p.id }}
