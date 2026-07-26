@@ -136,6 +136,18 @@ function LoginForm({ onSuccess }: { onSuccess: () => void }) {
         >
           {loading ? "Entrando…" : "Entrar"}
         </button>
+        <div className="mt-6 border-t border-border/60 pt-4 text-center">
+          <Link
+            to="/calculadora"
+            className="inline-flex items-center gap-1.5 text-[11px] uppercase tracking-[0.2em] text-muted-foreground/60 transition hover:text-gold"
+          >
+            <svg aria-hidden className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <rect x="4" y="2" width="16" height="20" rx="2" />
+              <path d="M8 6h8M8 10h2M12 10h2M16 10h.01M8 14h2M12 14h2M16 14h.01M8 18h6" />
+            </svg>
+            Calculadora de pedido
+          </Link>
+        </div>
       </form>
     </div>
   );
