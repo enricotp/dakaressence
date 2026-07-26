@@ -1,8 +1,11 @@
 import { createFileRoute, Link, useParams } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
+import { useState } from "react";
+import { Copy, Check } from "lucide-react";
 import { rastrearPedido } from "@/lib/tracking.functions";
 import { formatBRL } from "@/lib/format";
+
 
 export const Route = createFileRoute("/pedido/$id")({
   component: PedidoPage,
