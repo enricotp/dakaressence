@@ -1,7 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useMemo, useState } from "react";
+import { Suspense, useMemo, useState } from "react";
+import { CalculadoraPanel } from "@/components/calculadora-panel";
 import {
   CartesianGrid,
   Legend,
@@ -52,7 +53,7 @@ export const Route = createFileRoute("/painel-dakar-a7k9m2")({
   }),
 });
 
-type Tab = "pedidos" | "analytics" | "perfumes" | "funcionarios";
+type Tab = "pedidos" | "analytics" | "perfumes" | "calculadora" | "funcionarios";
 
 function AdminPage() {
   const check = useServerFn(isAdmin);
@@ -186,6 +187,7 @@ function AdminPanel({ nome, role, onLogout }: { nome: string; role: "dono" | "ge
                 ["pedidos", "Pedidos"],
                 ["analytics", "Analytics"],
                 ["perfumes", "Perfumes"],
+                ["calculadora", "Calculadora"],
                 ...(role === "dono" ? ([["funcionarios", "Funcionários"]] as const) : []),
               ] as const
             ).map(([k, label]) => (
@@ -233,6 +235,7 @@ function AdminPanel({ nome, role, onLogout }: { nome: string; role: "dono" | "ge
         {tab === "pedidos" && <PedidosTab />}
         {tab === "analytics" && <AnalyticsTab />}
         {tab === "perfumes" && <PerfumesTab />}
+        {tab === "calculadora" && <CalculadoraTab />}
         {tab === "funcionarios" && role === "dono" && <FuncionariosTab />}
       </section>
     </div>
@@ -1862,3 +1865,21 @@ function FuncionariosTab() {
 }
 
 
+
+function CalculadoraTab() {
+  return (
+    <div className="mx-auto max-w-3xl">
+      <span className="text-[11px] uppercase tracking-[0.25em] text-gold">Interno</span>
+      <h1 className="mt-3 font-display text-3xl font-semibold sm:text-4xl">Calculadora de pedido</h1>
+      <p className="mt-2 text-sm text-muted-foreground">
+        Cole a mensagem do WhatsApp. O sistema identifica os perfumes e calcula o total.
+        Também disponível em <a href="/calculadora" className="text-gold underline">/calculadora</a>.
+      </p>
+      <div className="mt-8">
+        <Suspense fallback={<div className="text-muted-foreground">Carregando…</div>}>
+          <CalculadoraPanel />
+        </Suspense>
+      </div>
+    </div>
+  );
+}
