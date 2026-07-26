@@ -508,14 +508,8 @@ function Index() {
             <img src={logoWhite.url} alt="Dakar Essence" className="h-12 w-auto sm:h-16" />
           </div>
           <p className="text-center text-xs sm:text-sm">© {new Date().getFullYear()} Dakar Essence. Todos os direitos reservados.</p>
-          <div className="flex flex-row items-center gap-4 md:flex-col md:items-end md:gap-1">
-            <Link to="/calculadora" className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground/60 transition hover:text-gold">
-              calculadora
-            </Link>
-            <Link to="/rastrear" className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground/60 transition hover:text-gold">
-              rastrear pedido
-            </Link>
-          </div>
+          <div />
+
         </div>
       </footer>
 
