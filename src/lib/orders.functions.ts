@@ -29,8 +29,10 @@ export type Pedido = {
   pagamento: string;
   parcelas: string;
   status: string;
+  rastreio: string;
   row: number;
 };
+
 
 export const criarPedido = createServerFn({ method: "POST" })
   .validator(
@@ -118,7 +120,7 @@ export const listarPedidos = createServerFn({ method: "GET" }).handler(
   async (): Promise<Pedido[]> => {
     const { requireAdmin } = await import("./admin.server");
     await requireAdmin();
-    const url = `${GATEWAY}/spreadsheets/${SHEET_ID}/values/${SHEET_NAME}!A2:H10000`;
+    const url = `${GATEWAY}/spreadsheets/${SHEET_ID}/values/${SHEET_NAME}!A2:I10000`;
     const res = await fetch(url, { headers: sheetsHeaders() });
     if (!res.ok) {
       const text = await res.text();
@@ -139,10 +141,12 @@ export const listarPedidos = createServerFn({ method: "GET" }).handler(
           pagamento: r[5] ?? "",
           parcelas: r[6] ?? "",
           status: r[7] ?? "",
+          rastreio: r[8] ?? "",
           row: i + 2,
         };
       })
       .filter((p) => p.id);
+
   },
 );
 
@@ -329,6 +333,38 @@ export const atualizarStatusPedido = createServerFn({ method: "POST" })
 
     return { ok: true };
   });
+
+export const atualizarRastreio = createServerFn({ method: "POST" })
+  .validator((data: { row: number; pedidoId: string; rastreio: string; rastreioAtual: string }) => data)
+  .handler(async ({ data }) => {
+    const { requireAdmin, currentAdmin } = await import("./admin.server");
+    await requireAdmin();
+    const url = `${GATEWAY}/spreadsheets/${SHEET_ID}/values/${SHEET_NAME}!I${data.row}?valueInputOption=USER_ENTERED`;
+    const res = await fetch(url, {
+      method: "PUT",
+      headers: sheetsHeaders(),
+      body: JSON.stringify({ values: [[data.rastreio]] }),
+    });
+    if (!res.ok) {
+      const text = await res.text();
+      throw new Error(`Sheets update failed [${res.status}]: ${text}`);
+    }
+    try {
+      const { appendLog } = await import("./logs.server");
+      const me = await currentAdmin();
+      appendLog({
+        usuario: me?.login,
+        role: me?.role,
+        acao: "atualizar",
+        entidade: "pedido.rastreio",
+        id: data.pedidoId,
+        antes: data.rastreioAtual,
+        depois: data.rastreio,
+      });
+    } catch {}
+    return { ok: true };
+  });
+
 
 function parseItensTextoLocal(itens: string): Array<{ qtd: number; nome: string }> {
   return itens

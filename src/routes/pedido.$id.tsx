@@ -88,6 +88,28 @@ function PedidoPage() {
               </ol>
             </div>
 
+            {data.rastreio && (
+              <div className="rounded-2xl border border-gold/50 bg-card p-6">
+                <p className="text-xs uppercase tracking-wider text-muted-foreground">
+                  Código de rastreio
+                </p>
+                <p className="mt-1 font-mono text-lg font-semibold tracking-wider text-gold">
+                  {data.rastreio}
+                </p>
+                <a
+                  href={`https://rastreamento.correios.com.br/app/index.php?objeto=${encodeURIComponent(data.rastreio)}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="mt-3 inline-flex items-center gap-1 rounded-full bg-gold px-4 py-2 text-xs font-semibold uppercase tracking-wider text-primary-foreground hover:brightness-110"
+                >
+                  Rastrear nos Correios ↗
+                </a>
+                <p className="mt-3 text-[11px] text-muted-foreground">
+                  Pode levar até 24h para aparecer no site dos Correios após a postagem.
+                </p>
+              </div>
+            )}
+
             <div className="rounded-2xl border border-border/60 bg-card p-6">
               <p className="text-xs uppercase tracking-wider text-muted-foreground">Itens</p>
               <pre className="mt-2 whitespace-pre-wrap font-sans text-sm">{data.itens}</pre>
@@ -98,6 +120,7 @@ function PedidoPage() {
                 <span className="font-display text-lg text-gold">{formatBRL(data.total)}</span>
               </div>
             </div>
+
           </div>
         )}
       </div>

@@ -21,7 +21,8 @@ import {
   removerFuncionario,
 } from "@/lib/users.functions";
 import {
-  listarPedidos,
+ listarPedidos,
+ atualizarRastreio,
   atualizarStatusPedido,
   listarItensVendidos,
   type Pedido,
@@ -270,6 +271,7 @@ function EstoqueBadge({ nivel }: { nivel: "low" | "out" }) {
 function PedidosTab() {
   const listar = useServerFn(listarPedidos);
   const atualizar = useServerFn(atualizarStatusPedido);
+  const salvarRastreio = useServerFn(atualizarRastreio);
   const qc = useQueryClient();
 
   const [filtro, setFiltro] = useState<"todos" | "Pendente" | "Concluído" | "Cancelado">(
@@ -277,6 +279,8 @@ function PedidosTab() {
   );
   const [busca, setBusca] = useState("");
   const [dataFiltro, setDataFiltro] = useState("");
+  const [rastreioEdit, setRastreioEdit] = useState<Record<string, string>>({});
+  const [savingRastreio, setSavingRastreio] = useState<string | null>(null);
 
   const { data: pedidos = [], isLoading } = useQuery({
     queryKey: ["pedidos"],
@@ -313,6 +317,21 @@ function PedidosTab() {
     qc.invalidateQueries({ queryKey: ["itens-vendidos"] });
     qc.invalidateQueries({ queryKey: ["perfumes"] });
   }
+
+  async function salvarCodigo(p: Pedido) {
+    const novo = (rastreioEdit[p.id] ?? p.rastreio ?? "").trim();
+    if (novo === (p.rastreio ?? "").trim()) return;
+    setSavingRastreio(p.id);
+    try {
+      await salvarRastreio({
+        data: { row: p.row, pedidoId: p.id, rastreio: novo, rastreioAtual: p.rastreio ?? "" },
+      });
+      qc.invalidateQueries({ queryKey: ["pedidos"] });
+    } finally {
+      setSavingRastreio(null);
+    }
+  }
+
 
   return (
     <>
@@ -420,7 +439,41 @@ function PedidosTab() {
                     </div>
                   </div>
                 </div>
+                <div className="mt-4 border-t border-border/40 pt-3">
+                  <label className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+                    Código de rastreio (Correios)
+                  </label>
+                  <div className="mt-1.5 flex flex-wrap items-center gap-2">
+                    <input
+                      type="text"
+                      value={rastreioEdit[p.id] ?? p.rastreio ?? ""}
+                      onChange={(e) =>
+                        setRastreioEdit((prev) => ({ ...prev, [p.id]: e.target.value }))
+                      }
+                      placeholder="Ex: BR123456789BR"
+                      className="min-w-56 flex-1 rounded-lg border border-border/60 bg-background px-3 py-1.5 text-sm uppercase tracking-wider focus:border-gold focus:outline-none"
+                    />
+                    <button
+                      onClick={() => salvarCodigo(p)}
+                      disabled={savingRastreio === p.id}
+                      className="rounded-full bg-gold px-3 py-1.5 text-xs font-semibold text-primary-foreground hover:brightness-110 disabled:opacity-50"
+                    >
+                      {savingRastreio === p.id ? "Salvando…" : "Salvar"}
+                    </button>
+                    {p.rastreio && (
+                      <a
+                        href={`https://rastreamento.correios.com.br/app/index.php?objeto=${encodeURIComponent(p.rastreio)}`}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-xs uppercase tracking-[0.2em] text-gold hover:underline"
+                      >
+                        abrir Correios ↗
+                      </a>
+                    )}
+                  </div>
+                </div>
               </li>
+
             ))}
         </ul>
       )}
