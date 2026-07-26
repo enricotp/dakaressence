@@ -133,9 +133,24 @@ function Index() {
             </div>
           </nav>
 
-          <div className="shrink-0">
+          <div className="flex shrink-0 items-center gap-2">
+            <Link
+              to="/rastrear"
+              className="inline-flex min-h-9 items-center gap-1.5 rounded-full border border-border/60 bg-card px-3 py-1.5 text-xs font-medium text-muted-foreground transition hover:border-gold hover:text-gold sm:text-sm"
+              aria-label="Rastrear pedido"
+            >
+              <svg aria-hidden className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M16 3h5v5" />
+                <path d="M21 3l-7 7" />
+                <circle cx="12" cy="12" r="3" />
+                <path d="M3 12a9 9 0 0 0 9 9" />
+              </svg>
+              <span className="hidden sm:inline">Rastrear</span>
+            </Link>
             <CartButton />
           </div>
+
+
 
         </div>
         <nav className="flex gap-1 border-t border-border/60 px-2 py-2 md:hidden">
@@ -493,14 +508,8 @@ function Index() {
             <img src={logoWhite.url} alt="Dakar Essence" className="h-12 w-auto sm:h-16" />
           </div>
           <p className="text-center text-xs sm:text-sm">© {new Date().getFullYear()} Dakar Essence. Todos os direitos reservados.</p>
-          <div className="flex flex-row items-center gap-4 md:flex-col md:items-end md:gap-1">
-            <Link to="/calculadora" className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground/60 transition hover:text-gold">
-              calculadora
-            </Link>
-            <Link to="/rastrear" className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground/60 transition hover:text-gold">
-              rastrear pedido
-            </Link>
-          </div>
+          <div />
+
         </div>
       </footer>
 
