@@ -119,6 +119,8 @@ export function CartDrawer() {
   async function confirmar() {
     setErro(null);
     setEnviando(true);
+    // Abre a janela ANTES do await para não ser bloqueada pelo popup blocker (iOS/Safari/Chrome mobile)
+    const waWindow = window.open("about:blank", "_blank");
     try {
       const { id } = await criar({
         data: {
@@ -130,8 +132,13 @@ export function CartDrawer() {
           parcelas: pagamento === "Cartão" ? parcelas : 1,
         },
       });
-      const msg = montarMensagem(id);
-      window.open(waLink(msg), "_blank");
+      const url = waLink(montarMensagem(id));
+      if (waWindow && !waWindow.closed) {
+        waWindow.location.href = url;
+      } else {
+        // Fallback: popup bloqueado — navega na mesma aba
+        window.location.href = url;
+      }
       clear();
       setEtapa("carrinho");
       setNome("");
@@ -139,6 +146,7 @@ export function CartDrawer() {
       setParcelas(1);
       close();
     } catch (e) {
+      if (waWindow && !waWindow.closed) waWindow.close();
       setErro(e instanceof Error ? e.message : "Erro ao registrar pedido");
     } finally {
       setEnviando(false);
