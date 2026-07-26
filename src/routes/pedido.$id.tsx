@@ -27,10 +27,20 @@ const ETAPAS = ["Pendente", "Concluído"] as const;
 function PedidoPage() {
   const { id } = useParams({ from: "/pedido/$id" });
   const rastrear = useServerFn(rastrearPedido);
+  const [copiado, setCopiado] = useState(false);
   const { data, isLoading } = useQuery({
     queryKey: ["pedido", id],
     queryFn: () => rastrear({ data: { id } }),
   });
+
+  async function copiarCodigo(codigo: string) {
+    try {
+      await navigator.clipboard.writeText(codigo);
+      setCopiado(true);
+      setTimeout(() => setCopiado(false), 2000);
+    } catch {}
+  }
+
 
   return (
     <div className="min-h-screen bg-background px-4 py-16 text-foreground">
