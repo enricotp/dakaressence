@@ -234,6 +234,7 @@ function AdminPanel({ nome, role, onLogout }: { nome: string; role: "dono" | "ge
         {tab === "pedidos" && <PedidosTab />}
         {tab === "analytics" && <AnalyticsTab />}
         {tab === "perfumes" && <PerfumesTab />}
+        {tab === "calculadora" && <CalculadoraTab />}
         {tab === "funcionarios" && role === "dono" && <FuncionariosTab />}
       </section>
     </div>
