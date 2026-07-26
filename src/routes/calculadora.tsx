@@ -81,6 +81,16 @@ function parseTexto(texto: string, perfumes: Perfume[]): LinhaCalculada[] {
   return resultado;
 }
 
+function extrairPedidoId(texto: string): string | null {
+  const m = texto.match(/PED-[A-Z0-9]+/i);
+  return m ? m[0].toUpperCase() : null;
+}
+
+function extrairNome(texto: string): string | null {
+  const m = texto.match(/^\s*Nome:\s*(.+?)\s*$/im);
+  return m ? m[1].trim() : null;
+}
+
 function Calculadora() {
   const { data: perfumes } = useSuspenseQuery(perfumesQuery);
   const [texto, setTexto] = useState("");
@@ -88,8 +98,11 @@ function Calculadora() {
   const [parcelas, setParcelas] = useState(1);
 
   const linhas = useMemo(() => parseTexto(texto, perfumes), [texto, perfumes]);
+  const pedidoId = useMemo(() => extrairPedidoId(texto), [texto]);
+  const nomeCliente = useMemo(() => extrairNome(texto), [texto]);
   const total = linhas.reduce((acc, l) => acc + (l.subtotal ?? 0), 0);
   const semPreco = linhas.some((l) => l.subtotal == null);
+
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -126,8 +139,26 @@ function Calculadora() {
             className="w-full rounded-2xl border border-border/60 bg-card p-4 font-mono text-sm text-foreground focus:border-gold focus:outline-none"
           />
 
+          {(pedidoId || nomeCliente) && (
+            <div className="rounded-2xl border border-gold/40 bg-gold/5 p-4 text-sm">
+              {pedidoId && (
+                <p>
+                  <span className="uppercase tracking-wider text-muted-foreground text-xs">Pedido:</span>{" "}
+                  <strong className="font-mono text-gold">{pedidoId}</strong>
+                </p>
+              )}
+              {nomeCliente && (
+                <p className="mt-1">
+                  <span className="uppercase tracking-wider text-muted-foreground text-xs">Cliente:</span>{" "}
+                  <strong className="text-foreground">{nomeCliente}</strong>
+                </p>
+              )}
+            </div>
+          )}
+
           {linhas.length > 0 && (
             <div className="rounded-2xl border border-border/60 bg-card p-6">
+
               <ul className="divide-y divide-border/60">
                 {linhas.map((l, i) => (
                   <li key={i} className="flex items-center justify-between gap-4 py-3">
