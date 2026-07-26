@@ -11,4 +11,12 @@ export const ADMIN_SESSION_CONFIG = {
   },
 };
 
-export type AdminSession = { unlocked?: boolean };
+export type AdminRole = "dono" | "gerente" | "vendedor";
+
+export type AdminSession = {
+  unlocked?: boolean;
+  userId?: string;
+  nome?: string;
+  login?: string;
+  role?: AdminRole;
+};
