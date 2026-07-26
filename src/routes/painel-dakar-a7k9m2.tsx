@@ -140,7 +140,7 @@ function LoginForm({ onSuccess }: { onSuccess: () => void }) {
   );
 }
 
-function AdminPanel({ onLogout }: { onLogout: () => void }) {
+function AdminPanel({ nome, role, onLogout }: { nome: string; role: "dono" | "gerente" | "vendedor"; onLogout: () => void }) {
   const logout = useServerFn(logoutAdmin);
   const listarPerfs = useServerFn(getPerfumes);
   const [tab, setTab] = useState<Tab>("pedidos");
