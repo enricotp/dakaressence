@@ -1537,7 +1537,7 @@ function EditForm({
         <span>
           <b className="text-amber-400">Sob encomenda</b>
           <span className="ml-2 text-xs text-muted-foreground">
-            (mostra o selo amarelo no card — pré-marcado para Brand/Arabic/Dream Brand)
+            (mostra o selo amarelo no card quando o estoque for 0)
           </span>
         </span>
       </label>
