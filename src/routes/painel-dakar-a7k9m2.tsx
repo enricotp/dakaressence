@@ -1083,6 +1083,23 @@ function PerfumesTab() {
             Aplicar custos padrão
           </button>
           <button
+            onClick={async () => {
+              if (
+                !window.confirm(
+                  "ATENÇÃO: Isso vai ZERAR o estoque de todos os perfumes, EXCETO os itens 'pequenos' específicos mencionados (212 VIP Black/Man, One Million, Asad, etc) que ficarão com 1 unidade.\n\nDeseja continuar?",
+                )
+              )
+                return;
+              const r = await zerarEstoque();
+              await qc.invalidateQueries({ queryKey: ["perfumes"] });
+              alert(`Estoque resetado com sucesso! ${r.atualizados} perfumes foram atualizados.`);
+            }}
+            className="rounded-full border border-red-500/40 px-4 py-1.5 text-xs uppercase tracking-wider text-red-400 hover:bg-red-500/10"
+          >
+            Zerar Estoque & Ajustar
+          </button>
+
+          <button
             onClick={() => setCriando((v) => !v)}
             className="inline-flex items-center gap-1.5 rounded-full bg-gold px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-primary-foreground transition hover:brightness-110"
           >
