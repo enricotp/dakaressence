@@ -1055,7 +1055,7 @@ function PerfumesTab() {
           {colTab} ({filtrados.length})
           {COLECAO_INFO[colTab].sobEncomenda && (
             <span className="ml-2 rounded-full bg-amber-500/15 px-2 py-0.5 text-[10px] uppercase tracking-wider text-amber-400">
-              Sob encomenda
+              Sob encomenda (padrão)
             </span>
           )}
         </h2>
