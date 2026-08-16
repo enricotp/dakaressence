@@ -247,7 +247,7 @@ function estoqueAlerta(p: Perfume): "ok" | "low" | "out" {
   const s = (p.status || "").toLowerCase();
   const oos = p.oosThreshold ?? 0;
   const low = p.lowThreshold ?? 3;
-  if (s.includes("no stock") || s.includes("out") || (p.amount != null && p.amount <= oos))
+  if (s.includes("no stock") || s.includes("out") || (p.amount !== null && p.amount <= oos))
     return "out";
   if (s.includes("low") || (p.amount != null && p.amount <= low)) return "low";
   return "ok";
