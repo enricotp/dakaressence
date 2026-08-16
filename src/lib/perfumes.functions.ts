@@ -170,8 +170,10 @@ export const getPerfumes = createServerFn({ method: "GET" }).handler(
     return data.results.map((page) => {
       const nome =
         page.properties["Product Name"]?.title?.[0]?.plain_text ?? "Sem nome";
+      const amount = page.properties["Amount"]?.number ?? null;
+      const oosThreshold = page.properties["OoS threshold"]?.number ?? 0;
       const status = page.properties["Available?"]?.formula?.string ?? "";
-      const emEstoque = status.includes("In Stock") || status.includes("Low");
+      const emEstoque = (amount !== null && amount > oosThreshold) || (status.includes("In Stock") || status.includes("Low"));
       const descricao =
         page.properties["Descrição"]?.rich_text?.map((t) => t.plain_text).join("") ?? "";
       const preco = page.properties["Preço"]?.number ?? null;
