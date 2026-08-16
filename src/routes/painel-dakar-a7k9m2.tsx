@@ -35,6 +35,7 @@ import {
   criarPerfume,
   excluirPerfume,
   aplicarCustosPadrao,
+  zerarEstoqueEAjustar,
   COLECOES,
   COLECAO_INFO,
   type Perfume,
@@ -42,6 +43,7 @@ import {
   type Genero,
   type Volume,
 } from "@/lib/perfumes.functions";
+
 import { formatBRL } from "@/lib/format";
 
 export const Route = createFileRoute("/painel-dakar-a7k9m2")({
@@ -973,6 +975,8 @@ function PerfumesTab() {
   const criar = useServerFn(criarPerfume);
   const aplicarCustos = useServerFn(aplicarCustosPadrao);
   const excluir = useServerFn(excluirPerfume);
+  const zerarEstoque = useServerFn(zerarEstoqueEAjustar);
+
   const qc = useQueryClient();
 
   const { data: perfumes = [], isLoading } = useQuery({
@@ -1078,6 +1082,23 @@ function PerfumesTab() {
           >
             Aplicar custos padrão
           </button>
+          <button
+            onClick={async () => {
+              if (
+                !window.confirm(
+                  "ATENÇÃO: Isso vai ZERAR o estoque de todos os perfumes, EXCETO os itens 'pequenos' específicos mencionados (212 VIP Black/Man, One Million, Asad, etc) que ficarão com 1 unidade.\n\nDeseja continuar?",
+                )
+              )
+                return;
+              const r = await zerarEstoque();
+              await qc.invalidateQueries({ queryKey: ["perfumes"] });
+              alert(`Estoque resetado com sucesso! ${r.atualizados} perfumes foram atualizados.`);
+            }}
+            className="rounded-full border border-red-500/40 px-4 py-1.5 text-xs uppercase tracking-wider text-red-400 hover:bg-red-500/10"
+          >
+            Zerar Estoque & Ajustar
+          </button>
+
           <button
             onClick={() => setCriando((v) => !v)}
             className="inline-flex items-center gap-1.5 rounded-full bg-gold px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-primary-foreground transition hover:brightness-110"

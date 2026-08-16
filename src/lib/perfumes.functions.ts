@@ -484,3 +484,54 @@ export const aplicarCustosPadrao = createServerFn({ method: "POST" })
     return { ok: true, atualizados, pulados, total: perfumes.length };
   });
 
+export const zerarEstoqueEAjustar = createServerFn({ method: "POST" }).handler(
+  async () => {
+    const { requireAdmin } = await import("./admin.server");
+    await requireAdmin("dono");
+
+    const perfumes = await getPerfumes();
+    const targets = [
+      "212 VIP Black",
+      "212 VIP Man",
+      "Al Noble Wazeer",
+      "1 Million",
+      "Asad",
+      "Only The Brave",
+      "212 VIP Rosé",
+      "Scandal",
+      "La Vie Est Belle",
+      "Yara",
+      "Good Girl",
+      "Fantasy",
+      "Éclair",
+      "Eclair",
+      "Angel",
+    ];
+
+    let atualizados = 0;
+
+    for (const p of perfumes) {
+      const nomeLower = p.nome.toLowerCase();
+      const match = targets.find((t) => nomeLower.includes(t.toLowerCase()));
+      const isSmall = p.volume === "25ml" || p.volume === "50ml";
+
+      let targetAmount = 0;
+      if (match && isSmall) {
+        targetAmount = 1;
+      }
+
+      if (p.amount !== targetAmount) {
+        const res = await fetch(`${GATEWAY}/pages/${p.id}`, {
+          method: "PATCH",
+          headers: notionHeaders(),
+          body: JSON.stringify({ properties: { Amount: { number: targetAmount } } }),
+        });
+        if (res.ok) atualizados++;
+      }
+    }
+
+    return { ok: true, atualizados };
+  },
+);
+
+
