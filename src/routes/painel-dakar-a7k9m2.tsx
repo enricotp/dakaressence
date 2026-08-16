@@ -247,7 +247,7 @@ function estoqueAlerta(p: Perfume): "ok" | "low" | "out" {
   const s = (p.status || "").toLowerCase();
   const oos = p.oosThreshold ?? 0;
   const low = p.lowThreshold ?? 3;
-  if (s.includes("no stock") || s.includes("out") || (p.amount != null && p.amount <= oos))
+  if (s.includes("no stock") || s.includes("out") || (p.amount !== null && p.amount <= oos))
     return "out";
   if (s.includes("low") || (p.amount != null && p.amount <= low)) return "low";
   return "ok";
@@ -644,7 +644,9 @@ function AnalyticsTab() {
       const p = perfumePorNome.get(it.perfume.toLowerCase());
       if (!p) return;
       if (p.prontaEntrega) acc.pronta += it.qtd;
-      else if (p.sobEncomenda) acc.encomenda += it.qtd;
+      // Item vendido é contado como encomenda se a flag estiver ligada E ele não estava em estoque
+      // Como não temos histórico de estoque no momento da venda aqui, usamos a lógica atual do perfume
+      else if (p.sobEncomenda && !p.emEstoque) acc.encomenda += it.qtd;
       else acc.outros += it.qtd;
     });
     return acc;
@@ -1055,7 +1057,7 @@ function PerfumesTab() {
           {colTab} ({filtrados.length})
           {COLECAO_INFO[colTab].sobEncomenda && (
             <span className="ml-2 rounded-full bg-amber-500/15 px-2 py-0.5 text-[10px] uppercase tracking-wider text-amber-400">
-              Sob encomenda
+              Sob encomenda (padrão)
             </span>
           )}
         </h2>
@@ -1535,7 +1537,7 @@ function EditForm({
         <span>
           <b className="text-amber-400">Sob encomenda</b>
           <span className="ml-2 text-xs text-muted-foreground">
-            (mostra o selo amarelo no card — pré-marcado para Brand/Arabic/Dream Brand)
+            (mostra o selo amarelo no card quando o estoque for 0)
           </span>
         </span>
       </label>

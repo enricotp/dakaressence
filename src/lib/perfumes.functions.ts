@@ -170,13 +170,14 @@ export const getPerfumes = createServerFn({ method: "GET" }).handler(
     return data.results.map((page) => {
       const nome =
         page.properties["Product Name"]?.title?.[0]?.plain_text ?? "Sem nome";
+      const amount = page.properties["Amount"]?.number ?? null;
+      const oosThreshold = page.properties["OoS threshold"]?.number ?? 0;
       const status = page.properties["Available?"]?.formula?.string ?? "";
-      const emEstoque = status.includes("In Stock") || status.includes("Low");
+      const emEstoque = (amount !== null && amount > oosThreshold) || (status.includes("In Stock") || status.includes("Low"));
       const descricao =
         page.properties["Descrição"]?.rich_text?.map((t) => t.plain_text).join("") ?? "";
       const preco = page.properties["Preço"]?.number ?? null;
       const custo = page.properties["Custo"]?.number ?? null;
-      const amount = page.properties["Amount"]?.number ?? null;
       const volumeRaw = page.properties["Volume"]?.select?.name ?? "50ml";
       const volume: Volume = (["25ml", "50ml", "80ml", "100ml"] as const).includes(
         volumeRaw as Volume,
@@ -194,7 +195,6 @@ export const getPerfumes = createServerFn({ method: "GET" }).handler(
         ? (colecaoRaw as Colecao)
         : "Signature";
       const lowThreshold = page.properties["Low threshold "]?.number ?? null;
-      const oosThreshold = page.properties["OoS threshold"]?.number ?? null;
       const sobEncomenda = page.properties["Sob encomenda"]?.checkbox ?? false;
       const prontaEntrega = page.properties["Pronta entrega"]?.checkbox ?? false;
       const notasTopo =

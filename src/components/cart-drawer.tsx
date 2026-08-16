@@ -74,7 +74,8 @@ export function CartDrawer() {
     return Object.entries(cart).some(([id, qtd]) => {
       if (qtd <= 0) return false;
       const item = perfumeById.get(id);
-      return !!item?.p.sobEncomenda;
+      // Item é considerado encomenda se a flag estiver ligada E ele não estiver em estoque
+      return !!(item?.p.sobEncomenda && !item?.p.emEstoque);
     });
   }, [cart, perfumeById]);
   const faltamParaEncomenda = temEncomenda ? Math.max(0, 3 - cartCount) : 0;
