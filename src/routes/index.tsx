@@ -337,8 +337,8 @@ function Index() {
               const i = perfumes.indexOf(p);
               const codigo = codigoDoPerfume(i);
               const imagem = p.imagem ?? imagensRotativas[i % imagensRotativas.length];
-              // Só mostra "Sob encomenda" para coleções marcadas como tal — falta de estoque é interno
-              const mostrarSobEncomenda = p.sobEncomenda;
+              // Se estiver em estoque (amount > threshold), nunca mostra encomenda mesmo que a flag esteja ligada
+              const mostrarSobEncomenda = p.sobEncomenda && !p.emEstoque;
               const qtd = cart[p.id] ?? 0;
               return (
                 <article
