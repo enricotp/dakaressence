@@ -644,7 +644,9 @@ function AnalyticsTab() {
       const p = perfumePorNome.get(it.perfume.toLowerCase());
       if (!p) return;
       if (p.prontaEntrega) acc.pronta += it.qtd;
-      else if (p.sobEncomenda) acc.encomenda += it.qtd;
+      // Item vendido é contado como encomenda se a flag estiver ligada E ele não estava em estoque
+      // Como não temos histórico de estoque no momento da venda aqui, usamos a lógica atual do perfume
+      else if (p.sobEncomenda && !p.emEstoque) acc.encomenda += it.qtd;
       else acc.outros += it.qtd;
     });
     return acc;
