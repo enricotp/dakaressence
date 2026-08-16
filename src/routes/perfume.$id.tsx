@@ -126,7 +126,7 @@ function PerfumeDetail() {
           <p className="mt-6 text-lg leading-relaxed text-muted-foreground">
             {p.descricao || "Contratipo exclusivo, com alta concentração e fixação prolongada."}
           </p>
-          {p.sobEncomenda && (
+          {p.sobEncomenda && !p.emEstoque && (
             <p className="mt-4 rounded-lg border border-amber-500/30 bg-amber-500/5 px-4 py-3 text-sm text-amber-300">
               Produto sob encomenda — prazo estimado de {prazo} dias após confirmação. Frete grátis com 3+ itens no pedido.
             </p>
