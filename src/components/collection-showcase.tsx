@@ -1,6 +1,8 @@
 import { useState } from "react";
+import { useNavigate } from "@tanstack/react-router";
 import { type Colecao, type Volume } from "@/lib/perfumes.functions";
 import { formatBRL } from "@/lib/format";
+
 
 interface CollectionData {
   id: Colecao;
@@ -69,9 +71,20 @@ export function CollectionShowcase() {
 }
 
 function CollectionCard({ collection }: { collection: CollectionData }) {
+  const navigate = useNavigate();
   const [selectedSize, setSelectedSize] = useState<Volume>(collection.sizes[0].label);
   
   const currentPrice = collection.sizes.find(s => s.label === selectedSize)?.price ?? 0;
+
+  const handleDiscover = () => {
+    navigate({
+      to: "/catalogo",
+      search: {
+        colecao: collection.id,
+        volume: selectedSize
+      }
+    });
+  };
 
   return (
     <div className="group relative flex flex-col rounded-3xl border border-border/60 bg-card p-6 transition-all hover:border-gold/30 hover:shadow-xl sm:p-8">
@@ -118,12 +131,14 @@ function CollectionCard({ collection }: { collection: CollectionData }) {
           </div>
           <button
             type="button"
+            onClick={handleDiscover}
             className="inline-flex h-12 items-center justify-center rounded-full bg-foreground px-6 text-sm font-semibold text-background transition hover:bg-gold hover:text-primary-foreground"
           >
-            Saber mais
+            Descobrir Fragrâncias
           </button>
         </div>
       </div>
     </div>
   );
 }
+

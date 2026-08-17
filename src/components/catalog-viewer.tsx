@@ -1,15 +1,18 @@
-import { useState } from "react";
-import { Link } from "@tanstack/react-router";
+import { useState, useEffect } from "react";
+import { Link, useSearch, useNavigate } from "@tanstack/react-router";
 import { formatBRL } from "@/lib/format";
 import { useWishlist } from "@/lib/wishlist-context";
 import { useCart } from "@/lib/cart-context";
 import { COLECOES, COLECAO_INFO, type Colecao, type Volume, type Perfume } from "@/lib/perfumes.functions";
+
 
 interface CatalogViewerProps {
   perfumes: Perfume[];
 }
 
 export function CatalogViewer({ perfumes }: CatalogViewerProps) {
+  const search = useSearch({ from: "/catalogo" }) as any;
+  const navigate = useNavigate();
   const { cart, add, remove } = useCart();
   const wishlist = useWishlist();
   const [soFavoritos, setSoFavoritos] = useState(false);
@@ -17,12 +20,35 @@ export function CatalogViewer({ perfumes }: CatalogViewerProps) {
   const [filtro, setFiltro] = useState<"todos" | "feminino" | "masculino">("todos");
   const [busca, setBusca] = useState("");
   const [marca, setMarca] = useState<string>("todas");
-  const [colecoesAtivas, setColecoesAtivas] = useState<Record<Colecao, boolean>>({
-    Signature: true,
-    "Brand Collection": true,
-    "Arabic Collection": true,
-    "Dream Brand Collection": true,
+  const [selectedVolume, setSelectedVolume] = useState<Volume | "todos">("todos");
+  const [colecoesAtivas, setColecoesAtivas] = useState<Record<Colecao, boolean>>(() => {
+    if (search.colecao && COLECOES.includes(search.colecao as Colecao)) {
+      const initial = {
+        Signature: false,
+        "Brand Collection": false,
+        "Arabic Collection": false,
+        "Dream Brand Collection": false,
+      };
+      initial[search.colecao as Colecao] = true;
+      return initial;
+    }
+    return {
+      Signature: true,
+      "Brand Collection": true,
+      "Arabic Collection": true,
+      "Dream Brand Collection": true,
+    };
   });
+
+  useEffect(() => {
+    if (search.volume) {
+      const vol = search.volume as Volume;
+      if (["25ml", "50ml", "80ml", "100ml"].includes(vol)) {
+        setSelectedVolume(vol);
+      }
+    }
+  }, [search.volume]);
+
 
   const marcas = Array.from(new Set(perfumes.map((p) => p.marca).filter((m): m is string => !!m))).sort();
   const buscaNorm = busca.trim().toLowerCase();
@@ -43,8 +69,10 @@ export function CatalogViewer({ perfumes }: CatalogViewerProps) {
       if (buscaNorm && !p.nome.toLowerCase().includes(buscaNorm)) return false;
       if (disponibilidade === "pronta" && !p.prontaEntrega) return false;
       if (disponibilidade === "encomenda" && !p.sobEncomenda) return false;
+      if (selectedVolume !== "todos" && p.volume !== selectedVolume) return false;
       return true;
     })
+
     .sort((a, b) => {
       if (a.prontaEntrega && !b.prontaEntrega) return -1;
       if (!a.prontaEntrega && b.prontaEntrega) return 1;
@@ -130,9 +158,15 @@ export function CatalogViewer({ perfumes }: CatalogViewerProps) {
             <button
               key={c}
               type="button"
-              onClick={() =>
-                setColecoesAtivas((s) => ({ ...s, [c]: !s[c] }))
-              }
+              onClick={() => {
+                setColecoesAtivas((s) => {
+                  const newState = { ...s, [c]: !s[c] };
+                  
+                  // Se resetar o volume caso a nova coleção ativa não suporte o volume atual
+                  // Ou se desativou a coleção que era a única que suportava o volume
+                  return newState;
+                });
+              }}
               className={`inline-flex items-center gap-2 rounded-full border px-4 py-1.5 text-xs uppercase tracking-wider transition ${
                 on
                   ? "border-gold bg-gold text-primary-foreground"
@@ -149,6 +183,54 @@ export function CatalogViewer({ perfumes }: CatalogViewerProps) {
           );
         })}
       </div>
+
+      {/* Seletor de Volume Dinâmico */}
+      <div className="mb-8 flex justify-center">
+        {(() => {
+          const activeColecoes = (Object.keys(colecoesAtivas) as Colecao[]).filter(c => colecoesAtivas[c]);
+          const availableVolumes = Array.from(new Set(activeColecoes.flatMap(c => COLECAO_INFO[c].volumes))).sort((a, b) => {
+            const numA = parseInt(a);
+            const numB = parseInt(b);
+            return numA - numB;
+          });
+
+          if (availableVolumes.length <= 1) return null;
+
+          return (
+            <div className="flex flex-col items-center gap-2">
+              <label className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                Filtrar por Volume
+              </label>
+              <div className="inline-flex rounded-xl border border-border/60 bg-card p-1">
+                <button
+                  onClick={() => setSelectedVolume("todos")}
+                  className={`relative min-w-[70px] rounded-lg px-3 py-1.5 text-xs font-medium transition-all ${
+                    selectedVolume === "todos"
+                      ? "bg-gold text-primary-foreground shadow-sm"
+                      : "text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  Tudo
+                </button>
+                {availableVolumes.map((vol) => (
+                  <button
+                    key={vol}
+                    onClick={() => setSelectedVolume(vol)}
+                    className={`relative min-w-[70px] rounded-lg px-3 py-1.5 text-xs font-medium transition-all ${
+                      selectedVolume === vol
+                        ? "bg-gold text-primary-foreground shadow-sm"
+                        : "text-muted-foreground hover:text-foreground"
+                    }`}
+                  >
+                    {vol.replace('ml', ' ml')}
+                  </button>
+                ))}
+              </div>
+            </div>
+          );
+        })()}
+      </div>
+
 
       {/* Busca por nome + seletor de marca + favoritos */}
       <div className="mb-8 flex flex-col items-center justify-center gap-3 sm:flex-row">

@@ -2,7 +2,15 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { getPerfumes } from "@/lib/perfumes.functions";
 import { CatalogViewer } from "@/components/catalog-viewer";
-import { logoWhite } from "@/lib/constants";
+import { Header } from "@/components/header";
+
+
+import { z } from "zod";
+
+const catalogSearchSchema = z.object({
+  colecao: z.string().optional(),
+  volume: z.string().optional(),
+});
 
 const perfumesQuery = queryOptions({
   queryKey: ["perfumes"],
@@ -11,8 +19,10 @@ const perfumesQuery = queryOptions({
 });
 
 export const Route = createFileRoute("/catalogo")({
+  validateSearch: (search) => catalogSearchSchema.parse(search),
   component: CatalogoPage,
   loader: ({ context }) => context.queryClient.ensureQueryData(perfumesQuery),
+
   errorComponent: ({ error }) => (
     <div className="mx-auto max-w-2xl px-6 py-24 text-center">
       <h1 className="font-display text-3xl font-semibold">Não foi possível carregar o catálogo</h1>
