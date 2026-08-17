@@ -38,6 +38,7 @@ function Index() {
   const { cart, cartCount, add, remove, open } = useCart();
   const wishlist = useWishlist();
   const [soFavoritos, setSoFavoritos] = useState(false);
+  const [disponibilidade, setDisponibilidade] = useState<"todos" | "pronta" | "encomenda">("todos");
   const [filtro, setFiltro] = useState<"todos" | "feminino" | "masculino">("todos");
   const [busca, setBusca] = useState("");
   const [marca, setMarca] = useState<string>("todas");
@@ -63,13 +64,20 @@ function Index() {
       if (filtro !== "todos" && p.genero !== filtro) return false;
       if (marca !== "todas" && p.marca !== marca) return false;
       if (buscaNorm && !p.nome.toLowerCase().includes(buscaNorm)) return false;
+      
+      if (disponibilidade === "pronta" && !p.prontaEntrega) return false;
+      if (disponibilidade === "encomenda" && !p.sobEncomenda) return false;
+      
       return true;
     })
     .sort((a, b) => {
+      // Prioridade: Pronta Entrega (emEstoque/prontaEntrega) primeiro
+      if (a.prontaEntrega && !b.prontaEntrega) return -1;
+      if (!a.prontaEntrega && b.prontaEntrega) return 1;
+
       const c = colecaoOrder[a.colecao] - colecaoOrder[b.colecao];
       if (c !== 0) return c;
-      // Em estoque primeiro, depois os sob encomenda
-      return Number(b.emEstoque) - Number(a.emEstoque);
+      return 0;
     });
 
 
@@ -244,6 +252,32 @@ function Index() {
                   }`}
                 >
                   {op}
+                </button>
+              ))}
+    </div>
+          </div>
+
+          {/* Filtro por disponibilidade */}
+          <div className="mb-8 flex justify-center">
+            <div className="flex flex-wrap justify-center gap-2">
+              {(
+                [
+                  { id: "todos", label: "Todas as disponibilidades" },
+                  { id: "pronta", label: "Pronta Entrega" },
+                  { id: "encomenda", label: "Sob Encomenda" },
+                ] as const
+              ).map((op) => (
+                <button
+                  key={op.id}
+                  type="button"
+                  onClick={() => setDisponibilidade(op.id)}
+                  className={`inline-flex items-center gap-2 rounded-full border px-4 py-1.5 text-xs uppercase tracking-wider transition ${
+                    disponibilidade === op.id
+                      ? "border-gold bg-gold text-primary-foreground"
+                      : "border-border/60 bg-card text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  {op.label}
                 </button>
               ))}
             </div>

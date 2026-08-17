@@ -1118,6 +1118,7 @@ function PerfumesTab() {
               notasTopo: "",
               notasCoracao: "",
               notasFundo: "",
+              volumesSignature: [],
             }}
             onCancel={() => setCriando(false)}
             onSave={async (patch) => {
@@ -1400,6 +1401,7 @@ function EditForm({
         notasTopo,
         notasCoracao,
         notasFundo,
+        volumesSignature,
       };
       if (imagemUrl.trim()) patch.imagemUrl = imagemUrl.trim();
       await onSave(patch);
@@ -1492,6 +1494,35 @@ function EditForm({
           ))}
         </div>
       </Field>
+      {colecao === "Signature" && (
+        <Field label="Volumes disponíveis (Signature)">
+          <div className="flex flex-wrap gap-2">
+            {(["50ml", "100ml"] as Volume[]).map((v) => {
+              const selected = volumesSignature.includes(v);
+              return (
+                <button
+                  key={v}
+                  type="button"
+                  onClick={() => {
+                    if (selected) {
+                      setVolumesSignature(volumesSignature.filter((i) => i !== v));
+                    } else {
+                      setVolumesSignature([...volumesSignature, v]);
+                    }
+                  }}
+                  className={`rounded-full px-4 py-1.5 text-xs uppercase tracking-wider transition ${
+                    selected
+                      ? "bg-gold text-primary-foreground"
+                      : "border border-border/60 text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  {v}
+                </button>
+              );
+            })}
+          </div>
+        </Field>
+      )}
       <Field label="Gênero">
         <div className="flex flex-wrap gap-2">
           {(["feminino", "masculino", "unissex"] as const).map((g) => (
