@@ -486,7 +486,7 @@ function Index() {
                   </div>
                 </article>
               );
-            })
+            })}
           )}
         </div>
         </div>
