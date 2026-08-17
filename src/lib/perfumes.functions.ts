@@ -195,8 +195,8 @@ export const getPerfumes = createServerFn({ method: "GET" }).handler(
         ? (colecaoRaw as Colecao)
         : "Signature";
       const lowThreshold = page.properties["Low threshold "]?.number ?? null;
-      const sobEncomenda = page.properties["Sob encomenda"]?.checkbox ?? false;
-      const prontaEntrega = page.properties["Pronta entrega"]?.checkbox ?? false;
+      const sobEncomenda = amount !== null && amount <= oosThreshold;
+      const prontaEntrega = amount !== null && amount > oosThreshold;
       const notasTopo =
         page.properties["Notas de topo"]?.rich_text?.map((t) => t.plain_text).join("") ?? "";
       const notasCoracao =
