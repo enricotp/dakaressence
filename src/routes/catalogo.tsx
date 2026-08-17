@@ -26,25 +26,8 @@ function CatalogoPage() {
 
   return (
     <div className="min-h-screen bg-background text-foreground pb-20">
-      <header className="sticky top-0 z-40 border-b border-border/60 bg-background/80 backdrop-blur">
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-3 sm:px-6 sm:py-4">
-          <Link to="/" className="flex min-w-0 items-center" aria-label="Dakar Essence">
-            <img src={logoWhite} alt="Dakar Essence" className="h-12 w-auto sm:h-16 md:h-24" />
-          </Link>
-          
-          <nav className="flex items-center gap-6">
-            <Link to="/" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
-              Home
-            </Link>
-            <div className="rounded-full bg-gold px-4 py-2 text-sm font-medium text-primary-foreground">
-              Catálogo
-            </div>
-            <a href="/#sobre" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors hidden sm:inline">
-              Sobre
-            </a>
-          </nav>
-        </div>
-      </header>
+      <Header />
+
 
       <main className="py-10">
         <CatalogViewer perfumes={perfumes} />
