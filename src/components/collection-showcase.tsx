@@ -2,6 +2,9 @@ import { useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { type Colecao, type Volume } from "@/lib/perfumes.functions";
 import { formatBRL } from "@/lib/format";
+import { useQuery } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
+import { getHomeConfig } from "@/lib/home-config.functions";
 
 
 interface CollectionData {
@@ -49,6 +52,29 @@ const COLLECTION_SHOWCASE_DATA: CollectionData[] = [
 ];
 
 export function CollectionShowcase() {
+  const getCfg = useServerFn(getHomeConfig);
+  const { data: config = [] } = useQuery({
+    queryKey: ["home-config"],
+    queryFn: () => getCfg(),
+  });
+
+  const mergedData = COLLECTION_SHOWCASE_DATA.map((base) => {
+    const notion = config.find((c) => c.key === base.id.toLowerCase().replace(/\s+/g, "_"));
+    if (!notion) return base;
+
+    const sizes = base.sizes.map((s) => ({
+      ...s,
+      price: notion.precos[s.label] ?? s.price,
+    }));
+
+    return {
+      ...base,
+      name: notion.nome || base.name,
+      description: notion.descricao || base.description,
+      sizes,
+    };
+  });
+
   return (
     <section className="mx-auto max-w-7xl px-4 py-14 sm:px-6 sm:py-20 md:py-24">
       <div className="mb-12 text-center">
@@ -62,7 +88,7 @@ export function CollectionShowcase() {
       </div>
 
       <div className="grid gap-8 md:grid-cols-2">
-        {COLLECTION_SHOWCASE_DATA.map((collection) => (
+        {mergedData.map((collection) => (
           <CollectionCard key={collection.id} collection={collection} />
         ))}
       </div>

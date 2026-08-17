@@ -3,6 +3,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Suspense, useMemo, useState } from "react";
 import { CalculadoraPanel } from "@/components/calculadora-panel";
+import { HomeConfigTab } from "@/components/home-config-tab";
 import {
   CartesianGrid,
   Legend,
@@ -54,7 +55,7 @@ export const Route = createFileRoute("/painel-dakar-a7k9m2")({
   }),
 });
 
-type Tab = "pedidos" | "analytics" | "perfumes" | "calculadora" | "funcionarios";
+type Tab = "pedidos" | "analytics" | "perfumes" | "calculadora" | "funcionarios" | "home_config";
 
 function AdminPage() {
   const check = useServerFn(isAdmin);
@@ -189,6 +190,7 @@ function AdminPanel({ nome, role, onLogout }: { nome: string; role: "dono" | "ge
                 ["analytics", "Analytics"],
                 ["perfumes", "Perfumes"],
                 ["calculadora", "Calculadora"],
+                ["home_config", "Página Inicial"],
                 ...(role === "dono" ? ([["funcionarios", "Funcionários"]] as const) : []),
               ] as const
             ).map(([k, label]) => (
@@ -238,6 +240,7 @@ function AdminPanel({ nome, role, onLogout }: { nome: string; role: "dono" | "ge
         {tab === "perfumes" && <PerfumesTab />}
         {tab === "calculadora" && <CalculadoraTab />}
         {tab === "funcionarios" && role === "dono" && <FuncionariosTab />}
+        {tab === "home_config" && <HomeConfigTab />}
       </section>
     </div>
   );

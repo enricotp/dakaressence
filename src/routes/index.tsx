@@ -3,6 +3,9 @@ import { logoWhite } from "@/lib/constants";
 import { useCart } from "@/lib/cart-context";
 import { CollectionShowcase } from "@/components/collection-showcase";
 import { Header } from "@/components/header";
+import { useQuery } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
+import { getHomeConfig } from "@/lib/home-config.functions";
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -10,6 +13,23 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   const { cartCount, open } = useCart();
+  const getCfg = useServerFn(getHomeConfig);
+  const { data: config = [] } = useQuery({
+    queryKey: ["home-config"],
+    queryFn: () => getCfg(),
+  });
+
+  const homeMain = config.find((c) => c.key === "home_main");
+  const titulo = homeMain?.tituloPrincipal || "A mesma essência, metade do preço.";
+  const descricao = homeMain?.textoPrincipal || "Perfumes contratipos com alta concentração e fixação premium. Monte seu pedido e finalize direto no WhatsApp.";
+
+  const splitTitulo = (text: string) => {
+    const parts = text.split(",");
+    if (parts.length < 2) return { main: text, highlighted: "" };
+    return { main: parts[0] + ",", highlighted: parts.slice(1).join(",") };
+  };
+
+  const { main, highlighted } = splitTitulo(titulo);
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -23,14 +43,13 @@ function Index() {
             <span className="h-1 w-1 rounded-full bg-gold" /> Coleção 2026
           </span>
           <h1 className="font-display text-4xl font-semibold leading-[1.05] tracking-tight sm:text-5xl md:text-7xl">
-            A mesma essência,{" "}
+            {main}{" "}
             <span className="bg-gradient-to-r from-gold to-gold-soft bg-clip-text text-transparent">
-              metade do preço.
+              {highlighted}
             </span>
           </h1>
           <p className="mx-auto mt-6 max-w-lg text-base leading-relaxed text-muted-foreground sm:text-lg">
-            Perfumes contratipos com alta concentração e fixação premium.
-            Monte seu pedido e finalize direto no WhatsApp.
+            {descricao}
           </p>
           <div className="mt-8 flex flex-col items-center gap-3 sm:mt-10 sm:flex-row sm:flex-wrap sm:justify-center sm:gap-4">
             <Link
