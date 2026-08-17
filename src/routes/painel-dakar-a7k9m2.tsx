@@ -1144,6 +1144,7 @@ function PerfumesTab() {
                   notasTopo: patch.notasTopo,
                   notasCoracao: patch.notasCoracao,
                   notasFundo: patch.notasFundo,
+                  volumesSignature: patch.volumesSignature,
                 },
               });
               await qc.invalidateQueries({ queryKey: ["perfumes"] });
@@ -1332,6 +1333,7 @@ function EditForm({
     notasTopo?: string;
     notasCoracao?: string;
     notasFundo?: string;
+    volumesSignature?: Volume[];
   }) => Promise<void>;
   onCancel: () => void;
   marcasSugestoes?: string[];
@@ -1358,6 +1360,7 @@ function EditForm({
   const [notasTopo, setNotasTopo] = useState(perfume.notasTopo);
   const [notasCoracao, setNotasCoracao] = useState(perfume.notasCoracao);
   const [notasFundo, setNotasFundo] = useState(perfume.notasFundo);
+  const [volumesSignature, setVolumesSignature] = useState<Volume[]>(perfume.volumesSignature || []);
   const [salvando, setSalvando] = useState(false);
   const [erro, setErro] = useState<string | null>(null);
 
