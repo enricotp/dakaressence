@@ -1,37 +1,16 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import heroImg from "@/assets/hero-perfume.jpg";
 import perfume1 from "@/assets/perfume-1.jpg";
 import perfume2 from "@/assets/perfume-2.jpg";
 import perfume3 from "@/assets/perfume-3.jpg";
 import { logoWhite } from "@/lib/constants";
-import { getPerfumes, COLECOES, COLECAO_INFO, type Colecao } from "@/lib/perfumes.functions";
-import { formatBRL } from "@/lib/format";
 import { useCart } from "@/lib/cart-context";
-import { useWishlist } from "@/lib/wishlist-context";
 import { CartButton } from "@/components/cart-drawer";
-
-const perfumesQuery = queryOptions({
-  queryKey: ["perfumes"],
-  queryFn: () => getPerfumes(),
-  staleTime: 0,
-});
+import { CollectionShowcase } from "@/components/collection-showcase";
 
 export const Route = createFileRoute("/")({
   component: Index,
-  loader: ({ context }) => context.queryClient.ensureQueryData(perfumesQuery),
-  errorComponent: ({ error }) => (
-    <div className="mx-auto max-w-2xl px-6 py-24 text-center">
-      <h1 className="font-display text-3xl font-semibold">Não foi possível carregar o catálogo</h1>
-      <p className="mt-4 text-muted-foreground">{error.message}</p>
-    </div>
-  ),
-  notFoundComponent: () => <div className="p-8">Página não encontrada</div>,
 });
-
-const imagensRotativas = [perfume1, perfume2, perfume3];
-const codigoDoPerfume = (index: number) => `Nº ${String(index + 1).padStart(3, "0")}`;
 
 function Index() {
   const { cartCount, open } = useCart();
@@ -56,7 +35,6 @@ function Index() {
     return () => obs.disconnect();
   }, []);
 
-
   return (
     <div className="min-h-screen bg-background text-foreground">
       {/* Nav */}
@@ -69,7 +47,7 @@ function Index() {
             <div className="relative inline-flex rounded-full border border-border/60 bg-card p-1 text-sm">
               <span
                 aria-hidden
-                className="absolute top-1 bottom-1 w-1/4 rounded-full bg-gold transition-transform duration-300 ease-out"
+                className="absolute top-1 bottom-1 w-[20%] rounded-full bg-gold transition-transform duration-300 ease-out"
                 style={{
                   transform: `translateX(${secaoAtiva === "home" ? "0%" : secaoAtiva === "sobre" ? "200%" : "300%"})`,
                 }}
@@ -93,7 +71,7 @@ function Index() {
                     key={s.id}
                     href={`#${s.id}`}
                     className={`relative z-10 w-24 rounded-full px-4 py-2 text-center font-medium transition-colors ${
-                      secaoAtiva === s.secao ? "text-primary-foreground" : "text-muted-foreground hover:text-foreground"
+                      secaoAtiva === (s as any).secao ? "text-primary-foreground" : "text-muted-foreground hover:text-foreground"
                     }`}
                   >
                     {s.label}
@@ -119,10 +97,8 @@ function Index() {
             </Link>
             <CartButton />
           </div>
-
-
-
         </div>
+        
         <nav className="flex gap-1 border-t border-border/60 px-2 py-2 md:hidden">
           {([
             { id: "top", secao: "home", label: "Home" },
@@ -143,7 +119,7 @@ function Index() {
                 key={s.id}
                 href={`#${s.id}`}
                 className={`flex-1 min-h-11 inline-flex items-center justify-center rounded-full px-2 text-xs font-medium transition ${
-                  secaoAtiva === s.secao ? "bg-gold text-primary-foreground" : "text-muted-foreground"
+                  secaoAtiva === (s as any).secao ? "bg-gold text-primary-foreground" : "text-muted-foreground"
                 }`}
               >
                 {s.label}
@@ -186,7 +162,6 @@ function Index() {
           </div>
         </div>
       </section>
-
 
       <CollectionShowcase />
 
@@ -246,10 +221,8 @@ function Index() {
           </div>
           <p className="text-center text-xs sm:text-sm">© {new Date().getFullYear()} Dakar Essence. Todos os direitos reservados.</p>
           <div />
-
         </div>
       </footer>
-
     </div>
   );
 }

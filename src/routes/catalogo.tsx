@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { getPerfumes } from "@/lib/perfumes.functions";
 import { CatalogViewer } from "@/components/catalog-viewer";
@@ -39,9 +39,9 @@ function CatalogoPage() {
             <div className="rounded-full bg-gold px-4 py-2 text-sm font-medium text-primary-foreground">
               Catálogo
             </div>
-            <Link to="/#sobre" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors hidden sm:inline">
+            <a href="/#sobre" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors hidden sm:inline">
               Sobre
-            </Link>
+            </a>
           </nav>
         </div>
       </header>
@@ -56,5 +56,3 @@ function CatalogoPage() {
     </div>
   );
 }
-
-import { Link } from "@tanstack/react-router";
