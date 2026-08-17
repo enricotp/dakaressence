@@ -1,92 +1,23 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import heroImg from "@/assets/hero-perfume.jpg";
 import perfume1 from "@/assets/perfume-1.jpg";
 import perfume2 from "@/assets/perfume-2.jpg";
 import perfume3 from "@/assets/perfume-3.jpg";
-import logoWhite from "@/assets/dakar-essence-white.png.asset.json";
-import { getPerfumes, COLECOES, COLECAO_INFO, type Colecao } from "@/lib/perfumes.functions";
-import { formatBRL } from "@/lib/format";
+import { logoWhite } from "@/lib/constants";
 import { useCart } from "@/lib/cart-context";
-import { useWishlist } from "@/lib/wishlist-context";
 import { CartButton } from "@/components/cart-drawer";
-
-const perfumesQuery = queryOptions({
-  queryKey: ["perfumes"],
-  queryFn: () => getPerfumes(),
-  staleTime: 0,
-});
+import { CollectionShowcase } from "@/components/collection-showcase";
 
 export const Route = createFileRoute("/")({
   component: Index,
-  loader: ({ context }) => context.queryClient.ensureQueryData(perfumesQuery),
-  errorComponent: ({ error }) => (
-    <div className="mx-auto max-w-2xl px-6 py-24 text-center">
-      <h1 className="font-display text-3xl font-semibold">Não foi possível carregar o catálogo</h1>
-      <p className="mt-4 text-muted-foreground">{error.message}</p>
-    </div>
-  ),
-  notFoundComponent: () => <div className="p-8">Página não encontrada</div>,
 });
 
-const imagensRotativas = [perfume1, perfume2, perfume3];
-const codigoDoPerfume = (index: number) => `Nº ${String(index + 1).padStart(3, "0")}`;
-
 function Index() {
-  const { data: perfumes } = useSuspenseQuery(perfumesQuery);
-  const { cart, cartCount, add, remove, open } = useCart();
-  const wishlist = useWishlist();
-  const [soFavoritos, setSoFavoritos] = useState(false);
-  const [disponibilidade, setDisponibilidade] = useState<"todos" | "pronta" | "encomenda">("todos");
-  const [filtro, setFiltro] = useState<"todos" | "feminino" | "masculino">("todos");
-  const [busca, setBusca] = useState("");
-  const [marca, setMarca] = useState<string>("todas");
-  // Coleções extras (Brand/Arabic/Dream Brand) só aparecem quando o usuário liga o chip.
-  const [colecoesAtivas, setColecoesAtivas] = useState<Record<Colecao, boolean>>({
-    Signature: true,
-    "Brand Collection": false,
-    "Arabic Collection": false,
-    "Dream Brand Collection": false,
-  });
-  const marcas = Array.from(new Set(perfumes.map((p) => p.marca).filter((m): m is string => !!m))).sort();
-  const buscaNorm = busca.trim().toLowerCase();
-  const colecaoOrder: Record<Colecao, number> = {
-    Signature: 0,
-    "Brand Collection": 1,
-    "Arabic Collection": 2,
-    "Dream Brand Collection": 3,
-  };
-  const perfumesFiltrados = perfumes
-    .filter((p) => {
-      if (soFavoritos && !wishlist.has(p.id)) return false;
-      if (!colecoesAtivas[p.colecao]) return false;
-      if (filtro !== "todos" && p.genero !== filtro) return false;
-      if (marca !== "todas" && p.marca !== marca) return false;
-      if (buscaNorm && !p.nome.toLowerCase().includes(buscaNorm)) return false;
-      
-      if (disponibilidade === "pronta" && !p.prontaEntrega) return false;
-      if (disponibilidade === "encomenda" && !p.sobEncomenda) return false;
-      
-      return true;
-    })
-    .sort((a, b) => {
-      // Prioridade: Pronta Entrega (emEstoque/prontaEntrega) primeiro
-      if (a.prontaEntrega && !b.prontaEntrega) return -1;
-      if (!a.prontaEntrega && b.prontaEntrega) return 1;
-
-      const c = colecaoOrder[a.colecao] - colecaoOrder[b.colecao];
-      if (c !== 0) return c;
-      return 0;
-    });
-
-
-  const secoes = ["home", "catalogo", "sobre", "faq"] as const;
-  type Secao = (typeof secoes)[number];
-  const [secaoAtiva, setSecaoAtiva] = useState<Secao>("home");
+  const { cartCount, open } = useCart();
+  const [secaoAtiva, setSecaoAtiva] = useState<"home" | "sobre" | "faq">("home");
 
   useEffect(() => {
-    const idParaSecao: Record<string, Secao> = { top: "home", catalogo: "catalogo", sobre: "sobre", faq: "faq" };
+    const idParaSecao: Record<string, "home" | "sobre" | "faq"> = { top: "home", sobre: "sobre", faq: "faq" };
     const els = Object.keys(idParaSecao)
       .map((id) => document.getElementById(id))
       .filter((el): el is HTMLElement => el !== null);
@@ -104,40 +35,49 @@ function Index() {
     return () => obs.disconnect();
   }, []);
 
-
   return (
     <div className="min-h-screen bg-background text-foreground">
       {/* Nav */}
       <header className="sticky top-0 z-40 border-b border-border/60 bg-background/80 backdrop-blur">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-3 sm:px-6 sm:py-4">
           <a href="#top" className="flex min-w-0 items-center" aria-label="Dakar Essence">
-            <img src={logoWhite.url} alt="Dakar Essence" className="h-12 w-auto sm:h-16 md:h-24" />
+            <img src={logoWhite} alt="Dakar Essence" className="h-12 w-auto sm:h-16 md:h-24" />
           </a>
           <nav className="hidden md:flex">
             <div className="relative inline-flex rounded-full border border-border/60 bg-card p-1 text-sm">
               <span
                 aria-hidden
-                className="absolute top-1 bottom-1 w-1/4 rounded-full bg-gold transition-transform duration-300 ease-out"
+                className="absolute top-1 bottom-1 w-[20%] rounded-full bg-gold transition-transform duration-300 ease-out"
                 style={{
-                  transform: `translateX(${secaoAtiva === "home" ? "0%" : secaoAtiva === "catalogo" ? "100%" : secaoAtiva === "sobre" ? "200%" : "300%"})`,
+                  transform: `translateX(${secaoAtiva === "home" ? "0%" : secaoAtiva === "sobre" ? "200%" : "300%"})`,
                 }}
               />
               {([
                 { id: "top", secao: "home", label: "Home" },
-                { id: "catalogo", secao: "catalogo", label: "Catálogo" },
+                { id: "catalogo", label: "Catálogo" },
                 { id: "sobre", secao: "sobre", label: "Sobre" },
                 { id: "faq", secao: "faq", label: "FAQ" },
-              ] as const).map((s) => (
-                <a
-                  key={s.id}
-                  href={`#${s.id}`}
-                  className={`relative z-10 w-24 rounded-full px-4 py-2 text-center font-medium transition-colors ${
-                    secaoAtiva === s.secao ? "text-primary-foreground" : "text-muted-foreground hover:text-foreground"
-                  }`}
-                >
-                  {s.label}
-                </a>
-              ))}
+              ] as const).map((s) => 
+                s.id === "catalogo" ? (
+                  <Link
+                    key={s.id}
+                    to="/catalogo"
+                    className="relative z-10 w-24 rounded-full px-4 py-2 text-center font-medium text-muted-foreground transition-colors hover:text-foreground"
+                  >
+                    {s.label}
+                  </Link>
+                ) : (
+                  <a
+                    key={s.id}
+                    href={`#${s.id}`}
+                    className={`relative z-10 w-24 rounded-full px-4 py-2 text-center font-medium transition-colors ${
+                      secaoAtiva === (s as any).secao ? "text-primary-foreground" : "text-muted-foreground hover:text-foreground"
+                    }`}
+                  >
+                    {s.label}
+                  </a>
+                )
+              )}
             </div>
           </nav>
 
@@ -157,27 +97,35 @@ function Index() {
             </Link>
             <CartButton />
           </div>
-
-
-
         </div>
+        
         <nav className="flex gap-1 border-t border-border/60 px-2 py-2 md:hidden">
           {([
             { id: "top", secao: "home", label: "Home" },
-            { id: "catalogo", secao: "catalogo", label: "Catálogo" },
+            { id: "catalogo", label: "Catálogo" },
             { id: "sobre", secao: "sobre", label: "Sobre" },
             { id: "faq", secao: "faq", label: "FAQ" },
-          ] as const).map((s) => (
-            <a
-              key={s.id}
-              href={`#${s.id}`}
-              className={`flex-1 min-h-11 inline-flex items-center justify-center rounded-full px-2 text-xs font-medium transition ${
-                secaoAtiva === s.secao ? "bg-gold text-primary-foreground" : "text-muted-foreground"
-              }`}
-            >
-              {s.label}
-            </a>
-          ))}
+          ] as const).map((s) => 
+            s.id === "catalogo" ? (
+              <Link
+                key={s.id}
+                to="/catalogo"
+                className="flex-1 min-h-11 inline-flex items-center justify-center rounded-full px-2 text-xs font-medium text-muted-foreground transition"
+              >
+                {s.label}
+              </Link>
+            ) : (
+              <a
+                key={s.id}
+                href={`#${s.id}`}
+                className={`flex-1 min-h-11 inline-flex items-center justify-center rounded-full px-2 text-xs font-medium transition ${
+                  secaoAtiva === (s as any).secao ? "bg-gold text-primary-foreground" : "text-muted-foreground"
+                }`}
+              >
+                {s.label}
+              </a>
+            )
+          )}
         </nav>
       </header>
 
@@ -198,12 +146,12 @@ function Index() {
             Monte seu pedido e finalize direto no WhatsApp.
           </p>
           <div className="mt-8 flex flex-col items-center gap-3 sm:mt-10 sm:flex-row sm:flex-wrap sm:justify-center sm:gap-4">
-            <a
-              href="#catalogo"
+            <Link
+              to="/catalogo"
               className="inline-flex min-h-11 w-full items-center justify-center rounded-full bg-gold px-6 py-3 text-sm font-semibold text-primary-foreground transition hover:brightness-110 sm:w-auto"
             >
               Ver catálogo
-            </a>
+            </Link>
             <button
               type="button"
               onClick={open}
@@ -215,278 +163,7 @@ function Index() {
         </div>
       </section>
 
-
-      {/* Catálogo */}
-      <section id="catalogo" className="border-t border-border/60 py-14 sm:py-20 md:py-24">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6">
-          <div className="mb-10 flex items-end justify-between sm:mb-14">
-            <div>
-              <span className="text-[11px] uppercase tracking-[0.25em] text-gold">Catálogo</span>
-              <h2 className="mt-3 font-display text-3xl font-semibold sm:text-4xl md:text-5xl">
-                Nossas fragrâncias
-              </h2>
-            </div>
-            <p className="hidden max-w-sm text-sm text-muted-foreground md:block">
-              Adicione ao carrinho e envie o pedido pelo WhatsApp.
-            </p>
-          </div>
-
-
-          {/* Filtro por gênero — segmented iOS-like */}
-          <div className="mb-8 flex justify-center sm:mb-10">
-            <div className="relative inline-flex w-full max-w-sm rounded-full border border-border/60 bg-card p-1 text-sm sm:w-auto">
-              <span
-                aria-hidden
-                className="absolute top-1 bottom-1 left-1 w-[calc((100%-0.5rem)/3)] rounded-full bg-gold transition-transform duration-300 ease-out sm:w-28"
-                style={{
-                  transform: `translateX(${filtro === "feminino" ? "0%" : filtro === "todos" ? "100%" : "200%"})`,
-                }}
-              />
-              {(["feminino", "todos", "masculino"] as const).map((op) => (
-                <button
-                  key={op}
-                  type="button"
-                  onClick={() => setFiltro(op)}
-                  className={`relative z-10 flex-1 min-h-11 rounded-full px-2 py-2 text-xs font-medium capitalize transition-colors sm:w-28 sm:flex-none sm:px-4 sm:text-sm ${
-                    filtro === op ? "text-primary-foreground" : "text-muted-foreground hover:text-foreground"
-                  }`}
-                >
-                  {op}
-                </button>
-              ))}
-    </div>
-          </div>
-
-          {/* Filtro por disponibilidade */}
-          <div className="mb-8 flex justify-center">
-            <div className="flex flex-wrap justify-center gap-2">
-              {(
-                [
-                  { id: "todos", label: "Tudo" },
-                  { id: "pronta", label: "Pronta Entrega" },
-                  { id: "encomenda", label: "Sob Encomenda" },
-                ] as const
-              ).map((op) => (
-                <button
-                  key={op.id}
-                  type="button"
-                  onClick={() => setDisponibilidade(op.id)}
-                  className={`inline-flex items-center gap-2 rounded-full border px-4 py-1.5 text-xs uppercase tracking-wider transition ${
-                    disponibilidade === op.id
-                      ? "border-gold bg-gold text-primary-foreground"
-                      : "border-border/60 bg-card text-muted-foreground hover:text-foreground"
-                  }`}
-                >
-                  {op.label}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Coleções — Signature vem ativa; as demais aparecem ao clicar */}
-          <div className="mb-8 flex flex-wrap justify-center gap-2">
-            {COLECOES.map((c) => {
-              const on = colecoesAtivas[c];
-              const encomenda = COLECAO_INFO[c].sobEncomenda;
-              return (
-                <button
-                  key={c}
-                  type="button"
-                  onClick={() =>
-                    setColecoesAtivas((s) => ({ ...s, [c]: !s[c] }))
-                  }
-                  className={`inline-flex items-center gap-2 rounded-full border px-4 py-1.5 text-xs uppercase tracking-wider transition ${
-                    on
-                      ? "border-gold bg-gold text-primary-foreground"
-                      : "border-border/60 bg-card text-muted-foreground hover:text-foreground"
-                  }`}
-                >
-                  {c}
-                  {encomenda && (
-                    <span className={`rounded-full px-1.5 py-0.5 text-[9px] normal-case tracking-normal ${on ? "bg-primary-foreground/20 text-primary-foreground" : "bg-amber-500/15 text-amber-400"}`}>
-                      encomenda
-                    </span>
-                  )}
-                </button>
-              );
-            })}
-          </div>
-
-
-          {/* Busca por nome + seletor de marca */}
-          <div className="mb-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
-            <div className="relative w-full max-w-xs">
-              <svg
-                aria-hidden
-                className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <circle cx="11" cy="11" r="7" />
-                <path d="m21 21-4.3-4.3" />
-              </svg>
-              <input
-                type="search"
-                value={busca}
-                onChange={(e) => setBusca(e.target.value)}
-                placeholder="Buscar perfume por nome…"
-                className="w-full rounded-full border border-border/60 bg-card py-2 pl-9 pr-4 text-sm outline-none transition focus:border-gold"
-              />
-            </div>
-            <select
-              value={marca}
-              onChange={(e) => setMarca(e.target.value)}
-              style={{ colorScheme: "dark" }}
-              className="w-full max-w-[200px] rounded-full border border-border/60 bg-card px-4 py-2 text-sm text-foreground outline-none transition focus:border-gold"
-              aria-label="Filtrar por marca"
-            >
-              <option value="todas">Todas as marcas</option>
-              {marcas.map((m) => (
-                <option key={m} value={m}>{m}</option>
-              ))}
-            </select>
-            <button
-              type="button"
-              onClick={() => setSoFavoritos((v) => !v)}
-              aria-pressed={soFavoritos}
-              className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm transition ${
-                soFavoritos
-                  ? "border-gold bg-gold text-primary-foreground"
-                  : "border-border/60 bg-card text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              <span aria-hidden>♥</span>
-              Favoritos{wishlist.count > 0 ? ` (${wishlist.count})` : ""}
-            </button>
-          </div>
-
-          <div className="grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-3">
-            {perfumesFiltrados.length === 0 ? (
-              <div className="col-span-full py-20 text-center">
-                <p className="text-muted-foreground">Nenhum perfume encontrado com os filtros selecionados.</p>
-              </div>
-            ) : (
-              perfumesFiltrados.map((p) => {
-                const i = perfumes.indexOf(p);
-                const codigo = codigoDoPerfume(i);
-                const imagem = p.imagem ?? imagensRotativas[i % imagensRotativas.length];
-                const mostrarSobEncomenda = p.sobEncomenda && !p.emEstoque;
-                const qtd = cart[p.id] ?? 0;
-                return (
-                  <article
-                    key={p.id}
-                    className="group relative flex flex-col overflow-hidden rounded-2xl border border-border/60 bg-card transition hover:border-gold/50"
-                  >
-                    <Link
-                      to="/perfume/$id"
-                      params={{ id: p.id }}
-                      className="relative aspect-[4/5] block overflow-hidden bg-background"
-                      aria-label={`Ver ${p.nome}`}
-                    >
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          wishlist.toggle(p.id);
-                        }}
-                        aria-label={wishlist.has(p.id) ? "Remover dos favoritos" : "Adicionar aos favoritos"}
-                        aria-pressed={wishlist.has(p.id)}
-                        className={`absolute bottom-3 right-3 z-20 flex h-9 w-9 items-center justify-center rounded-full bg-background/85 text-lg shadow-sm backdrop-blur transition hover:scale-110 sm:bottom-4 sm:right-4 sm:h-10 sm:w-10 sm:text-xl ${
-                          wishlist.has(p.id) ? "text-rose-500" : "text-muted-foreground hover:text-rose-500"
-                        }`}
-                      >
-                        {wishlist.has(p.id) ? "♥" : "♡"}
-                      </button>
-                      <img
-                        src={imagem}
-                        alt={p.nome}
-                        width={800}
-                        height={1000}
-                        loading="lazy"
-                        className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
-                      />
-                      <span className="absolute left-2 top-2 flex max-w-[55%] items-center gap-1 rounded-full bg-background/85 px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.1em] text-gold backdrop-blur sm:left-4 sm:top-4 sm:max-w-none sm:gap-2 sm:px-3 sm:py-1.5 sm:text-sm sm:tracking-[0.15em]">
-                        <span className="truncate">{codigo}</span>
-                        <span className="shrink-0 rounded-full bg-gold/25 px-1.5 py-0.5 text-[9px] font-bold text-gold sm:px-2 sm:text-xs">
-                          {p.volume}
-                        </span>
-                      </span>
-                      {p.prontaEntrega && (
-                        <span className="absolute right-2 top-2 rounded-full bg-emerald-500/90 px-2 py-0.5 text-[8px] uppercase tracking-[0.15em] text-black backdrop-blur sm:right-4 sm:top-4 sm:px-3 sm:py-1 sm:text-[10px] sm:tracking-[0.2em]">
-                          Pronta entrega
-                        </span>
-                      )}
-                      {mostrarSobEncomenda && (
-                        <span
-                          className={`absolute left-2 bottom-2 rounded-full bg-amber-500/90 px-2 py-0.5 text-[8px] uppercase tracking-[0.15em] text-black backdrop-blur sm:left-auto sm:right-4 sm:bottom-auto sm:px-3 sm:py-1 sm:text-[10px] sm:tracking-[0.2em] ${
-                            p.prontaEntrega ? "sm:top-12" : "sm:top-4"
-                          }`}
-                        >
-                          Sob encomenda
-                        </span>
-                      )}
-                    </Link>
-
-                    <div className="flex flex-1 flex-col gap-3 p-4 sm:gap-4 sm:p-6">
-                      <div>
-                        <h3 className="font-display text-base font-semibold sm:text-xl">
-                          <Link to="/perfume/$id" params={{ id: p.id }} className="transition hover:text-gold">
-                            {p.nome}
-                          </Link>
-                        </h3>
-                        <p className="mt-1 line-clamp-2 text-xs text-muted-foreground sm:text-sm">
-                          {p.descricao || "Contratipo exclusivo"}
-                        </p>
-                        {p.preco != null && (
-                          <p className="mt-2 text-sm font-semibold text-gold sm:text-base">
-                            {formatBRL(p.preco)}
-                          </p>
-                        )}
-                      </div>
-                      {qtd === 0 ? (
-                        <button
-                          type="button"
-                          onClick={() => add(p.id)}
-                          className="mt-auto inline-flex items-center justify-center rounded-full bg-foreground/5 py-3 text-sm font-medium transition group-hover:bg-gold group-hover:text-primary-foreground"
-                        >
-                          Adicionar ao carrinho
-                        </button>
-                      ) : (
-                        <div className="mt-auto flex items-center justify-between rounded-full bg-gold/10 p-1">
-                          <button
-                            type="button"
-                            onClick={() => remove(p.id)}
-                            className="h-11 w-11 rounded-full bg-background text-lg font-semibold text-foreground transition hover:bg-gold hover:text-primary-foreground"
-                            aria-label="Remover um"
-                          >
-                            −
-                          </button>
-                          <span className="text-xs font-semibold text-gold sm:text-sm">
-                            {qtd} no carrinho
-                          </span>
-                          <button
-                            type="button"
-                            onClick={() => add(p.id)}
-                            className="h-11 w-11 rounded-full bg-background text-lg font-semibold text-foreground transition hover:bg-gold hover:text-primary-foreground"
-                            aria-label="Adicionar mais um"
-                          >
-                            +
-                          </button>
-                        </div>
-                      )}
-                    </div>
-                  </article>
-                );
-              })
-            )}
-          </div>
-        </div>
-      </section>
+      <CollectionShowcase />
 
       {/* Sobre */}
       <section id="sobre" className="border-t border-border/60 bg-card/40 py-14 sm:py-20 md:py-24">
@@ -540,14 +217,12 @@ function Index() {
       <footer className="border-t border-border/60 py-8 pb-24 sm:py-10 md:pb-10">
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-4 text-sm text-muted-foreground sm:px-6 md:flex-row">
           <div className="flex items-center">
-            <img src={logoWhite.url} alt="Dakar Essence" className="h-12 w-auto sm:h-16" />
+            <img src={logoWhite} alt="Dakar Essence" className="h-12 w-auto sm:h-16" />
           </div>
           <p className="text-center text-xs sm:text-sm">© {new Date().getFullYear()} Dakar Essence. Todos os direitos reservados.</p>
           <div />
-
         </div>
       </footer>
-
     </div>
   );
 }

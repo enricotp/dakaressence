@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as RastrearRouteImport } from './routes/rastrear'
 import { Route as PainelDakarA7k9m2RouteImport } from './routes/painel-dakar-a7k9m2'
+import { Route as CatalogoRouteImport } from './routes/catalogo'
 import { Route as CalculadoraRouteImport } from './routes/calculadora'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PerfumeIdRouteImport } from './routes/perfume.$id'
@@ -24,6 +25,11 @@ const RastrearRoute = RastrearRouteImport.update({
 const PainelDakarA7k9m2Route = PainelDakarA7k9m2RouteImport.update({
   id: '/painel-dakar-a7k9m2',
   path: '/painel-dakar-a7k9m2',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CatalogoRoute = CatalogoRouteImport.update({
+  id: '/catalogo',
+  path: '/catalogo',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CalculadoraRoute = CalculadoraRouteImport.update({
@@ -50,6 +56,7 @@ const PedidoIdRoute = PedidoIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/calculadora': typeof CalculadoraRoute
+  '/catalogo': typeof CatalogoRoute
   '/painel-dakar-a7k9m2': typeof PainelDakarA7k9m2Route
   '/rastrear': typeof RastrearRoute
   '/pedido/$id': typeof PedidoIdRoute
@@ -58,6 +65,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/calculadora': typeof CalculadoraRoute
+  '/catalogo': typeof CatalogoRoute
   '/painel-dakar-a7k9m2': typeof PainelDakarA7k9m2Route
   '/rastrear': typeof RastrearRoute
   '/pedido/$id': typeof PedidoIdRoute
@@ -67,6 +75,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/calculadora': typeof CalculadoraRoute
+  '/catalogo': typeof CatalogoRoute
   '/painel-dakar-a7k9m2': typeof PainelDakarA7k9m2Route
   '/rastrear': typeof RastrearRoute
   '/pedido/$id': typeof PedidoIdRoute
@@ -77,6 +86,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/calculadora'
+    | '/catalogo'
     | '/painel-dakar-a7k9m2'
     | '/rastrear'
     | '/pedido/$id'
@@ -85,6 +95,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/calculadora'
+    | '/catalogo'
     | '/painel-dakar-a7k9m2'
     | '/rastrear'
     | '/pedido/$id'
@@ -93,6 +104,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/calculadora'
+    | '/catalogo'
     | '/painel-dakar-a7k9m2'
     | '/rastrear'
     | '/pedido/$id'
@@ -102,6 +114,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   CalculadoraRoute: typeof CalculadoraRoute
+  CatalogoRoute: typeof CatalogoRoute
   PainelDakarA7k9m2Route: typeof PainelDakarA7k9m2Route
   RastrearRoute: typeof RastrearRoute
   PedidoIdRoute: typeof PedidoIdRoute
@@ -122,6 +135,13 @@ declare module '@tanstack/react-router' {
       path: '/painel-dakar-a7k9m2'
       fullPath: '/painel-dakar-a7k9m2'
       preLoaderRoute: typeof PainelDakarA7k9m2RouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/catalogo': {
+      id: '/catalogo'
+      path: '/catalogo'
+      fullPath: '/catalogo'
+      preLoaderRoute: typeof CatalogoRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/calculadora': {
@@ -158,6 +178,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CalculadoraRoute: CalculadoraRoute,
+  CatalogoRoute: CatalogoRoute,
   PainelDakarA7k9m2Route: PainelDakarA7k9m2Route,
   RastrearRoute: RastrearRoute,
   PedidoIdRoute: PedidoIdRoute,
