@@ -371,124 +371,120 @@ function Index() {
               </div>
             ) : (
               perfumesFiltrados.map((p) => {
-              const i = perfumes.indexOf(p);
-              const codigo = codigoDoPerfume(i);
-              const imagem = p.imagem ?? imagensRotativas[i % imagensRotativas.length];
-              // Se estiver em estoque (amount > threshold), nunca mostra encomenda mesmo que a flag esteja ligada
-              const mostrarSobEncomenda = p.sobEncomenda && !p.emEstoque;
-              const qtd = cart[p.id] ?? 0;
-              return (
-                <article
-                  key={p.id}
-                  className="group relative flex flex-col overflow-hidden rounded-2xl border border-border/60 bg-card transition hover:border-gold/50"
-                >
-                  <Link
-                    to="/perfume/$id"
-                    params={{ id: p.id }}
-                    className="relative aspect-[4/5] block overflow-hidden bg-background"
-                    aria-label={`Ver ${p.nome}`}
+                const i = perfumes.indexOf(p);
+                const codigo = codigoDoPerfume(i);
+                const imagem = p.imagem ?? imagensRotativas[i % imagensRotativas.length];
+                const mostrarSobEncomenda = p.sobEncomenda && !p.emEstoque;
+                const qtd = cart[p.id] ?? 0;
+                return (
+                  <article
+                    key={p.id}
+                    className="group relative flex flex-col overflow-hidden rounded-2xl border border-border/60 bg-card transition hover:border-gold/50"
                   >
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        wishlist.toggle(p.id);
-                      }}
-                      aria-label={wishlist.has(p.id) ? "Remover dos favoritos" : "Adicionar aos favoritos"}
-                      aria-pressed={wishlist.has(p.id)}
-                      className={`absolute bottom-3 right-3 z-20 flex h-9 w-9 items-center justify-center rounded-full bg-background/85 text-lg shadow-sm backdrop-blur transition hover:scale-110 sm:bottom-4 sm:right-4 sm:h-10 sm:w-10 sm:text-xl ${
-                        wishlist.has(p.id) ? "text-rose-500" : "text-muted-foreground hover:text-rose-500"
-                      }`}
+                    <Link
+                      to="/perfume/$id"
+                      params={{ id: p.id }}
+                      className="relative aspect-[4/5] block overflow-hidden bg-background"
+                      aria-label={`Ver ${p.nome}`}
                     >
-                      {wishlist.has(p.id) ? "♥" : "♡"}
-                    </button>
-                    <img
-                      src={imagem}
-                      alt={p.nome}
-                      width={800}
-                      height={1000}
-                      loading="lazy"
-                      className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
-                    />
-                    <span className="absolute left-2 top-2 flex max-w-[55%] items-center gap-1 rounded-full bg-background/85 px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.1em] text-gold backdrop-blur sm:left-4 sm:top-4 sm:max-w-none sm:gap-2 sm:px-3 sm:py-1.5 sm:text-sm sm:tracking-[0.15em]">
-                      <span className="truncate">{codigo}</span>
-                      <span className="shrink-0 rounded-full bg-gold/25 px-1.5 py-0.5 text-[9px] font-bold text-gold sm:px-2 sm:text-xs">
-                        {p.volume}
-                      </span>
-                    </span>
-                    {/* Pronta entrega — canto superior direito */}
-                    {p.prontaEntrega && (
-                      <span className="absolute right-2 top-2 rounded-full bg-emerald-500/90 px-2 py-0.5 text-[8px] uppercase tracking-[0.15em] text-black backdrop-blur sm:right-4 sm:top-4 sm:px-3 sm:py-1 sm:text-[10px] sm:tracking-[0.2em]">
-                        Pronta entrega
-                      </span>
-                    )}
-                    {/* Sob encomenda — mobile: alinhado à esquerda acima do rodapé, desktop: superior direito (empilhado) */}
-                    {mostrarSobEncomenda && (
-                      <span
-                        className={`absolute left-2 bottom-2 rounded-full bg-amber-500/90 px-2 py-0.5 text-[8px] uppercase tracking-[0.15em] text-black backdrop-blur sm:left-auto sm:right-4 sm:bottom-auto sm:px-3 sm:py-1 sm:text-[10px] sm:tracking-[0.2em] ${
-                          p.prontaEntrega ? "sm:top-12" : "sm:top-4"
-                        }`}
-                      >
-                        Sob encomenda
-                      </span>
-                    )}
-                  </Link>
-
-                  <div className="flex flex-1 flex-col gap-3 p-4 sm:gap-4 sm:p-6">
-                    <div>
-                      <h3 className="font-display text-base font-semibold sm:text-xl">
-                        <Link to="/perfume/$id" params={{ id: p.id }} className="transition hover:text-gold">
-                          {p.nome}
-                        </Link>
-                      </h3>
-                      <p className="mt-1 line-clamp-2 text-xs text-muted-foreground sm:text-sm">
-                        {p.descricao || "Contratipo exclusivo"}
-                      </p>
-                      {p.preco != null && (
-                        <p className="mt-2 text-sm font-semibold text-gold sm:text-base">
-                          {formatBRL(p.preco)}
-                        </p>
-                      )}
-                    </div>
-                    {qtd === 0 ? (
-
                       <button
                         type="button"
-                        onClick={() => add(p.id)}
-                        className="mt-auto inline-flex items-center justify-center rounded-full bg-foreground/5 py-3 text-sm font-medium transition group-hover:bg-gold group-hover:text-primary-foreground"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          wishlist.toggle(p.id);
+                        }}
+                        aria-label={wishlist.has(p.id) ? "Remover dos favoritos" : "Adicionar aos favoritos"}
+                        aria-pressed={wishlist.has(p.id)}
+                        className={`absolute bottom-3 right-3 z-20 flex h-9 w-9 items-center justify-center rounded-full bg-background/85 text-lg shadow-sm backdrop-blur transition hover:scale-110 sm:bottom-4 sm:right-4 sm:h-10 sm:w-10 sm:text-xl ${
+                          wishlist.has(p.id) ? "text-rose-500" : "text-muted-foreground hover:text-rose-500"
+                        }`}
                       >
-                        Adicionar ao carrinho
+                        {wishlist.has(p.id) ? "♥" : "♡"}
                       </button>
-                    ) : (
-                      <div className="mt-auto flex items-center justify-between rounded-full bg-gold/10 p-1">
-                        <button
-                          type="button"
-                          onClick={() => remove(p.id)}
-                          className="h-11 w-11 rounded-full bg-background text-lg font-semibold text-foreground transition hover:bg-gold hover:text-primary-foreground"
-                          aria-label="Remover um"
-                        >
-                          −
-                        </button>
-                        <span className="text-xs font-semibold text-gold sm:text-sm">
-                          {qtd} no carrinho
+                      <img
+                        src={imagem}
+                        alt={p.nome}
+                        width={800}
+                        height={1000}
+                        loading="lazy"
+                        className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
+                      />
+                      <span className="absolute left-2 top-2 flex max-w-[55%] items-center gap-1 rounded-full bg-background/85 px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.1em] text-gold backdrop-blur sm:left-4 sm:top-4 sm:max-w-none sm:gap-2 sm:px-3 sm:py-1.5 sm:text-sm sm:tracking-[0.15em]">
+                        <span className="truncate">{codigo}</span>
+                        <span className="shrink-0 rounded-full bg-gold/25 px-1.5 py-0.5 text-[9px] font-bold text-gold sm:px-2 sm:text-xs">
+                          {p.volume}
                         </span>
+                      </span>
+                      {p.prontaEntrega && (
+                        <span className="absolute right-2 top-2 rounded-full bg-emerald-500/90 px-2 py-0.5 text-[8px] uppercase tracking-[0.15em] text-black backdrop-blur sm:right-4 sm:top-4 sm:px-3 sm:py-1 sm:text-[10px] sm:tracking-[0.2em]">
+                          Pronta entrega
+                        </span>
+                      )}
+                      {mostrarSobEncomenda && (
+                        <span
+                          className={`absolute left-2 bottom-2 rounded-full bg-amber-500/90 px-2 py-0.5 text-[8px] uppercase tracking-[0.15em] text-black backdrop-blur sm:left-auto sm:right-4 sm:bottom-auto sm:px-3 sm:py-1 sm:text-[10px] sm:tracking-[0.2em] ${
+                            p.prontaEntrega ? "sm:top-12" : "sm:top-4"
+                          }`}
+                        >
+                          Sob encomenda
+                        </span>
+                      )}
+                    </Link>
+
+                    <div className="flex flex-1 flex-col gap-3 p-4 sm:gap-4 sm:p-6">
+                      <div>
+                        <h3 className="font-display text-base font-semibold sm:text-xl">
+                          <Link to="/perfume/$id" params={{ id: p.id }} className="transition hover:text-gold">
+                            {p.nome}
+                          </Link>
+                        </h3>
+                        <p className="mt-1 line-clamp-2 text-xs text-muted-foreground sm:text-sm">
+                          {p.descricao || "Contratipo exclusivo"}
+                        </p>
+                        {p.preco != null && (
+                          <p className="mt-2 text-sm font-semibold text-gold sm:text-base">
+                            {formatBRL(p.preco)}
+                          </p>
+                        )}
+                      </div>
+                      {qtd === 0 ? (
                         <button
                           type="button"
                           onClick={() => add(p.id)}
-                          className="h-11 w-11 rounded-full bg-background text-lg font-semibold text-foreground transition hover:bg-gold hover:text-primary-foreground"
-                          aria-label="Adicionar mais um"
+                          className="mt-auto inline-flex items-center justify-center rounded-full bg-foreground/5 py-3 text-sm font-medium transition group-hover:bg-gold group-hover:text-primary-foreground"
                         >
-                          +
+                          Adicionar ao carrinho
                         </button>
-                      </div>
-                    )}
-                  </div>
-                </article>
-              );
-            })}
-          )}
-        </div>
+                      ) : (
+                        <div className="mt-auto flex items-center justify-between rounded-full bg-gold/10 p-1">
+                          <button
+                            type="button"
+                            onClick={() => remove(p.id)}
+                            className="h-11 w-11 rounded-full bg-background text-lg font-semibold text-foreground transition hover:bg-gold hover:text-primary-foreground"
+                            aria-label="Remover um"
+                          >
+                            −
+                          </button>
+                          <span className="text-xs font-semibold text-gold sm:text-sm">
+                            {qtd} no carrinho
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => add(p.id)}
+                            className="h-11 w-11 rounded-full bg-background text-lg font-semibold text-foreground transition hover:bg-gold hover:text-primary-foreground"
+                            aria-label="Adicionar mais um"
+                          >
+                            +
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  </article>
+                );
+              })
+            )}
+          </div>
         </div>
       </section>
 
