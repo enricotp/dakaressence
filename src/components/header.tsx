@@ -2,15 +2,17 @@ import { Link, useLocation } from "@tanstack/react-router";
 import { logoWhite } from "@/lib/constants";
 import { useCart } from "@/lib/cart-context";
 import { CartButton } from "./cart-drawer";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
+
 
 interface HeaderProps {
   secaoAtiva?: "home" | "sobre" | "faq";
 }
 
 export function Header({ secaoAtiva: initialSecao }: HeaderProps) {
-  const { pathname, hash } = useLocation();
+  const { pathname } = useLocation();
   const [secaoAtiva, setSecaoAtiva] = useState<"home" | "sobre" | "faq" | null>(initialSecao || null);
+  const isScrollingRef = useRef(false);
 
   useEffect(() => {
     if (pathname !== "/") {
@@ -19,27 +21,46 @@ export function Header({ secaoAtiva: initialSecao }: HeaderProps) {
     }
 
     const idParaSecao: Record<string, "home" | "sobre" | "faq"> = { top: "home", sobre: "sobre", faq: "faq" };
-    const els = Object.keys(idParaSecao)
-      .map((id) => document.getElementById(id))
-      .filter((el): el is HTMLElement => el !== null);
+    const sections = Object.keys(idParaSecao).map(id => document.getElementById(id)).filter(Boolean) as HTMLElement[];
+    
+    if (sections.length === 0) return;
+
+    const handleScroll = () => {
+      // If we're mid-navigation-click-scroll, let that finish
+      if (isScrollingRef.current) return;
+
+      const scrollPos = window.scrollY + window.innerHeight / 3;
       
-    if (els.length === 0) return;
-
-    const obs = new IntersectionObserver(
-      (entries) => {
-        const visiveis = entries
-          .filter((e) => e.isIntersecting)
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
-        if (visiveis[0]) {
-          setSecaoAtiva(idParaSecao[visiveis[0].target.id]);
+      let currentSection: "home" | "sobre" | "faq" = "home";
+      for (const section of sections) {
+        if (scrollPos >= section.offsetTop) {
+          currentSection = idParaSecao[section.id];
         }
-      },
-      { rootMargin: "-40% 0px -50% 0px", threshold: [0, 0.25, 0.5, 1] },
-    );
+      }
+      setSecaoAtiva(currentSection);
+    };
 
-    els.forEach((el) => obs.observe(el));
-    return () => obs.disconnect();
+    window.addEventListener("scroll", handleScroll);
+    handleScroll();
+    return () => window.removeEventListener("scroll", handleScroll);
   }, [pathname]);
+
+  const scrollToSection = (id: string, secao: "home" | "sobre" | "faq") => {
+    isScrollingRef.current = true;
+    setSecaoAtiva(secao);
+    const el = document.getElementById(id);
+    if (el) {
+      window.scrollTo({
+        top: el.offsetTop - 80, // Offset for header
+        behavior: "smooth"
+      });
+      // Unlock after scroll finishes
+      setTimeout(() => {
+        isScrollingRef.current = false;
+      }, 800);
+    }
+  };
+
 
   const isCatalogo = pathname === "/catalogo";
 
@@ -75,6 +96,12 @@ export function Header({ secaoAtiva: initialSecao }: HeaderProps) {
                 key={s.id}
                 to="/"
                 hash={s.id}
+                onClick={(e) => {
+                  if (pathname === "/") {
+                    e.preventDefault();
+                    scrollToSection(s.id, s.secao);
+                  }
+                }}
                 className={`relative z-10 w-24 rounded-full px-4 py-2 text-center font-medium transition-colors ${
                   secaoAtiva === s.secao ? "text-primary-foreground" : "text-muted-foreground hover:text-foreground"
                 }`}
@@ -82,6 +109,7 @@ export function Header({ secaoAtiva: initialSecao }: HeaderProps) {
                 {s.label}
               </Link>
             ))}
+
           </div>
 
           <Link
