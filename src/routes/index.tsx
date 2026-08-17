@@ -364,10 +364,13 @@ function Index() {
             </button>
           </div>
 
-
-
           <div className="grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-3">
-            {perfumesFiltrados.map((p) => {
+            {perfumesFiltrados.length === 0 ? (
+              <div className="col-span-full py-20 text-center">
+                <p className="text-muted-foreground">Nenhum perfume encontrado com os filtros selecionados.</p>
+              </div>
+            ) : (
+              perfumesFiltrados.map((p) => {
               const i = perfumes.indexOf(p);
               const codigo = codigoDoPerfume(i);
               const imagem = p.imagem ?? imagensRotativas[i % imagensRotativas.length];
