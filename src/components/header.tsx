@@ -109,10 +109,10 @@ export function Header({ secaoAtiva: initialSecao }: HeaderProps) {
 
           <Link
             to="/catalogo"
-            className={`relative inline-flex h-[38px] items-center justify-center rounded-full border px-6 text-sm font-medium transition-all ${
+            className={`relative inline-flex h-[42px] items-center justify-center rounded-full border px-6 text-sm font-medium transition-all ${
               isCatalogo
                 ? "border-gold bg-gold text-primary-foreground shadow-md"
-                : "border-border/60 bg-card text-muted-foreground hover:border-gold hover:text-gold"
+                : "border-border/60 bg-card text-muted-foreground hover:border-gold hover:text-gold shadow-sm"
             }`}
           >
             Catálogo
