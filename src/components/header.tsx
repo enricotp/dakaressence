@@ -54,14 +54,15 @@ export function Header({ secaoAtiva: initialSecao }: HeaderProps) {
           <div className="relative inline-flex rounded-full border border-border/60 bg-card p-1 text-sm">
             <span
               aria-hidden
-              className={`absolute top-1 bottom-1 w-[calc((100%-0.5rem)/3)] rounded-full bg-gold transition-all duration-300 ease-out ${
+              className={`absolute top-1 bottom-1 w-24 rounded-full bg-gold transition-all duration-300 ease-out ${
                 secaoAtiva ? "opacity-100" : "opacity-0"
               }`}
               style={{
                 transform: `translateX(${
-                  secaoAtiva === "home" ? "0%" : secaoAtiva === "sobre" ? "100%" : secaoAtiva === "faq" ? "200%" : "0%"
+                  secaoAtiva === "home" ? "0" : secaoAtiva === "sobre" ? "96px" : secaoAtiva === "faq" ? "192px" : "0"
                 })`,
               }}
+
             />
             {(
               [
