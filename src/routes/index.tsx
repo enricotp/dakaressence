@@ -262,7 +262,7 @@ function Index() {
             <div className="flex flex-wrap justify-center gap-2">
               {(
                 [
-                  { id: "todos", label: "Todas as disponibilidades" },
+                  { id: "todos", label: "Tudo" },
                   { id: "pronta", label: "Pronta Entrega" },
                   { id: "encomenda", label: "Sob Encomenda" },
                 ] as const
