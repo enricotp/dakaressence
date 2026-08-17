@@ -1347,9 +1347,13 @@ function EditForm({
   const [genero, setGenero] = useState<Genero>(perfume.genero);
   const [imagemUrl, setImagemUrl] = useState("");
   const [lowThreshold, setLowThreshold] = useState(perfume.lowThreshold?.toString() ?? "");
-  const [oosThreshold, setOosThreshold] = useState(perfume.oosThreshold?.toString() ?? "");
-  const [sobEncomenda, setSobEncomenda] = useState(perfume.sobEncomenda);
-  const [prontaEntrega, setProntaEntrega] = useState(perfume.prontaEntrega);
+  const [oosThresholdInput, setOosThresholdInput] = useState(perfume.oosThreshold?.toString() ?? "");
+  
+  // Automate status based on amount and threshold
+  const currentAmount = amount === "" ? 0 : parseInt(amount, 10);
+  const currentOoS = oosThresholdInput === "" ? 0 : parseInt(oosThresholdInput, 10);
+  const isProntaEntrega = currentAmount > currentOoS;
+  const isSobEncomenda = currentAmount <= currentOoS;
   const [notasTopo, setNotasTopo] = useState(perfume.notasTopo);
   const [notasCoracao, setNotasCoracao] = useState(perfume.notasCoracao);
   const [notasFundo, setNotasFundo] = useState(perfume.notasFundo);
@@ -1390,9 +1394,9 @@ function EditForm({
         colecao,
         genero,
         lowThreshold: lowThreshold === "" ? null : parseInt(lowThreshold, 10),
-        oosThreshold: oosThreshold === "" ? null : parseInt(oosThreshold, 10),
-        sobEncomenda,
-        prontaEntrega,
+        oosThreshold: oosThresholdInput === "" ? null : parseInt(oosThresholdInput, 10),
+        sobEncomenda: isSobEncomenda,
+        prontaEntrega: isProntaEntrega,
         notasTopo,
         notasCoracao,
         notasFundo,
@@ -1461,7 +1465,6 @@ function EditForm({
           onChange={(e) => {
             const nova = e.target.value as Colecao;
             setColecao(nova);
-            setSobEncomenda(COLECAO_INFO[nova].sobEncomenda);
           }}
           style={{ colorScheme: "dark" }}
           className="input"
@@ -1519,42 +1522,44 @@ function EditForm({
         </Field>
         <Field label="OoS threshold">
           <input
-            value={oosThreshold}
-            onChange={(e) => setOosThreshold(e.target.value)}
+            value={oosThresholdInput}
+            onChange={(e) => setOosThresholdInput(e.target.value)}
             className="input"
             inputMode="numeric"
             placeholder="Ex.: 0"
           />
         </Field>
       </div>
-      <label className="flex items-center gap-2 rounded-lg border border-amber-500/30 bg-amber-500/5 px-3 py-2 text-sm">
-        <input
-          type="checkbox"
-          checked={sobEncomenda}
-          onChange={(e) => setSobEncomenda(e.target.checked)}
-          className="h-4 w-4 accent-gold"
-        />
+      <div className={`flex items-center gap-2 rounded-lg border px-3 py-2 text-sm transition-colors ${
+        isSobEncomenda 
+          ? "border-amber-500/50 bg-amber-500/10 text-amber-400" 
+          : "border-border/40 bg-background/40 text-muted-foreground opacity-50"
+      }`}>
+        <div className={`flex h-4 w-4 items-center justify-center rounded border ${isSobEncomenda ? "bg-gold border-gold" : "border-border"}`}>
+          {isSobEncomenda && <svg className="h-3 w-3 text-primary-foreground" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4"><path d="M20 6L9 17l-5-5"/></svg>}
+        </div>
         <span>
-          <b className="text-amber-400">Sob encomenda</b>
-          <span className="ml-2 text-xs text-muted-foreground">
-            (mostra o selo amarelo no card quando o estoque for 0)
+          <b className={isSobEncomenda ? "text-amber-400" : ""}>Sob encomenda</b>
+          <span className="ml-2 text-xs">
+            {isSobEncomenda ? "(Ativado pelo estoque zero)" : "(Desativado pelo estoque atual)"}
           </span>
         </span>
-      </label>
-      <label className="flex items-center gap-2 rounded-lg border border-emerald-500/30 bg-emerald-500/5 px-3 py-2 text-sm">
-        <input
-          type="checkbox"
-          checked={prontaEntrega}
-          onChange={(e) => setProntaEntrega(e.target.checked)}
-          className="h-4 w-4 accent-gold"
-        />
+      </div>
+      <div className={`flex items-center gap-2 rounded-lg border px-3 py-2 text-sm transition-colors ${
+        isProntaEntrega 
+          ? "border-emerald-500/50 bg-emerald-500/10 text-emerald-400" 
+          : "border-border/40 bg-background/40 text-muted-foreground opacity-50"
+      }`}>
+        <div className={`flex h-4 w-4 items-center justify-center rounded border ${isProntaEntrega ? "bg-gold border-gold" : "border-border"}`}>
+          {isProntaEntrega && <svg className="h-3 w-3 text-primary-foreground" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4"><path d="M20 6L9 17l-5-5"/></svg>}
+        </div>
         <span>
-          <b className="text-emerald-400">Pronta entrega</b>
-          <span className="ml-2 text-xs text-muted-foreground">
-            (mostra o selo verde no card — envio imediato)
+          <b className={isProntaEntrega ? "text-emerald-400" : ""}>Pronta entrega</b>
+          <span className="ml-2 text-xs">
+            {isProntaEntrega ? "(Ativado pelo estoque disponível)" : "(Desativado pelo estoque zero)"}
           </span>
         </span>
-      </label>
+      </div>
       <div className="rounded-lg border border-border/60 bg-background/40 p-3">
         <p className="mb-2 text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
           Pirâmide olfativa
