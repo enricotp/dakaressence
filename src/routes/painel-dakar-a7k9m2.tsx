@@ -3,6 +3,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Suspense, useMemo, useState } from "react";
 import { CalculadoraPanel } from "@/components/calculadora-panel";
+import { HomeConfigTab } from "@/components/home-config-tab";
 import {
   CartesianGrid,
   Legend,
