@@ -4,7 +4,6 @@ import { useCart } from "@/lib/cart-context";
 import { CartButton } from "./cart-drawer";
 import { useEffect, useState, useRef } from "react";
 
-
 interface HeaderProps {
   secaoAtiva?: "home" | "sobre" | "faq";
 }
@@ -26,10 +25,9 @@ export function Header({ secaoAtiva: initialSecao }: HeaderProps) {
     if (sections.length === 0) return;
 
     const handleScroll = () => {
-      // If we're mid-navigation-click-scroll, let that finish
       if (isScrollingRef.current) return;
 
-      const scrollPos = window.scrollY + window.innerHeight / 3;
+      const scrollPos = window.scrollY + 100;
       
       let currentSection: "home" | "sobre" | "faq" = "home";
       for (const section of sections) {
@@ -51,16 +49,14 @@ export function Header({ secaoAtiva: initialSecao }: HeaderProps) {
     const el = document.getElementById(id);
     if (el) {
       window.scrollTo({
-        top: el.offsetTop - 80, // Offset for header
+        top: el.offsetTop - 80,
         behavior: "smooth"
       });
-      // Unlock after scroll finishes
       setTimeout(() => {
         isScrollingRef.current = false;
       }, 800);
     }
   };
-
 
   const isCatalogo = pathname === "/catalogo";
 
@@ -85,7 +81,6 @@ export function Header({ secaoAtiva: initialSecao }: HeaderProps) {
                 }px)`,
               }}
             />
-
             {(
               [
                 { id: "top", secao: "home", label: "Home" },
@@ -110,7 +105,6 @@ export function Header({ secaoAtiva: initialSecao }: HeaderProps) {
                 {s.label}
               </Link>
             ))}
-
           </div>
 
           <Link
@@ -164,6 +158,12 @@ export function Header({ secaoAtiva: initialSecao }: HeaderProps) {
             key={s.id}
             to="/"
             hash={s.id}
+            onClick={(e) => {
+              if (pathname === "/") {
+                e.preventDefault();
+                scrollToSection(s.id, s.secao);
+              }
+            }}
             className={`flex-1 min-h-11 inline-flex items-center justify-center rounded-full px-2 text-xs font-medium transition ${
               secaoAtiva === s.secao ? "bg-gold text-primary-foreground" : "text-muted-foreground"
             }`}
