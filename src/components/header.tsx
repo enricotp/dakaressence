@@ -79,12 +79,13 @@ export function Header({ secaoAtiva: initialSecao }: HeaderProps) {
                 secaoAtiva ? "opacity-100" : "opacity-0"
               }`}
               style={{
+                left: "4px",
                 transform: `translateX(${
-                  secaoAtiva === "home" ? "0" : secaoAtiva === "sobre" ? "96px" : secaoAtiva === "faq" ? "192px" : "0"
-                })`,
+                  secaoAtiva === "home" ? "0" : secaoAtiva === "sobre" ? "96" : secaoAtiva === "faq" ? "192" : "0"
+                }px)`,
               }}
-
             />
+
             {(
               [
                 { id: "top", secao: "home", label: "Home" },
