@@ -104,12 +104,15 @@ function Index() {
       <footer className="border-t border-border/60 py-8 pb-24 sm:py-10 md:pb-10">
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-4 text-sm text-muted-foreground sm:px-6 md:flex-row">
           <div className="flex items-center">
-            <img src={logoWhite} alt="Dakar Essence" className="h-12 w-auto sm:h-16" />
+            <Link to="/" hash="top">
+              <img src={logoWhite} alt="Dakar Essence" className="h-12 w-auto sm:h-16" />
+            </Link>
           </div>
           <p className="text-center text-xs sm:text-sm">© {new Date().getFullYear()} Dakar Essence. Todos os direitos reservados.</p>
           <div />
         </div>
       </footer>
+
     </div>
   );
 }

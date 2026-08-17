@@ -162,11 +162,18 @@ export function CatalogViewer({ perfumes }: CatalogViewerProps) {
                 setColecoesAtivas((s) => {
                   const newState = { ...s, [c]: !s[c] };
                   
-                  // Se resetar o volume caso a nova coleção ativa não suporte o volume atual
-                  // Ou se desativou a coleção que era a única que suportava o volume
+                  // Reset volume if the new set of active collections doesn't support the current volume
+                  const activeColecoesAfter = (Object.keys(newState) as Colecao[]).filter(k => newState[k]);
+                  const allSupportedVolumes = new Set(activeColecoesAfter.flatMap(k => COLECAO_INFO[k].volumes));
+                  
+                  if (selectedVolume !== "todos" && !allSupportedVolumes.has(selectedVolume as Volume)) {
+                    setSelectedVolume("todos");
+                  }
+                  
                   return newState;
                 });
               }}
+
               className={`inline-flex items-center gap-2 rounded-full border px-4 py-1.5 text-xs uppercase tracking-wider transition ${
                 on
                   ? "border-gold bg-gold text-primary-foreground"
@@ -318,6 +325,7 @@ export function CatalogViewer({ perfumes }: CatalogViewerProps) {
                 setFiltro("todos");
                 setDisponibilidade("todos");
                 setSoFavoritos(false);
+                setSelectedVolume("todos");
                 setColecoesAtivas({
                   Signature: true,
                   "Brand Collection": true,
@@ -329,6 +337,7 @@ export function CatalogViewer({ perfumes }: CatalogViewerProps) {
             >
               Limpar todos os filtros
             </button>
+
           </div>
         ) : (
           perfumesFiltrados.map((p) => {
