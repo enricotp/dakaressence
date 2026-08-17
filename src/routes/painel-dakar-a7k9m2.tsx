@@ -1252,6 +1252,7 @@ function PerfumesTab() {
                               notasTopo: p.notasTopo,
                               notasCoracao: p.notasCoracao,
                               notasFundo: p.notasFundo,
+                              volumesSignature: p.volumesSignature,
                             },
                           });
                           await qc.invalidateQueries({ queryKey: ["perfumes"] });
