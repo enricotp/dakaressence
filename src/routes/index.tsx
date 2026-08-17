@@ -353,9 +353,9 @@ function Index() {
                     }}
                     aria-label={wishlist.has(p.id) ? "Remover dos favoritos" : "Adicionar aos favoritos"}
                     aria-pressed={wishlist.has(p.id)}
-                    className={`absolute right-2 top-2 z-10 flex h-9 w-9 items-center justify-center rounded-full bg-background/85 text-lg backdrop-blur transition sm:h-10 sm:w-10 sm:text-xl ${
+                    className={`absolute z-10 flex h-9 w-9 items-center justify-center rounded-full bg-background/80 text-lg shadow-lg backdrop-blur transition hover:scale-110 sm:h-10 sm:w-10 sm:text-xl ${
                       wishlist.has(p.id) ? "text-rose-500" : "text-muted-foreground hover:text-rose-500"
-                    } ${p.prontaEntrega ? "top-12 sm:top-14" : "top-2 sm:top-4"} right-2 sm:right-4`}
+                    } bottom-4 right-4`}
                   >
                     {wishlist.has(p.id) ? "♥" : "♡"}
                   </button>
