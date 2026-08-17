@@ -386,10 +386,10 @@ function Index() {
                         Pronta entrega
                       </span>
                     )}
-                    {/* Sob encomenda — canto inferior direito no mobile, superior direito (empilhado) no desktop */}
+                    {/* Sob encomenda — mobile: alinhado à esquerda acima do rodapé, desktop: superior direito (empilhado) */}
                     {mostrarSobEncomenda && (
                       <span
-                        className={`absolute right-2 bottom-2 rounded-full bg-amber-500/90 px-2 py-0.5 text-[8px] uppercase tracking-[0.15em] text-black backdrop-blur sm:right-4 sm:bottom-auto sm:px-3 sm:py-1 sm:text-[10px] sm:tracking-[0.2em] ${
+                        className={`absolute left-2 bottom-2 rounded-full bg-amber-500/90 px-2 py-0.5 text-[8px] uppercase tracking-[0.15em] text-black backdrop-blur sm:left-auto sm:right-4 sm:bottom-auto sm:px-3 sm:py-1 sm:text-[10px] sm:tracking-[0.2em] ${
                           p.prontaEntrega ? "sm:top-12" : "sm:top-4"
                         }`}
                       >
