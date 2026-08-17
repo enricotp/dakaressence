@@ -55,7 +55,7 @@ export const Route = createFileRoute("/painel-dakar-a7k9m2")({
   }),
 });
 
-type Tab = "pedidos" | "analytics" | "perfumes" | "calculadora" | "funcionarios";
+type Tab = "pedidos" | "analytics" | "perfumes" | "calculadora" | "funcionarios" | "home_config";
 
 function AdminPage() {
   const check = useServerFn(isAdmin);
@@ -190,6 +190,7 @@ function AdminPanel({ nome, role, onLogout }: { nome: string; role: "dono" | "ge
                 ["analytics", "Analytics"],
                 ["perfumes", "Perfumes"],
                 ["calculadora", "Calculadora"],
+                ["home_config", "Página Inicial"],
                 ...(role === "dono" ? ([["funcionarios", "Funcionários"]] as const) : []),
               ] as const
             ).map(([k, label]) => (
@@ -239,6 +240,7 @@ function AdminPanel({ nome, role, onLogout }: { nome: string; role: "dono" | "ge
         {tab === "perfumes" && <PerfumesTab />}
         {tab === "calculadora" && <CalculadoraTab />}
         {tab === "funcionarios" && role === "dono" && <FuncionariosTab />}
+        {tab === "home_config" && <HomeConfigTab />}
       </section>
     </div>
   );
