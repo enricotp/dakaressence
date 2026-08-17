@@ -345,26 +345,27 @@ function Index() {
                   key={p.id}
                   className="group relative flex flex-col overflow-hidden rounded-2xl border border-border/60 bg-card transition hover:border-gold/50"
                 >
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      wishlist.toggle(p.id);
-                    }}
-                    aria-label={wishlist.has(p.id) ? "Remover dos favoritos" : "Adicionar aos favoritos"}
-                    aria-pressed={wishlist.has(p.id)}
-                    className={`absolute z-10 flex h-9 w-9 items-center justify-center rounded-full bg-background/80 text-lg shadow-lg backdrop-blur transition hover:scale-110 sm:h-10 sm:w-10 sm:text-xl ${
-                      wishlist.has(p.id) ? "text-rose-500" : "text-muted-foreground hover:text-rose-500"
-                    } bottom-4 right-4`}
-                  >
-                    {wishlist.has(p.id) ? "♥" : "♡"}
-                  </button>
                   <Link
                     to="/perfume/$id"
                     params={{ id: p.id }}
                     className="relative aspect-[4/5] block overflow-hidden bg-background"
                     aria-label={`Ver ${p.nome}`}
                   >
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        wishlist.toggle(p.id);
+                      }}
+                      aria-label={wishlist.has(p.id) ? "Remover dos favoritos" : "Adicionar aos favoritos"}
+                      aria-pressed={wishlist.has(p.id)}
+                      className={`absolute bottom-3 right-3 z-20 flex h-9 w-9 items-center justify-center rounded-full bg-background/85 text-lg shadow-sm backdrop-blur transition hover:scale-110 sm:bottom-4 sm:right-4 sm:h-10 sm:w-10 sm:text-xl ${
+                        wishlist.has(p.id) ? "text-rose-500" : "text-muted-foreground hover:text-rose-500"
+                      }`}
+                    >
+                      {wishlist.has(p.id) ? "♥" : "♡"}
+                    </button>
                     <img
                       src={imagem}
                       alt={p.nome}
@@ -385,10 +386,10 @@ function Index() {
                         Pronta entrega
                       </span>
                     )}
-                    {/* Sob encomenda — canto inferior direito no mobile, superior direito (empilhado) no desktop */}
+                    {/* Sob encomenda — mobile: alinhado à esquerda acima do rodapé, desktop: superior direito (empilhado) */}
                     {mostrarSobEncomenda && (
                       <span
-                        className={`absolute right-2 bottom-2 rounded-full bg-amber-500/90 px-2 py-0.5 text-[8px] uppercase tracking-[0.15em] text-black backdrop-blur sm:right-4 sm:bottom-auto sm:px-3 sm:py-1 sm:text-[10px] sm:tracking-[0.2em] ${
+                        className={`absolute left-2 bottom-2 rounded-full bg-amber-500/90 px-2 py-0.5 text-[8px] uppercase tracking-[0.15em] text-black backdrop-blur sm:left-auto sm:right-4 sm:bottom-auto sm:px-3 sm:py-1 sm:text-[10px] sm:tracking-[0.2em] ${
                           p.prontaEntrega ? "sm:top-12" : "sm:top-4"
                         }`}
                       >
