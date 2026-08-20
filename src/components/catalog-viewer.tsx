@@ -22,6 +22,10 @@ export function CatalogViewer({ perfumes }: CatalogViewerProps) {
   const [busca, setBusca] = useState("");
   const [marca, setMarca] = useState<string>("todas");
   const [selectedVolume, setSelectedVolume] = useState<Volume | "todos">("todos");
+  const [showTutorial, setShowTutorial] = useState(false);
+  const [activeNotes, setActiveNotes] = useState<string[]>([]);
+  const [showNoteSelector, setShowNoteSelector] = useState(false);
+
   const [colecoesAtivas, setColecoesAtivas] = useState<Record<Colecao, boolean>>(() => {
     if (search.colecao && COLECOES.includes(search.colecao as Colecao)) {
       const initial = {
@@ -40,6 +44,40 @@ export function CatalogViewer({ perfumes }: CatalogViewerProps) {
       "Dream Brand Collection": true,
     };
   });
+
+  useEffect(() => {
+    const hasSeenTutorial = localStorage.getItem("dakar_tutorial_seen");
+    if (!hasSeenTutorial) {
+      setShowTutorial(true);
+    }
+  }, []);
+
+  const dismissTutorial = () => {
+    localStorage.setItem("dakar_tutorial_seen", "true");
+    setShowTutorial(false);
+  };
+
+  const allNotes = useMemo(() => {
+    const notesSet = new Set<string>();
+    perfumes.forEach((p) => {
+      [p.notasTopo, p.notasCoracao, p.notasFundo].forEach((n) => {
+        if (!n) return;
+        n.split(/[,;]\s*/).forEach((note) => {
+          const trimmed = note.trim();
+          if (trimmed && trimmed.length > 2) {
+            notesSet.add(trimmed.charAt(0).toUpperCase() + trimmed.slice(1).toLowerCase());
+          }
+        });
+      });
+    });
+    return Array.from(notesSet).sort();
+  }, [perfumes]);
+
+  const toggleNote = (note: string) => {
+    setActiveNotes(prev => 
+      prev.includes(note) ? prev.filter(n => n !== note) : [...prev, note]
+    );
+  };
 
   useEffect(() => {
     if (search.volume) {
