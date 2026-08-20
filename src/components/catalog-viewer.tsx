@@ -620,7 +620,7 @@ export function CatalogViewer({ perfumes }: CatalogViewerProps) {
             return (
               <article
                 key={p.id}
-                className="group relative flex flex-col overflow-hidden rounded-2xl border border-border/60 bg-card transition hover:border-gold/50"
+                className={`group relative flex flex-col overflow-hidden rounded-2xl border transition hover:border-gold/50 ${activeNotes.length > 0 && [p.notasTopo, p.notasCoracao, p.notasFundo].join(" ").toLowerCase().split(/[,;]\s*/).some(n => activeNotes.map(an => an.toLowerCase()).includes(n.trim().toLowerCase())) ? "border-gold/30 bg-gold/5 shadow-gold/5 shadow-lg" : "border-border/60 bg-card"}`}
               >
                 <Link
                   to="/perfume/$id"
@@ -643,6 +643,11 @@ export function CatalogViewer({ perfumes }: CatalogViewerProps) {
                   >
                     {wishlist.has(p.id) ? "♥" : "♡"}
                   </button>
+                  {activeNotes.length > 0 && (
+                    <div className="absolute left-0 right-0 bottom-0 bg-gold/90 text-primary-foreground py-1 px-3 text-[10px] font-bold uppercase tracking-wider text-center z-10 backdrop-blur-sm animate-in slide-in-from-bottom-full">
+                      Combina com seus aromas
+                    </div>
+                  )}
                   <img
                     src={imagem}
                     alt={p.nome}
