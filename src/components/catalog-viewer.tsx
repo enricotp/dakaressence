@@ -535,6 +535,16 @@ export function CatalogViewer({ perfumes }: CatalogViewerProps) {
                   </button>
                 );
               })}
+            {allNotes.filter(note => {
+              const search = aromaSearch.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+              const target = note.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+              return target.includes(search);
+            }).length === 0 && (
+              <p className="text-xs text-muted-foreground py-4 w-full text-center">
+                Nenhum aroma encontrado para "{aromaSearch}"
+              </p>
+            )}
+
           </div>
 
           {activeNotes.length > 0 && (
