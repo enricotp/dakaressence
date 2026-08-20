@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { Link, useSearch, useNavigate } from "@tanstack/react-router";
 import { formatBRL } from "@/lib/format";
 import { useWishlist } from "@/lib/wishlist-context";
