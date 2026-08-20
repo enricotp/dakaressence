@@ -1,9 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Link, useSearch, useNavigate } from "@tanstack/react-router";
 import { formatBRL } from "@/lib/format";
 import { useWishlist } from "@/lib/wishlist-context";
 import { useCart } from "@/lib/cart-context";
 import { COLECOES, COLECAO_INFO, type Colecao, type Volume, type Perfume } from "@/lib/perfumes.functions";
+import { X, HelpCircle, Sparkles, Filter } from "lucide-react";
 
 
 interface CatalogViewerProps {
@@ -21,6 +22,10 @@ export function CatalogViewer({ perfumes }: CatalogViewerProps) {
   const [busca, setBusca] = useState("");
   const [marca, setMarca] = useState<string>("todas");
   const [selectedVolume, setSelectedVolume] = useState<Volume | "todos">("todos");
+  const [showTutorial, setShowTutorial] = useState(false);
+  const [activeNotes, setActiveNotes] = useState<string[]>([]);
+  const [showNoteSelector, setShowNoteSelector] = useState(false);
+
   const [colecoesAtivas, setColecoesAtivas] = useState<Record<Colecao, boolean>>(() => {
     if (search.colecao && COLECOES.includes(search.colecao as Colecao)) {
       const initial = {
@@ -39,6 +44,40 @@ export function CatalogViewer({ perfumes }: CatalogViewerProps) {
       "Dream Brand Collection": true,
     };
   });
+
+  useEffect(() => {
+    const hasSeenTutorial = localStorage.getItem("dakar_tutorial_seen");
+    if (!hasSeenTutorial) {
+      setShowTutorial(true);
+    }
+  }, []);
+
+  const dismissTutorial = () => {
+    localStorage.setItem("dakar_tutorial_seen", "true");
+    setShowTutorial(false);
+  };
+
+  const allNotes = useMemo(() => {
+    const notesSet = new Set<string>();
+    perfumes.forEach((p) => {
+      [p.notasTopo, p.notasCoracao, p.notasFundo].forEach((n) => {
+        if (!n) return;
+        n.split(/[,;]\s*/).forEach((note) => {
+          const trimmed = note.trim();
+          if (trimmed && trimmed.length > 2) {
+            notesSet.add(trimmed.charAt(0).toUpperCase() + trimmed.slice(1).toLowerCase());
+          }
+        });
+      });
+    });
+    return Array.from(notesSet).sort();
+  }, [perfumes]);
+
+  const toggleNote = (note: string) => {
+    setActiveNotes(prev => 
+      prev.includes(note) ? prev.filter(n => n !== note) : [...prev, note]
+    );
+  };
 
   useEffect(() => {
     if (search.volume) {
@@ -70,10 +109,24 @@ export function CatalogViewer({ perfumes }: CatalogViewerProps) {
       if (disponibilidade === "pronta" && !p.prontaEntrega) return false;
       if (disponibilidade === "encomenda" && !p.sobEncomenda) return false;
       if (selectedVolume !== "todos" && p.volume !== selectedVolume) return false;
+      
+      if (activeNotes.length > 0) {
+        const perfumeNotes = [p.notasTopo, p.notasCoracao, p.notasFundo].join(" ").toLowerCase();
+        return activeNotes.some(note => perfumeNotes.includes(note.toLowerCase()));
+      }
+      
       return true;
     })
-
     .sort((a, b) => {
+      // Prioritize notes matches if searching by aroma
+      if (activeNotes.length > 0) {
+        const aNotes = [a.notasTopo, a.notasCoracao, a.notasFundo].join(" ").toLowerCase();
+        const bNotes = [b.notasTopo, b.notasCoracao, b.notasFundo].join(" ").toLowerCase();
+        const aMatches = activeNotes.filter(n => aNotes.includes(n.toLowerCase())).length;
+        const bMatches = activeNotes.filter(n => bNotes.includes(n.toLowerCase())).length;
+        if (aMatches !== bMatches) return bMatches - aMatches;
+      }
+
       if (a.prontaEntrega && !b.prontaEntrega) return -1;
       if (!a.prontaEntrega && b.prontaEntrega) return 1;
       const c = colecaoOrder[a.colecao] - colecaoOrder[b.colecao];
@@ -85,10 +138,71 @@ export function CatalogViewer({ perfumes }: CatalogViewerProps) {
   const codigoDoPerfume = (index: number) => `Nº ${String(index + 1).padStart(3, "0")}`;
 
   return (
-    <div className="mx-auto max-w-7xl px-4 sm:px-6">
+    <div className="mx-auto max-w-7xl px-4 sm:px-6 relative">
+      {/* Tutorial Overlay */}
+      {showTutorial && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-background/80 backdrop-blur-sm p-4 animate-in fade-in duration-300">
+          <div className="max-w-md w-full bg-card border border-gold/30 rounded-3xl p-8 shadow-2xl relative overflow-hidden">
+            <div className="absolute top-0 right-0 p-4">
+              <button 
+                onClick={dismissTutorial}
+                className="text-muted-foreground hover:text-foreground transition"
+              >
+                <X className="h-6 w-6" />
+              </button>
+            </div>
+            
+            <div className="flex flex-col items-center text-center">
+              <div className="h-16 w-16 rounded-full bg-gold/10 flex items-center justify-center mb-6">
+                <Sparkles className="h-8 w-8 text-gold" />
+              </div>
+              
+              <h3 className="text-2xl font-display font-semibold mb-4">Bem-vindo ao Catálogo Dakar!</h3>
+              
+              <div className="space-y-4 text-sm text-muted-foreground text-left mb-8">
+                <div className="flex gap-3">
+                  <div className="h-5 w-5 rounded-full bg-gold/20 flex items-center justify-center shrink-0 mt-0.5">
+                    <span className="text-[10px] font-bold text-gold">1</span>
+                  </div>
+                  <p><span className="text-foreground font-medium">Filtre seu estilo:</span> Use os botões no topo para escolher por gênero, coleção e disponibilidade.</p>
+                </div>
+                <div className="flex gap-3">
+                  <div className="h-5 w-5 rounded-full bg-gold/20 flex items-center justify-center shrink-0 mt-0.5">
+                    <span className="text-[10px] font-bold text-gold">2</span>
+                  </div>
+                  <p><span className="text-foreground font-medium">Descubra por Aroma:</span> Não sabe o que escolher? Use a nossa nova busca olfativa para encontrar perfumes por notas que você gosta.</p>
+                </div>
+                <div className="flex gap-3">
+                  <div className="h-5 w-5 rounded-full bg-gold/20 flex items-center justify-center shrink-0 mt-0.5">
+                    <span className="text-[10px] font-bold text-gold">3</span>
+                  </div>
+                  <p><span className="text-foreground font-medium">Pronta Entrega vs Encomenda:</span> Identifique rapidamente o que temos em estoque para envio imediato.</p>
+                </div>
+              </div>
+              
+              <button 
+                onClick={dismissTutorial}
+                className="w-full bg-gold text-primary-foreground py-3 rounded-full font-semibold hover:bg-gold/90 transition shadow-lg"
+              >
+                Começar a Explorar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="mb-10 flex items-end justify-between sm:mb-14">
         <div>
-          <span className="text-[11px] uppercase tracking-[0.25em] text-gold">Catálogo</span>
+          <div className="flex items-center gap-3">
+            <span className="text-[11px] uppercase tracking-[0.25em] text-gold">Catálogo</span>
+            <button 
+              onClick={() => setShowTutorial(true)}
+              className="text-muted-foreground hover:text-gold transition-colors flex items-center gap-1.5 text-[10px] uppercase tracking-wider font-semibold"
+            >
+              <HelpCircle className="h-3.5 w-3.5" />
+              Como funciona?
+            </button>
+          </div>
           <h2 className="mt-3 font-display text-3xl font-semibold sm:text-4xl md:text-5xl">
             Nossas fragrâncias
           </h2>
@@ -129,8 +243,8 @@ export function CatalogViewer({ perfumes }: CatalogViewerProps) {
           {(
             [
               { id: "todos", label: "Tudo" },
-              { id: "pronta", label: "Pronta Entrega" },
-              { id: "encomenda", label: "Sob Encomenda" },
+              { id: "pronta", label: "Pronta Entrega (Receba agora)" },
+              { id: "encomenda", label: "Sob Encomenda (Prazo: 6 dias)" },
             ] as const
           ).map((op) => (
             <button
@@ -294,24 +408,181 @@ export function CatalogViewer({ perfumes }: CatalogViewerProps) {
           </div>
         </div>
 
-        <div className="relative text-left">
-          <label className="mb-1 block text-[10px] font-semibold uppercase tracking-wider text-muted-foreground ml-2 invisible">
-            Favoritos
-          </label>
+        <div className="flex gap-2">
+          <button
+            type="button"
+            onClick={() => setShowNoteSelector(!showNoteSelector)}
+            className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm transition h-[38px] ${
+              showNoteSelector || activeNotes.length > 0
+                ? "border-gold bg-gold text-primary-foreground"
+                : "border-border/60 bg-card text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            <Sparkles className="h-4 w-4" />
+            <span className="hidden sm:inline">Descoberta por Aroma</span>
+            <span className="sm:hidden">Aromas</span>
+            {activeNotes.length > 0 && (
+              <span className="ml-1 rounded-full bg-primary-foreground/20 px-1.5 py-0.5 text-[10px] font-bold">
+                {activeNotes.length}
+              </span>
+            )}
+          </button>
+
           <button
             type="button"
             onClick={() => setSoFavoritos((v) => !v)}
             aria-pressed={soFavoritos}
             className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm transition h-[38px] ${
               soFavoritos
-                ? "border-gold bg-gold text-primary-foreground"
+                ? "border-rose-500 bg-rose-500 text-white"
                 : "border-border/60 bg-card text-muted-foreground hover:text-foreground"
             }`}
           >
-            <span aria-hidden>♥</span>
-            Favoritos{wishlist.count > 0 ? ` (${wishlist.count})` : ""}
+            <span aria-hidden>{soFavoritos ? "♥" : "♡"}</span>
+            <span className="hidden sm:inline">Favoritos</span>
+            {wishlist.count > 0 && <span className="ml-1 text-[10px] font-bold">({wishlist.count})</span>}
           </button>
         </div>
+      </div>
+
+      {/* Seletor de Notas Olfativas */}
+      {showNoteSelector && (
+        <div className="mb-8 p-6 rounded-3xl border border-gold/30 bg-gold/5 animate-in slide-in-from-top-4 duration-300">
+          <div className="flex items-center justify-between mb-4">
+            <h4 className="text-sm font-semibold uppercase tracking-wider text-gold flex items-center gap-2">
+              <Sparkles className="h-4 w-4" />
+              Escolha os aromas que você gosta
+            </h4>
+            <button 
+              onClick={() => setShowNoteSelector(false)}
+              className="text-muted-foreground hover:text-foreground transition"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          </div>
+          <p className="text-xs text-muted-foreground mb-6">
+            Selecione uma ou mais notas para encontrar perfumes que combinam com seu estilo.
+          </p>
+          <div className="flex flex-wrap gap-2 max-h-48 overflow-y-auto pr-2 custom-scrollbar">
+            {allNotes.map((note) => {
+              const active = activeNotes.includes(note);
+              return (
+                <button
+                  key={note}
+                  onClick={() => toggleNote(note)}
+                  className={`px-3 py-1.5 rounded-full text-xs transition-all ${
+                    active
+                      ? "bg-gold text-primary-foreground shadow-md scale-105"
+                      : "bg-background border border-border/60 text-muted-foreground hover:border-gold/50 hover:text-foreground"
+                  }`}
+                >
+                  {note}
+                </button>
+              );
+            })}
+          </div>
+          {activeNotes.length > 0 && (
+            <button
+              onClick={() => setActiveNotes([])}
+              className="mt-6 text-[10px] font-bold uppercase tracking-widest text-gold hover:underline"
+            >
+              Limpar seleção de aromas
+            </button>
+          )}
+        </div>
+      )}
+
+      {/* Chips de Filtros Ativos */}
+      <div className="mb-8 flex flex-wrap gap-2 items-center">
+        {(filtro !== "todos" || marca !== "todas" || disponibilidade !== "todos" || selectedVolume !== "todos" || soFavoritos || activeNotes.length > 0 || Object.values(colecoesAtivas).some(v => !v)) && (
+          <>
+            <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mr-2 flex items-center gap-1">
+              <Filter className="h-3 w-3" />
+              Filtros:
+            </span>
+            
+            {filtro !== "todos" && (
+              <button 
+                onClick={() => setFiltro("todos")}
+                className="inline-flex items-center gap-1.5 rounded-full bg-card border border-border/60 px-3 py-1 text-[10px] font-medium transition hover:border-gold/50"
+              >
+                Gênero: {filtro}
+                <X className="h-2.5 w-2.5" />
+              </button>
+            )}
+            
+            {marca !== "todas" && (
+              <button 
+                onClick={() => setMarca("todas")}
+                className="inline-flex items-center gap-1.5 rounded-full bg-card border border-border/60 px-3 py-1 text-[10px] font-medium transition hover:border-gold/50"
+              >
+                Marca: {marca}
+                <X className="h-2.5 w-2.5" />
+              </button>
+            )}
+
+            {disponibilidade !== "todos" && (
+              <button 
+                onClick={() => setDisponibilidade("todos")}
+                className="inline-flex items-center gap-1.5 rounded-full bg-card border border-border/60 px-3 py-1 text-[10px] font-medium transition hover:border-gold/50"
+              >
+                {disponibilidade === "pronta" ? "Pronta Entrega" : "Sob Encomenda"}
+                <X className="h-2.5 w-2.5" />
+              </button>
+            )}
+
+            {selectedVolume !== "todos" && (
+              <button 
+                onClick={() => setSelectedVolume("todos")}
+                className="inline-flex items-center gap-1.5 rounded-full bg-card border border-border/60 px-3 py-1 text-[10px] font-medium transition hover:border-gold/50"
+              >
+                Volume: {selectedVolume}
+                <X className="h-2.5 w-2.5" />
+              </button>
+            )}
+
+            {soFavoritos && (
+              <button 
+                onClick={() => setSoFavoritos(false)}
+                className="inline-flex items-center gap-1.5 rounded-full bg-rose-500/10 border border-rose-500/30 px-3 py-1 text-[10px] font-medium text-rose-500 transition hover:bg-rose-500/20"
+              >
+                Apenas Favoritos
+                <X className="h-2.5 w-2.5" />
+              </button>
+            )}
+
+            {activeNotes.map(note => (
+              <button 
+                key={note}
+                onClick={() => toggleNote(note)}
+                className="inline-flex items-center gap-1.5 rounded-full bg-gold/10 border border-gold/30 px-3 py-1 text-[10px] font-medium text-gold transition hover:bg-gold/20"
+              >
+                Aroma: {note}
+                <X className="h-2.5 w-2.5" />
+              </button>
+            ))}
+
+            <button 
+              onClick={() => {
+                setFiltro("todos");
+                setMarca("todas");
+                setDisponibilidade("todos");
+                setSelectedVolume("todos");
+                setSoFavoritos(false);
+                setActiveNotes([]);
+                setColecoesAtivas({
+                  Signature: true,
+                  "Brand Collection": true,
+                  "Arabic Collection": true,
+                  "Dream Brand Collection": true,
+                });
+              }}
+              className="text-[10px] font-bold uppercase tracking-widest text-gold hover:underline ml-2"
+            >
+              Limpar Tudo
+            </button>
+          </>
+        )}
       </div>
 
       <div className="grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-3">
@@ -349,7 +620,7 @@ export function CatalogViewer({ perfumes }: CatalogViewerProps) {
             return (
               <article
                 key={p.id}
-                className="group relative flex flex-col overflow-hidden rounded-2xl border border-border/60 bg-card transition hover:border-gold/50"
+                className={`group relative flex flex-col overflow-hidden rounded-2xl border transition hover:border-gold/50 ${activeNotes.length > 0 && [p.notasTopo, p.notasCoracao, p.notasFundo].join(" ").toLowerCase().split(/[,;]\s*/).some(n => activeNotes.map(an => an.toLowerCase()).includes(n.trim().toLowerCase())) ? "border-gold/30 bg-gold/5 shadow-gold/5 shadow-lg" : "border-border/60 bg-card"}`}
               >
                 <Link
                   to="/perfume/$id"
@@ -372,6 +643,11 @@ export function CatalogViewer({ perfumes }: CatalogViewerProps) {
                   >
                     {wishlist.has(p.id) ? "♥" : "♡"}
                   </button>
+                  {activeNotes.length > 0 && (
+                    <div className="absolute left-0 right-0 bottom-0 bg-gold/90 text-primary-foreground py-1 px-3 text-[10px] font-bold uppercase tracking-wider text-center z-10 backdrop-blur-sm animate-in slide-in-from-bottom-full">
+                      Combina com seus aromas
+                    </div>
+                  )}
                   <img
                     src={imagem}
                     alt={p.nome}
