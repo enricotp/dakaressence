@@ -729,19 +729,30 @@ export function CatalogViewer({ perfumes }: CatalogViewerProps) {
                     </span>
                   </span>
                   {p.prontaEntrega && (
-                    <span className="absolute right-2 top-2 rounded-full bg-emerald-500/90 px-2 py-0.5 text-[8px] uppercase tracking-[0.15em] text-black backdrop-blur sm:right-4 sm:top-4 sm:px-3 sm:py-1 sm:text-[10px] sm:tracking-[0.2em]">
-                      Pronta entrega
+                    <span className="absolute right-2 top-2 flex flex-col items-end rounded-xl bg-emerald-500/90 px-2 py-0.5 backdrop-blur sm:right-4 sm:top-4 sm:px-3 sm:py-1">
+                      <span className="text-[8px] uppercase font-bold tracking-[0.15em] text-black sm:text-[10px] sm:tracking-[0.2em]">
+                        Pronta entrega
+                      </span>
+                      <span className="text-[7px] lowercase tracking-normal text-black/80 sm:text-[8px]">
+                        Receba hoje
+                      </span>
                     </span>
                   )}
                   {mostrarSobEncomenda && (
                     <span
-                      className={`absolute left-2 bottom-2 rounded-full bg-amber-500/90 px-2 py-0.5 text-[8px] uppercase tracking-[0.15em] text-black backdrop-blur sm:left-auto sm:right-4 sm:bottom-auto sm:px-3 sm:py-1 sm:text-[10px] sm:tracking-[0.2em] ${
-                        p.prontaEntrega ? "sm:top-12" : "sm:top-4"
+                      className={`absolute left-2 bottom-2 flex flex-col items-start rounded-xl bg-amber-500/90 px-2 py-0.5 backdrop-blur sm:left-auto sm:right-4 sm:bottom-auto sm:items-end sm:px-3 sm:py-1 ${
+                        p.prontaEntrega ? "sm:top-[52px]" : "sm:top-4"
                       }`}
                     >
-                      Sob encomenda
+                      <span className="text-[8px] uppercase font-bold tracking-[0.15em] text-black sm:text-[10px] sm:tracking-[0.2em]">
+                        Sob encomenda
+                      </span>
+                      <span className="text-[7px] lowercase tracking-normal text-black/80 sm:text-[8px]">
+                        Em 6 dias
+                      </span>
                     </span>
                   )}
+
                 </Link>
 
                 <div className="flex flex-1 flex-col gap-3 p-4 sm:gap-4 sm:p-6">
