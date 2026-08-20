@@ -25,6 +25,8 @@ export function CatalogViewer({ perfumes }: CatalogViewerProps) {
   const [showTutorial, setShowTutorial] = useState(false);
   const [activeNotes, setActiveNotes] = useState<string[]>([]);
   const [showNoteSelector, setShowNoteSelector] = useState(false);
+  const [aromaSearch, setAromaSearch] = useState("");
+
 
   const [colecoesAtivas, setColecoesAtivas] = useState<Record<Colecao, boolean>>(() => {
     if (search.colecao && COLECOES.includes(search.colecao as Colecao)) {
