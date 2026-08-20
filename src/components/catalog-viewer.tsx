@@ -129,8 +129,8 @@ export function CatalogViewer({ perfumes }: CatalogViewerProps) {
           {(
             [
               { id: "todos", label: "Tudo" },
-              { id: "pronta", label: "Pronta Entrega" },
-              { id: "encomenda", label: "Sob Encomenda" },
+              { id: "pronta", label: "Pronta Entrega (Receba agora)" },
+              { id: "encomenda", label: "Sob Encomenda (Prazo: 6 dias)" },
             ] as const
           ).map((op) => (
             <button
