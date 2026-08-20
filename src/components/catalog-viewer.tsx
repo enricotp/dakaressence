@@ -254,13 +254,19 @@ export function CatalogViewer({ perfumes }: CatalogViewerProps) {
               key={op.id}
               type="button"
               onClick={() => setDisponibilidade(op.id)}
-              className={`inline-flex items-center gap-2 rounded-full border px-4 py-1.5 text-xs uppercase tracking-wider transition ${
+              className={`inline-flex flex-col items-center justify-center gap-0.5 rounded-2xl border px-4 py-2 text-xs uppercase tracking-wider transition min-w-[140px] ${
                 disponibilidade === op.id
                   ? "border-gold bg-gold text-primary-foreground"
                   : "border-border/60 bg-card text-muted-foreground hover:text-foreground"
               }`}
             >
-              {op.label}
+              <span className="font-bold">{op.label}</span>
+              {('sublabel' in op) && (
+                <span className={`text-[9px] lowercase tracking-normal opacity-80 ${disponibilidade === op.id ? "text-primary-foreground" : "text-muted-foreground"}`}>
+                  {op.sublabel}
+                </span>
+              )}
+
             </button>
           ))}
         </div>
