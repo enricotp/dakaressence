@@ -138,10 +138,71 @@ export function CatalogViewer({ perfumes }: CatalogViewerProps) {
   const codigoDoPerfume = (index: number) => `Nº ${String(index + 1).padStart(3, "0")}`;
 
   return (
-    <div className="mx-auto max-w-7xl px-4 sm:px-6">
+    <div className="mx-auto max-w-7xl px-4 sm:px-6 relative">
+      {/* Tutorial Overlay */}
+      {showTutorial && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-background/80 backdrop-blur-sm p-4 animate-in fade-in duration-300">
+          <div className="max-w-md w-full bg-card border border-gold/30 rounded-3xl p-8 shadow-2xl relative overflow-hidden">
+            <div className="absolute top-0 right-0 p-4">
+              <button 
+                onClick={dismissTutorial}
+                className="text-muted-foreground hover:text-foreground transition"
+              >
+                <X className="h-6 w-6" />
+              </button>
+            </div>
+            
+            <div className="flex flex-col items-center text-center">
+              <div className="h-16 w-16 rounded-full bg-gold/10 flex items-center justify-center mb-6">
+                <Sparkles className="h-8 w-8 text-gold" />
+              </div>
+              
+              <h3 className="text-2xl font-display font-semibold mb-4">Bem-vindo ao Catálogo Dakar!</h3>
+              
+              <div className="space-y-4 text-sm text-muted-foreground text-left mb-8">
+                <div className="flex gap-3">
+                  <div className="h-5 w-5 rounded-full bg-gold/20 flex items-center justify-center shrink-0 mt-0.5">
+                    <span className="text-[10px] font-bold text-gold">1</span>
+                  </div>
+                  <p><span className="text-foreground font-medium">Filtre seu estilo:</span> Use os botões no topo para escolher por gênero, coleção e disponibilidade.</p>
+                </div>
+                <div className="flex gap-3">
+                  <div className="h-5 w-5 rounded-full bg-gold/20 flex items-center justify-center shrink-0 mt-0.5">
+                    <span className="text-[10px] font-bold text-gold">2</span>
+                  </div>
+                  <p><span className="text-foreground font-medium">Descubra por Aroma:</span> Não sabe o que escolher? Use a nossa nova busca olfativa para encontrar perfumes por notas que você gosta.</p>
+                </div>
+                <div className="flex gap-3">
+                  <div className="h-5 w-5 rounded-full bg-gold/20 flex items-center justify-center shrink-0 mt-0.5">
+                    <span className="text-[10px] font-bold text-gold">3</span>
+                  </div>
+                  <p><span className="text-foreground font-medium">Pronta Entrega vs Encomenda:</span> Identifique rapidamente o que temos em estoque para envio imediato.</p>
+                </div>
+              </div>
+              
+              <button 
+                onClick={dismissTutorial}
+                className="w-full bg-gold text-primary-foreground py-3 rounded-full font-semibold hover:bg-gold/90 transition shadow-lg"
+              >
+                Começar a Explorar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="mb-10 flex items-end justify-between sm:mb-14">
         <div>
-          <span className="text-[11px] uppercase tracking-[0.25em] text-gold">Catálogo</span>
+          <div className="flex items-center gap-3">
+            <span className="text-[11px] uppercase tracking-[0.25em] text-gold">Catálogo</span>
+            <button 
+              onClick={() => setShowTutorial(true)}
+              className="text-muted-foreground hover:text-gold transition-colors flex items-center gap-1.5 text-[10px] uppercase tracking-wider font-semibold"
+            >
+              <HelpCircle className="h-3.5 w-3.5" />
+              Como funciona?
+            </button>
+          </div>
           <h2 className="mt-3 font-display text-3xl font-semibold sm:text-4xl md:text-5xl">
             Nossas fragrâncias
           </h2>
