@@ -109,10 +109,24 @@ export function CatalogViewer({ perfumes }: CatalogViewerProps) {
       if (disponibilidade === "pronta" && !p.prontaEntrega) return false;
       if (disponibilidade === "encomenda" && !p.sobEncomenda) return false;
       if (selectedVolume !== "todos" && p.volume !== selectedVolume) return false;
+      
+      if (activeNotes.length > 0) {
+        const perfumeNotes = [p.notasTopo, p.notasCoracao, p.notasFundo].join(" ").toLowerCase();
+        return activeNotes.some(note => perfumeNotes.includes(note.toLowerCase()));
+      }
+      
       return true;
     })
-
     .sort((a, b) => {
+      // Prioritize notes matches if searching by aroma
+      if (activeNotes.length > 0) {
+        const aNotes = [a.notasTopo, a.notasCoracao, a.notasFundo].join(" ").toLowerCase();
+        const bNotes = [b.notasTopo, b.notasCoracao, b.notasFundo].join(" ").toLowerCase();
+        const aMatches = activeNotes.filter(n => aNotes.includes(n.toLowerCase())).length;
+        const bMatches = activeNotes.filter(n => bNotes.includes(n.toLowerCase())).length;
+        if (aMatches !== bMatches) return bMatches - aMatches;
+      }
+
       if (a.prontaEntrega && !b.prontaEntrega) return -1;
       if (!a.prontaEntrega && b.prontaEntrega) return 1;
       const c = colecaoOrder[a.colecao] - colecaoOrder[b.colecao];
