@@ -389,8 +389,17 @@ export function CatalogViewer({ perfumes }: CatalogViewerProps) {
               value={busca}
               onChange={(e) => setBusca(e.target.value)}
               placeholder="Digite o nome do perfume..."
-              className="w-full rounded-full border border-border/60 bg-card py-2 pl-9 pr-4 text-sm outline-none transition focus:border-gold"
+              className="w-full rounded-full border border-border/60 bg-card py-2 pl-9 pr-9 text-sm outline-none transition focus:border-gold"
             />
+            {busca && (
+              <button
+                onClick={() => setBusca("")}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+              >
+                <X className="h-3.5 w-3.5" />
+              </button>
+            )}
+
           </div>
         </div>
         
