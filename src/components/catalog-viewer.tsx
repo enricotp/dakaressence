@@ -469,27 +469,67 @@ export function CatalogViewer({ perfumes }: CatalogViewerProps) {
               <X className="h-4 w-4" />
             </button>
           </div>
-          <p className="text-xs text-muted-foreground mb-6">
-            Selecione uma ou mais notas para encontrar perfumes que combinam com seu estilo.
-          </p>
-          <div className="flex flex-wrap gap-2 max-h-48 overflow-y-auto pr-2 custom-scrollbar">
-            {allNotes.map((note) => {
-              const active = activeNotes.includes(note);
-              return (
+          <div className="flex flex-col gap-4 mb-6">
+            <p className="text-xs text-muted-foreground">
+              Selecione uma ou mais notas para encontrar perfumes que combinam com seu estilo.
+            </p>
+            <div className="relative max-w-sm">
+              <svg
+                aria-hidden
+                className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <circle cx="11" cy="11" r="7" />
+                <path d="m21 21-4.3-4.3" />
+              </svg>
+              <input
+                type="text"
+                value={aromaSearch}
+                onChange={(e) => setAromaSearch(e.target.value)}
+                placeholder="Buscar aroma ou nota..."
+                className="w-full rounded-full border border-border/60 bg-background py-2 pl-9 pr-9 text-xs outline-none transition focus:border-gold"
+              />
+              {aromaSearch && (
                 <button
-                  key={note}
-                  onClick={() => toggleNote(note)}
-                  className={`px-3 py-1.5 rounded-full text-xs transition-all ${
-                    active
-                      ? "bg-gold text-primary-foreground shadow-md scale-105"
-                      : "bg-background border border-border/60 text-muted-foreground hover:border-gold/50 hover:text-foreground"
-                  }`}
+                  onClick={() => setAromaSearch("")}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
                 >
-                  {note}
+                  <X className="h-3.5 w-3.5" />
                 </button>
-              );
-            })}
+              )}
+            </div>
           </div>
+          
+          <div className="flex flex-wrap gap-2 max-h-48 overflow-y-auto pr-2 custom-scrollbar">
+            {allNotes
+              .filter(note => {
+                const search = aromaSearch.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                const target = note.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                return target.includes(search);
+              })
+              .map((note) => {
+                const active = activeNotes.includes(note);
+                return (
+                  <button
+                    key={note}
+                    onClick={() => toggleNote(note)}
+                    className={`px-3 py-1.5 rounded-full text-xs transition-all ${
+                      active
+                        ? "bg-gold text-primary-foreground shadow-md scale-105"
+                        : "bg-background border border-border/60 text-muted-foreground hover:border-gold/50 hover:text-foreground"
+                    }`}
+                  >
+                    {note}
+                  </button>
+                );
+              })}
+          </div>
+
           {activeNotes.length > 0 && (
             <button
               onClick={() => setActiveNotes([])}
