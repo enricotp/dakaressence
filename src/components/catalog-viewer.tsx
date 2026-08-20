@@ -1,9 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Link, useSearch, useNavigate } from "@tanstack/react-router";
 import { formatBRL } from "@/lib/format";
 import { useWishlist } from "@/lib/wishlist-context";
 import { useCart } from "@/lib/cart-context";
 import { COLECOES, COLECAO_INFO, type Colecao, type Volume, type Perfume } from "@/lib/perfumes.functions";
+import { X, HelpCircle, Sparkles, Filter } from "lucide-react";
 
 
 interface CatalogViewerProps {
