@@ -26,6 +26,8 @@ export function CatalogViewer({ perfumes }: CatalogViewerProps) {
   const [activeNotes, setActiveNotes] = useState<string[]>([]);
   const [showNoteSelector, setShowNoteSelector] = useState(false);
   const [aromaSearch, setAromaSearch] = useState("");
+  const aromaSearchInputRef = useRef<HTMLInputElement>(null);
+
 
 
   const [colecoesAtivas, setColecoesAtivas] = useState<Record<Colecao, boolean>>(() => {
