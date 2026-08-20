@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { Link, useSearch, useNavigate } from "@tanstack/react-router";
 import { formatBRL } from "@/lib/format";
 import { useWishlist } from "@/lib/wishlist-context";
@@ -25,6 +25,10 @@ export function CatalogViewer({ perfumes }: CatalogViewerProps) {
   const [showTutorial, setShowTutorial] = useState(false);
   const [activeNotes, setActiveNotes] = useState<string[]>([]);
   const [showNoteSelector, setShowNoteSelector] = useState(false);
+  const [aromaSearch, setAromaSearch] = useState("");
+  const aromaSearchInputRef = useRef<HTMLInputElement>(null);
+
+
 
   const [colecoesAtivas, setColecoesAtivas] = useState<Record<Colecao, boolean>>(() => {
     if (search.colecao && COLECOES.includes(search.colecao as Colecao)) {
@@ -243,21 +247,28 @@ export function CatalogViewer({ perfumes }: CatalogViewerProps) {
           {(
             [
               { id: "todos", label: "Tudo" },
-              { id: "pronta", label: "Pronta Entrega (Receba agora)" },
-              { id: "encomenda", label: "Sob Encomenda (Prazo: 6 dias)" },
+              { id: "pronta", label: "Pronta Entrega", sublabel: "Receba hoje" },
+              { id: "encomenda", label: "Sob Encomenda", sublabel: "Em 6 dias" },
+
             ] as const
           ).map((op) => (
             <button
               key={op.id}
               type="button"
               onClick={() => setDisponibilidade(op.id)}
-              className={`inline-flex items-center gap-2 rounded-full border px-4 py-1.5 text-xs uppercase tracking-wider transition ${
+              className={`inline-flex flex-col items-center justify-center gap-0.5 rounded-2xl border px-4 py-2 text-xs uppercase tracking-wider transition min-w-[140px] ${
                 disponibilidade === op.id
                   ? "border-gold bg-gold text-primary-foreground"
                   : "border-border/60 bg-card text-muted-foreground hover:text-foreground"
               }`}
             >
-              {op.label}
+              <span className="font-bold">{op.label}</span>
+              {('sublabel' in op) && (
+                <span className={`text-[9px] lowercase tracking-normal opacity-80 ${disponibilidade === op.id ? "text-primary-foreground" : "text-muted-foreground"}`}>
+                  {op.sublabel}
+                </span>
+              )}
+
             </button>
           ))}
         </div>
@@ -378,8 +389,17 @@ export function CatalogViewer({ perfumes }: CatalogViewerProps) {
               value={busca}
               onChange={(e) => setBusca(e.target.value)}
               placeholder="Digite o nome do perfume..."
-              className="w-full rounded-full border border-border/60 bg-card py-2 pl-9 pr-4 text-sm outline-none transition focus:border-gold"
+              className="w-full rounded-full border border-border/60 bg-card py-2 pl-9 pr-9 text-sm outline-none transition focus:border-gold"
             />
+            {busca && (
+              <button
+                onClick={() => setBusca("")}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+              >
+                <X className="h-3.5 w-3.5" />
+              </button>
+            )}
+
           </div>
         </div>
         
@@ -460,27 +480,82 @@ export function CatalogViewer({ perfumes }: CatalogViewerProps) {
               <X className="h-4 w-4" />
             </button>
           </div>
-          <p className="text-xs text-muted-foreground mb-6">
-            Selecione uma ou mais notas para encontrar perfumes que combinam com seu estilo.
-          </p>
-          <div className="flex flex-wrap gap-2 max-h-48 overflow-y-auto pr-2 custom-scrollbar">
-            {allNotes.map((note) => {
-              const active = activeNotes.includes(note);
-              return (
+          <div className="flex flex-col gap-4 mb-6">
+            <p className="text-xs text-muted-foreground">
+              Selecione uma ou mais notas para encontrar perfumes que combinam com seu estilo.
+            </p>
+            <div className="relative max-w-sm">
+              <svg
+                aria-hidden
+                className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <circle cx="11" cy="11" r="7" />
+                <path d="m21 21-4.3-4.3" />
+              </svg>
+              <input
+                ref={aromaSearchInputRef}
+                type="text"
+                value={aromaSearch}
+                onChange={(e) => setAromaSearch(e.target.value)}
+                placeholder="Buscar aroma ou nota..."
+                className="w-full rounded-full border border-border/60 bg-background py-2 pl-9 pr-9 text-xs outline-none transition focus:border-gold"
+              />
+              {aromaSearch && (
                 <button
-                  key={note}
-                  onClick={() => toggleNote(note)}
-                  className={`px-3 py-1.5 rounded-full text-xs transition-all ${
-                    active
-                      ? "bg-gold text-primary-foreground shadow-md scale-105"
-                      : "bg-background border border-border/60 text-muted-foreground hover:border-gold/50 hover:text-foreground"
-                  }`}
+                  onClick={() => {
+                    setAromaSearch("");
+                    aromaSearchInputRef.current?.focus();
+                  }}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
                 >
-                  {note}
+                  <X className="h-3.5 w-3.5" />
                 </button>
-              );
-            })}
+              )}
+
+            </div>
           </div>
+          
+          <div className="flex flex-wrap gap-2 max-h-48 overflow-y-auto pr-2 custom-scrollbar">
+            {allNotes
+              .filter(note => {
+                const search = aromaSearch.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                const target = note.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                return target.includes(search);
+              })
+              .map((note) => {
+                const active = activeNotes.includes(note);
+                return (
+                  <button
+                    key={note}
+                    onClick={() => toggleNote(note)}
+                    className={`px-3 py-1.5 rounded-full text-xs transition-all ${
+                      active
+                        ? "bg-gold text-primary-foreground shadow-md scale-105"
+                        : "bg-background border border-border/60 text-muted-foreground hover:border-gold/50 hover:text-foreground"
+                    }`}
+                  >
+                    {note}
+                  </button>
+                );
+              })}
+            {allNotes.filter(note => {
+              const search = aromaSearch.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+              const target = note.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+              return target.includes(search);
+            }).length === 0 && (
+              <p className="text-xs text-muted-foreground py-4 w-full text-center">
+                Nenhum aroma encontrado para "{aromaSearch}"
+              </p>
+            )}
+
+          </div>
+
           {activeNotes.length > 0 && (
             <button
               onClick={() => setActiveNotes([])}
@@ -663,19 +738,30 @@ export function CatalogViewer({ perfumes }: CatalogViewerProps) {
                     </span>
                   </span>
                   {p.prontaEntrega && (
-                    <span className="absolute right-2 top-2 rounded-full bg-emerald-500/90 px-2 py-0.5 text-[8px] uppercase tracking-[0.15em] text-black backdrop-blur sm:right-4 sm:top-4 sm:px-3 sm:py-1 sm:text-[10px] sm:tracking-[0.2em]">
-                      Pronta entrega
+                    <span className="absolute right-2 top-2 flex flex-col items-end rounded-xl bg-emerald-500/90 px-2 py-0.5 backdrop-blur sm:right-4 sm:top-4 sm:px-3 sm:py-1">
+                      <span className="text-[8px] uppercase font-bold tracking-[0.15em] text-black sm:text-[10px] sm:tracking-[0.2em]">
+                        Pronta entrega
+                      </span>
+                      <span className="text-[7px] lowercase tracking-normal text-black/80 sm:text-[8px]">
+                        Receba hoje
+                      </span>
                     </span>
                   )}
                   {mostrarSobEncomenda && (
                     <span
-                      className={`absolute left-2 bottom-2 rounded-full bg-amber-500/90 px-2 py-0.5 text-[8px] uppercase tracking-[0.15em] text-black backdrop-blur sm:left-auto sm:right-4 sm:bottom-auto sm:px-3 sm:py-1 sm:text-[10px] sm:tracking-[0.2em] ${
-                        p.prontaEntrega ? "sm:top-12" : "sm:top-4"
+                      className={`absolute left-2 bottom-2 flex flex-col items-start rounded-xl bg-amber-500/90 px-2 py-0.5 backdrop-blur sm:left-auto sm:right-4 sm:bottom-auto sm:items-end sm:px-3 sm:py-1 ${
+                        p.prontaEntrega ? "sm:top-[52px]" : "sm:top-4"
                       }`}
                     >
-                      Sob encomenda
+                      <span className="text-[8px] uppercase font-bold tracking-[0.15em] text-black sm:text-[10px] sm:tracking-[0.2em]">
+                        Sob encomenda
+                      </span>
+                      <span className="text-[7px] lowercase tracking-normal text-black/80 sm:text-[8px]">
+                        Em 6 dias
+                      </span>
                     </span>
                   )}
+
                 </Link>
 
                 <div className="flex flex-1 flex-col gap-3 p-4 sm:gap-4 sm:p-6">
