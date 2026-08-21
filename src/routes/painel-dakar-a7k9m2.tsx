@@ -979,7 +979,9 @@ function PerfumesTab() {
   const criar = useServerFn(criarPerfume);
   const aplicarCustos = useServerFn(aplicarCustosPadrao);
   const excluir = useServerFn(excluirPerfume);
+  const sincronizar = useServerFn(sincronizarCheckboxesNotion);
   const qc = useQueryClient();
+  const [sincronizando, setSincronizando] = useState(false);
 
   const { data: perfumes = [], isLoading } = useQuery({
     queryKey: ["perfumes"],
