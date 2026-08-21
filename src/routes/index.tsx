@@ -340,7 +340,7 @@ import { CollectionShowcase } from "@/components/collection-showcase";
 import { Header } from "@/components/header";
 import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { getHomeConfig } from "@/lib/home-config.functions";
+import { getHomeConfig, type HomeConfig } from "@/lib/home-config.functions";
 
 export const Route = createFileRoute("/")({
   loader: async ({ context }) => {
