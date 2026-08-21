@@ -31,17 +31,24 @@ export const sincronizarCheckboxesNotion = createServerFn({ method: "POST" })
       if (p.prontaEntrega !== deveEstarPronta || p.sobEncomenda !== deveEstarEncomenda) {
         console.log(`Sincronizando ${p.nome} (${pageId}): Amount=${amount}, Threshold=${threshold}, PE=${p.prontaEntrega}->${deveEstarPronta}, SE=${p.sobEncomenda}->${deveEstarEncomenda}`);
         try {
-          const res = await atualizarPerfume({
-            data: {
-              id: pageId,
-              prontaEntrega: deveEstarPronta,
-              sobEncomenda: deveEstarEncomenda,
-            }
+          // Chamada direta ao Notion via PATCH para evitar a lógica de automação 
+          // do atualizarPerfume que pode interferir na sincronização manual.
+          const res = await fetch(`${GATEWAY}/pages/${pageId}`, {
+            method: "PATCH",
+            headers: notionHeaders(),
+            body: JSON.stringify({
+              properties: {
+                "Pronta entrega": { checkbox: deveEstarPronta },
+                "Sob encomenda": { checkbox: deveEstarEncomenda },
+              }
+            }),
           });
           
           if (res.ok) {
             corrigidos++;
           } else {
+            const errText = await res.text();
+            console.error(`Erro API Notion (${p.nome}):`, errText);
             falhas++;
           }
         } catch (e) {
