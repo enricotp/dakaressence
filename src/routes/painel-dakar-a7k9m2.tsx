@@ -43,6 +43,7 @@ import {
   type Genero,
   type Volume,
 } from "@/lib/perfumes.functions";
+import { sincronizarCheckboxesNotion } from "@/lib/sync.functions";
 import { formatBRL } from "@/lib/format";
 
 export const Route = createFileRoute("/painel-dakar-a7k9m2")({
@@ -978,7 +979,9 @@ function PerfumesTab() {
   const criar = useServerFn(criarPerfume);
   const aplicarCustos = useServerFn(aplicarCustosPadrao);
   const excluir = useServerFn(excluirPerfume);
+  const sincronizar = useServerFn(sincronizarCheckboxesNotion);
   const qc = useQueryClient();
+  const [sincronizando, setSincronizando] = useState(false);
 
   const { data: perfumes = [], isLoading } = useQuery({
     queryKey: ["perfumes"],
@@ -1082,6 +1085,25 @@ function PerfumesTab() {
             className="rounded-full border border-border/60 px-4 py-1.5 text-xs uppercase tracking-wider text-muted-foreground hover:border-gold hover:text-gold"
           >
             Aplicar custos padrão
+          </button>
+          <button
+            onClick={async () => {
+              if (sincronizando) return;
+              setSincronizando(true);
+              try {
+                const r = await sincronizar();
+                await qc.invalidateQueries({ queryKey: ["perfumes"] });
+                alert(`Sincronização concluída!\nTotal analisado: ${r.total}\nCorrigidos: ${r.corrigidos}\nFalhas: ${r.falhas}`);
+              } catch (e) {
+                alert("Erro ao sincronizar: " + (e instanceof Error ? e.message : "Desconhecido"));
+              } finally {
+                setSincronizando(false);
+              }
+            }}
+            disabled={sincronizando}
+            className="rounded-full border border-border/60 px-4 py-1.5 text-xs uppercase tracking-wider text-muted-foreground hover:border-blue-500 hover:text-blue-500 disabled:opacity-50"
+          >
+            {sincronizando ? "Sincronizando..." : "Corrigir Notion (Sincronizar)"}
           </button>
           <button
             onClick={() => setCriando((v) => !v)}
