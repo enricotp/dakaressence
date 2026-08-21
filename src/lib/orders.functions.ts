@@ -67,6 +67,7 @@ export const criarPedido = createServerFn({ method: "POST" })
   .validator(
     (data: {
       cliente: string;
+      telefone: string;
       itens: string;
       itensDetalhados: Array<{ 
         id: string; 
@@ -89,18 +90,38 @@ export const criarPedido = createServerFn({ method: "POST" })
     const dataFmt = now.toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo" });
     const parcelasStr = data.pagamento === "Cartão" ? `${data.parcelas}x` : "-";
 
-    const row = [
-      id,
-      dataFmt,
-      data.cliente,
-      data.itens,
-      data.total.toFixed(2).replace(".", ","),
-      data.pagamento,
-      parcelasStr,
-      "Pendente",
-    ];
+    // Ensure Telefone column exists
+    await ensureColumn(SHEET_ID, SHEET_NAME, "Telefone");
+    
+    // Get headers to determine indices
+    const headers = await getHeaders(SHEET_ID, SHEET_NAME);
+    const getIdx = (name: string) => headers.findIndex(h => h.toLowerCase() === name.toLowerCase());
 
-    const url = `${GATEWAY}/spreadsheets/${SHEET_ID}/values/${SHEET_NAME}!A:H:append?valueInputOption=USER_ENTERED`;
+    const colIndices = {
+      id: getIdx("ID"),
+      data: getIdx("Data"),
+      cliente: getIdx("Cliente"),
+      telefone: getIdx("Telefone"),
+      itens: getIdx("Itens"),
+      total: getIdx("Total"),
+      pagamento: getIdx("Pagamento"),
+      parcelas: getIdx("Parcelas"),
+      status: getIdx("Status"),
+    };
+
+    // Create a row with the correct length based on headers
+    const row = new Array(headers.length).fill("");
+    if (colIndices.id !== -1) row[colIndices.id] = id;
+    if (colIndices.data !== -1) row[colIndices.data] = dataFmt;
+    if (colIndices.cliente !== -1) row[colIndices.cliente] = data.cliente;
+    if (colIndices.telefone !== -1) row[colIndices.telefone] = data.telefone;
+    if (colIndices.itens !== -1) row[colIndices.itens] = data.itens;
+    if (colIndices.total !== -1) row[colIndices.total] = data.total.toFixed(2).replace(".", ",");
+    if (colIndices.pagamento !== -1) row[colIndices.pagamento] = data.pagamento;
+    if (colIndices.parcelas !== -1) row[colIndices.parcelas] = parcelasStr;
+    if (colIndices.status !== -1) row[colIndices.status] = "Pendente";
+
+    const url = `${GATEWAY}/spreadsheets/${SHEET_ID}/values/${SHEET_NAME}!A:Z:append?valueInputOption=USER_ENTERED`;
     const res = await fetch(url, {
       method: "POST",
       headers: sheetsHeaders(),
