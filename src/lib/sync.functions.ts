@@ -21,11 +21,13 @@ export const sincronizarCheckboxesNotion = createServerFn({ method: "POST" })
       const threshold = p.oosThreshold ?? 0;
       const amount = p.amount ?? 0;
       
+      // Regra de negócio: Se Amount > OoS threshold, deve ser Pronta Entrega.
+      // Senão, deve ser Sob Encomenda.
       const deveEstarPronta = amount > threshold;
-      const deveEstarEncomenda = amount <= threshold;
+      const deveEstarEncomenda = !deveEstarPronta;
 
       // Log para debug interno (visível nos logs do servidor se necessário)
-      console.log(`Verificando ${p.nome}: Amount=${amount}, Threshold=${threshold}, Atual(PE=${p.prontaEntrega}, SE=${p.sobEncomenda}), Esperado(PE=${deveEstarPronta}, SE=${deveEstarEncomenda})`);
+      console.log(`Sincronizando ${p.nome}: Amount=${amount}, Threshold=${threshold}, Atual(PE=${p.prontaEntrega}, SE=${p.sobEncomenda}), Esperado(PE=${deveEstarPronta}, SE=${deveEstarEncomenda})`);
 
       if (p.prontaEntrega !== deveEstarPronta || p.sobEncomenda !== deveEstarEncomenda) {
         try {
