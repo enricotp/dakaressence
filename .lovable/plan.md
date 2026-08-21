@@ -1,59 +1,71 @@
-# Plan: Dakar Essence Improvements
+# Plan: Dakar Essence Improvements - Phase 2
 
-## Explore
-- Checkout stores orders in Google Sheets (`src/lib/orders.functions.ts`).
-- Admin panel (`src/routes/painel-dakar-a7k9m2.tsx`) views these orders.
-- Calculator (`src/components/calculadora-panel.tsx`) uses regex and fuzzy matching.
-- Perfumes have a code/number (`Nº XXX`) generated in the UI (`src/components/cart-drawer.tsx`) based on their index in the Notion query.
-- Stock logic is in `src/lib/perfumes.functions.ts` (Notion `Amount` field).
+## Context & Strategy
+- **Notion Database**: `38858811-29ca-83c5-b57d-0102c05505b1`.
+- **Google Sheets**: `1YDXLWaevUB9LnrQGImIV9iGBT9ayCbZYdkzaWkXZrWw`.
+- **Stock Strategy**: **Strategy C** (Confirm at acceptance). No reservation for pending orders.
+- **Idempotency**: Use explicit columns in Google Sheets to track stock movements.
 
-## Implementation Details
-
-### 1. Checkout Phone/WhatsApp
-- **Google Sheets**: Add a new column "Telefone" (Column I) to the "Pedidos" sheet.
+## 1. Permanent Perfume Numbers (Notion)
+- **Database Schema**: Add a new property `Número` (type: `number`) to the Notion database.
+- **Migration**:
+    - Read all perfumes.
+    - Map current index-based numbers (Nº 001, etc.) to the new permanent `Número` column.
+    - Present a report to the user before finalizing (check for duplicates/conflicts).
+- **Backend**:
+    - Update `Perfume` type in `src/lib/perfumes.functions.ts`.
+    - Update `getPerfumes` to fetch `Número`.
+    - Update `criarPerfume` to automatically assign the next available number (Max + 1).
+    - Update `atualizarPerfume` to handle manual edits (with warnings for duplicates).
 - **Frontend**:
-    - Update `CartDrawer` checkout form to include a "Telefone/WhatsApp" field with validation and mask.
-    - Update `criarPedido` server function to save this new field.
-    - Update WhatsApp message summary to include the phone.
-- **Admin**:
-    - Update `PedidosTab` to show the phone number.
-    - Add a "Falar com o cliente" button opening WhatsApp.
-    - Update order search to include phone.
+    - Update all displays (Catalog, Cart, Order Summary, Admin) to use the permanent `Número`.
 
-### 2. Calculator Precision
-- **Logic Refactor**:
-    - Update `parseTexto` in `src/components/calculadora-panel.tsx` to:
-        1. Extract `Nº XXX`.
-        2. Match exactly by the code (index-based number).
-        3. Verify name compatibility; show warning if divergent.
-        4. Fallback to fuzzy search ONLY if no number is found.
-    - UI: Add manual selection for ambiguous fuzzy matches.
-    - UI: Clear indication of unidentifiable items.
+## 2. Checkout & Order Improvements
+- **Google Sheets Schema**:
+    - Column I: `Telefone`
+    - Column J: `EstoqueBaixadoEm` (Timestamp)
+    - Column K: `EstoqueDevolvidoEm` (Timestamp)
+- **Checkout UI**:
+    - Add "Telefone/WhatsApp" field in `CartDrawer`.
+    - Validation: Brazilian DDD + 9 digits (10 or 11 total). Mask: `(99) 99999-9999`.
+    - Save to Google Sheets via `criarPedido`.
+- **Admin Orders**:
+    - Display phone number.
+    - Search by phone.
+    - Add "Falar com o cliente" button (direct WhatsApp link).
 
-### 3. Stock Strategy Recommendations (Pending Approval)
-- **Current State**: Orders stored in Google Sheets. Notion `Amount` is only reduced on "Concluído".
-- **Recommendation**: Strategy A (Reusing Google Sheets).
-    - **Pros**: Simplest, no new databases, unified order source.
-    - **Cons**: Requires reading all "Pendente" orders to calculate "Reserved".
-- **Strategy C (Confirmation only)** is safer for API limits but riskier for user experience.
-- **Decision Needed**: Approve Strategy A?
+## 3. Calculator Precision
+- **Logic Overhaul** (`src/components/calculadora-panel.tsx`):
+    1.  **Strict Number Match**: Extract `Nº XXX` from text and find exact match in catalog by `Número`.
+    2.  **Verification**: If number matches, check if name is compatible. If not, show a "Divergence Warning".
+    3.  **Fuzzy Fallback**: Only if no `Nº` is present, use fuzzy search.
+    4.  **Ambiguity Handling**: If fuzzy search yields multiple results, show a selection list (Number, Name, Collection, Volume, Price).
+    5.  **Error Reporting**: Clearly flag unidentifiable lines.
 
-### 4. Logic & Safety
-- **Protections**:
-    - Modify `atualizarStatusPedido` to check `Amount` before allowing "Concluído".
-    - Implement a "download" tracking mechanism (or check current status) to prevent double-returns of stock on cancellation.
-- **UI**:
-    - Change button text to "Aceitar venda e baixar estoque".
-    - Show stock confirmation modal before conclusion.
+## 4. Stock Safety & Idempotency (Strategy C)
+- **Transition Logic** (`src/lib/orders.functions.ts` -> `atualizarStatusPedido`):
+    - **Accept Sale (Concluído)**:
+        - Check `EstoqueBaixadoEm`. If present, skip stock reduction.
+        - Fetch latest stock from Notion.
+        - If `amount < requested_qty`, block transition and throw error "Estoque insuficiente".
+        - Perform reduction and set `EstoqueBaixadoEm` in Sheets.
+    - **Cancel (Cancelado)**:
+        - Check `EstoqueDevolvidoEm`. If present, skip.
+        - Check if `EstoqueBaixadoEm` was set. If not, skip (nothing to return).
+        - Perform return and set `EstoqueDevolvidoEm` in Sheets.
+- **UI Changes**:
+    - Rename button to "Aceitar venda e baixar estoque".
+    - Display confirmation modal with quantities and available stock before concluding.
+    - Register all stock movements in Logs.
 
-## User Review Required
-> [!IMPORTANT]
-> I recommend **Strategy A** for stock management: Reuse the existing Google Sheets orders to calculate reserved stock. This avoids data duplication and complex expiração logic in Notion.
-> **Do you approve Strategy A or prefer another approach?**
+## 5. UI/UX Consistency
+- **Site Catalog**: Items with only 1 unit show: "Última unidade — disponibilidade sujeita a confirmação".
+- **Code Hygiene**: Ensure no changes to static marketing text in `src/routes/index.tsx`.
 
-## Next Steps
-1.  Apply text edits to `src/routes/index.tsx`.
-2.  Implement Phone field in Checkout (UI + Server Fn + Admin).
-3.  Implement Calculator logic overhaul (Precise matching + UI warnings).
-4.  Implement stock safety (Prevent negative, prevent double return).
-5.  (After approval) Implement stock reservation logic.
+## Technical Inventory
+- **Files**:
+    - `src/lib/perfumes.functions.ts`: Notion property mapping, auto-number logic, stock check.
+    - `src/lib/orders.functions.ts`: Sheets schema update, idempotency checks, phone handling.
+    - `src/components/cart-drawer.tsx`: Checkout form, phone validation, permanent numbers.
+    - `src/components/calculadora-panel.tsx`: Precise matching logic.
+    - `src/routes/painel-dakar-a7k9m2.tsx`: Admin UI for phone, stock confirmation, number editing.
