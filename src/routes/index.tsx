@@ -343,6 +343,12 @@ import { useServerFn } from "@tanstack/react-start";
 import { getHomeConfig } from "@/lib/home-config.functions";
 
 export const Route = createFileRoute("/")({
+  loader: async ({ context }) => {
+    await context.queryClient.ensureQueryData({
+      queryKey: ["home-config"],
+      queryFn: () => getHomeConfig(),
+    });
+  },
   component: Index,
 });
 
