@@ -295,6 +295,7 @@ function PedidosTab() {
   const listar = useServerFn(listarPedidos);
   const atualizar = useServerFn(atualizarStatusPedido);
   const salvarRastreio = useServerFn(atualizarRastreio);
+  const processarEstoque = useServerFn(processarSaidaEstoque);
   const qc = useQueryClient();
 
   const [filtro, setFiltro] = useState<"todos" | "Pendente" | "Concluído" | "Cancelado">(
