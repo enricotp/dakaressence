@@ -131,8 +131,8 @@ export function CatalogViewer({ perfumes }: CatalogViewerProps) {
           if (!allWordsMatch) return false;
         }
 
-        if (disponibilidade === "pronta" && !p.prontaEntrega) return false;
-        if (disponibilidade === "encomenda" && !p.sobEncomenda) return false;
+        if (disponibilidade === "pronta" && p.disponibilidade !== "Pronta Entrega") return false;
+        if (disponibilidade === "encomenda" && p.disponibilidade !== "Sob Encomenda") return false;
         if (selectedVolume !== "todos" && p.volume !== selectedVolume) return false;
         
         if (activeNotes.length > 0) {
@@ -151,8 +151,8 @@ export function CatalogViewer({ perfumes }: CatalogViewerProps) {
           if (aMatches !== bMatches) return bMatches - aMatches;
         }
 
-        if (a.prontaEntrega && !b.prontaEntrega) return -1;
-        if (!a.prontaEntrega && b.prontaEntrega) return 1;
+        if (a.disponibilidade === "Pronta Entrega" && b.disponibilidade !== "Pronta Entrega") return -1;
+        if (a.disponibilidade !== "Pronta Entrega" && b.disponibilidade === "Pronta Entrega") return 1;
         const c = colecaoOrder[a.colecao] - colecaoOrder[b.colecao];
         if (c !== 0) return c;
         return 0;
@@ -762,7 +762,7 @@ export function CatalogViewer({ perfumes }: CatalogViewerProps) {
                       {p.volume}
                     </span>
                   </span>
-                  {p.prontaEntrega && (
+                  {p.disponibilidade === "Pronta Entrega" && (
                     <span className="absolute right-2 top-2 flex flex-col items-center rounded-xl bg-emerald-500/90 px-2 py-0.5 backdrop-blur sm:right-4 sm:top-4 sm:px-3 sm:py-1">
                       <span className="text-[8px] font-semibold uppercase tracking-[0.1em] text-black sm:text-[10px] sm:tracking-[0.15em]">
                         Pronta entrega
