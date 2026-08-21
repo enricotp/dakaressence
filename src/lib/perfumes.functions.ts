@@ -328,13 +328,36 @@ export const atualizarPerfume = createServerFn({ method: "POST" })
     await requireAdmin();
 
     const properties: Record<string, unknown> = {};
+    
+    // Automação solicitada pelo usuário:
+    // Se o saldo (amount) estiver sendo alterado:
+    //   Saldo <= 0 -> Sob encomenda = true, Pronta entrega = false
+    //   Saldo > 0 -> Sob encomenda = false, Pronta entrega = true
+    if (data.amount !== undefined) {
+      properties["Amount"] = { number: data.amount };
+      
+      const threshold = data.oosThreshold !== undefined 
+        ? data.oosThreshold 
+        : (data.id ? 0 : 0); // Default common sense fallback
+
+      if (data.amount !== null) {
+        if (data.amount <= (data.oosThreshold ?? 0)) {
+          properties["Sob encomenda"] = { checkbox: true };
+          properties["Pronta entrega"] = { checkbox: false };
+        } else {
+          properties["Sob encomenda"] = { checkbox: false };
+          properties["Pronta entrega"] = { checkbox: true };
+        }
+      }
+    }
+
     if (data.nome !== undefined)
       properties["Product Name"] = { title: [{ text: { content: data.nome } }] };
     if (data.descricao !== undefined)
       properties["Descrição"] = { rich_text: [{ text: { content: data.descricao } }] };
     if (data.preco !== undefined) properties["Preço"] = { number: data.preco };
     if (data.custo !== undefined) properties["Custo"] = { number: data.custo };
-    if (data.amount !== undefined) properties["Amount"] = { number: data.amount };
+    // Amount handled above for logic overrides
     if (data.volume !== undefined) properties["Volume"] = { select: { name: data.volume } };
     if (data.marca !== undefined)
       properties["Marca"] = data.marca ? { select: { name: data.marca } } : { select: null };
@@ -346,8 +369,12 @@ export const atualizarPerfume = createServerFn({ method: "POST" })
       properties["Low threshold "] = { number: data.lowThreshold };
     if (data.oosThreshold !== undefined)
       properties["OoS threshold"] = { number: data.oosThreshold };
-    if (data.sobEncomenda !== undefined) properties["Sob encomenda"] = { checkbox: data.sobEncomenda };
-    if (data.prontaEntrega !== undefined) properties["Pronta entrega"] = { checkbox: data.prontaEntrega };
+    // Sob encomenda e Pronta entrega são automatizados se Amount mudar.
+    // Só aplicamos o valor manual se Amount NÃO estiver sendo alterado.
+    if (data.amount === undefined) {
+      if (data.sobEncomenda !== undefined) properties["Sob encomenda"] = { checkbox: data.sobEncomenda };
+      if (data.prontaEntrega !== undefined) properties["Pronta entrega"] = { checkbox: data.prontaEntrega };
+    }
     if (data.notasTopo !== undefined)
       properties["Notas de topo"] = { rich_text: [{ text: { content: data.notasTopo } }] };
     if (data.notasCoracao !== undefined)
@@ -418,7 +445,13 @@ export async function ajustarEstoqueInterno(id: string, delta: number) {
   const res = await fetch(`${GATEWAY}/pages/${id}`, {
     method: "PATCH",
     headers: notionHeaders(),
-    body: JSON.stringify({ properties: { Amount: { number: next } } }),
+    body: JSON.stringify({ 
+      properties: { 
+        Amount: { number: next },
+        "Sob encomenda": { checkbox: next <= 0 },
+        "Pronta entrega": { checkbox: next > 0 }
+      } 
+    }),
   });
   return { ok: res.ok, novoEstoque: next };
 }
@@ -463,7 +496,16 @@ export const criarPerfume = createServerFn({ method: "POST" })
       properties["Descrição"] = { rich_text: [{ text: { content: data.descricao } }] };
     if (data.preco != null) properties["Preço"] = { number: data.preco };
     if (data.custo != null) properties["Custo"] = { number: data.custo };
-    if (data.amount != null) properties["Amount"] = { number: data.amount };
+    if (data.amount != null) {
+      properties["Amount"] = { number: data.amount };
+      if (data.amount <= (data.oosThreshold ?? 0)) {
+        properties["Sob encomenda"] = { checkbox: true };
+        properties["Pronta entrega"] = { checkbox: false };
+      } else {
+        properties["Sob encomenda"] = { checkbox: false };
+        properties["Pronta entrega"] = { checkbox: true };
+      }
+    }
     if (data.marca) properties["Marca"] = { select: { name: data.marca } };
     if (data.colecao) properties["Coleção"] = { select: { name: data.colecao } };
     if (data.genero)
@@ -472,8 +514,10 @@ export const criarPerfume = createServerFn({ method: "POST" })
       properties["Low threshold "] = { number: data.lowThreshold };
     if (data.oosThreshold != null)
       properties["OoS threshold"] = { number: data.oosThreshold };
-    if (data.sobEncomenda !== undefined) properties["Sob encomenda"] = { checkbox: data.sobEncomenda };
-    if (data.prontaEntrega !== undefined) properties["Pronta entrega"] = { checkbox: data.prontaEntrega };
+    if (data.amount === undefined) {
+      if (data.sobEncomenda !== undefined) properties["Sob encomenda"] = { checkbox: data.sobEncomenda };
+      if (data.prontaEntrega !== undefined) properties["Pronta entrega"] = { checkbox: data.prontaEntrega };
+    }
     if (data.notasTopo)
       properties["Notas de topo"] = { rich_text: [{ text: { content: data.notasTopo } }] };
     if (data.notasCoracao)
