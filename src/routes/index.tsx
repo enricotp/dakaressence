@@ -355,7 +355,7 @@ export const Route = createFileRoute("/")({
 function Index() {
   const { cartCount, open } = useCart();
   const getCfg = useServerFn(getHomeConfig);
-  const { data: config = [] } = useQuery({
+  const { data: config } = useSuspenseQuery({
     queryKey: ["home-config"],
     queryFn: () => getCfg(),
   });
