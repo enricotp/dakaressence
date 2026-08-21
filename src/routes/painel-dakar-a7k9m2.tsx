@@ -1087,6 +1087,25 @@ function PerfumesTab() {
             Aplicar custos padrão
           </button>
           <button
+            onClick={async () => {
+              if (sincronizando) return;
+              setSincronizando(true);
+              try {
+                const r = await sincronizar();
+                await qc.invalidateQueries({ queryKey: ["perfumes"] });
+                alert(`Sincronização concluída!\nTotal analisado: ${r.total}\nCorrigidos: ${r.corrigidos}\nFalhas: ${r.falhas}`);
+              } catch (e) {
+                alert("Erro ao sincronizar: " + (e instanceof Error ? e.message : "Desconhecido"));
+              } finally {
+                setSincronizando(false);
+              }
+            }}
+            disabled={sincronizando}
+            className="rounded-full border border-border/60 px-4 py-1.5 text-xs uppercase tracking-wider text-muted-foreground hover:border-blue-500 hover:text-blue-500 disabled:opacity-50"
+          >
+            {sincronizando ? "Sincronizando..." : "Corrigir Notion (Sincronizar)"}
+          </button>
+          <button
             onClick={() => setCriando((v) => !v)}
             className="inline-flex items-center gap-1.5 rounded-full bg-gold px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-primary-foreground transition hover:brightness-110"
           >
