@@ -14,7 +14,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
   * 
   * A lógica avançada de movimentação de estoque ficará para a Parte 3.
   * 
-  * Não alterar os textos comerciais, nomes, descrições or preços atuais sem necessidade. Nesta etapa, o objetivo é fazer os campos editáveis do painel realmente controlarem o site público.
+  * Não alterar os textos comerciais, nomes, descrições ou preços atuais sem necessidade. Nesta etapa, o objetivo é fazer os campos editáveis do painel realmente controlarem o site público.
   * 
   * 1. Telefone/WhatsApp no checkout
   * 
@@ -134,7 +134,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
   * 
   * Se o painel mostra sucesso antes da confirmação real do backend.
   * 
-  * Se src/routes/index.tsx ainda usa informações fixas no código.
+  * Se src/routes/index.tsx still usa informações fixas no código.
   * 
   * Se o painel e a página pública estão lendo fontes de dados diferentes.
   * 
