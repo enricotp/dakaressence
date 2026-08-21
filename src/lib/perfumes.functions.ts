@@ -205,8 +205,21 @@ export const getPerfumes = createServerFn({ method: "GET" }).handler(
       const notionProntaEntrega = page.properties["Pronta entrega"]?.checkbox ?? false;
 
       const effectiveAmount = amount ?? 0;
-      const prontaEntrega = effectiveAmount > oosThreshold || notionProntaEntrega;
-      const sobEncomenda = !prontaEntrega || notionSobEncomenda;
+      
+      // Lógica de disponibilidade:
+      // Se algum checkbox no Notion estiver marcado, ele manda.
+      // Caso contrário, usamos a quantidade em estoque (Amount).
+      let prontaEntrega = notionProntaEntrega;
+      let sobEncomenda = notionSobEncomenda;
+      
+      if (!notionProntaEntrega && !notionSobEncomenda) {
+        if (effectiveAmount > oosThreshold) {
+          prontaEntrega = true;
+        } else {
+          sobEncomenda = true;
+        }
+      }
+      
       const emEstoque = prontaEntrega;
 
       const notasTopo =
