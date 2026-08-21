@@ -328,6 +328,29 @@ export const atualizarPerfume = createServerFn({ method: "POST" })
     await requireAdmin();
 
     const properties: Record<string, unknown> = {};
+    
+    // Automação solicitada pelo usuário:
+    // Se o saldo (amount) estiver sendo alterado:
+    //   Saldo <= 0 -> Sob encomenda = true, Pronta entrega = false
+    //   Saldo > 0 -> Sob encomenda = false, Pronta entrega = true
+    if (data.amount !== undefined) {
+      properties["Amount"] = { number: data.amount };
+      
+      const threshold = data.oosThreshold !== undefined 
+        ? data.oosThreshold 
+        : (data.id ? 0 : 0); // Default common sense fallback
+
+      if (data.amount !== null) {
+        if (data.amount <= (data.oosThreshold ?? 0)) {
+          properties["Sob encomenda"] = { checkbox: true };
+          properties["Pronta entrega"] = { checkbox: false };
+        } else {
+          properties["Sob encomenda"] = { checkbox: false };
+          properties["Pronta entrega"] = { checkbox: true };
+        }
+      }
+    }
+
     if (data.nome !== undefined)
       properties["Product Name"] = { title: [{ text: { content: data.nome } }] };
     if (data.descricao !== undefined)
