@@ -208,7 +208,8 @@ export const getPerfumes = createServerFn({ method: "GET" }).handler(
       const sobEncomenda = (effectiveAmount <= oosThreshold && !notionProntaEntrega) || notionSobEncomenda;
       
       if (nome.includes("MYSLF")) {
-        console.log(`DEBUG MYSLF: amount=${amount}, effectiveAmount=${effectiveAmount}, oosThreshold=${oosThreshold}, pronta=${prontaEntrega}, encomenda=${sobEncomenda}`);
+        const fs = require('fs');
+        fs.appendFileSync('/tmp/perfume_debug.log', `DEBUG MYSLF: amount=${amount}, effectiveAmount=${effectiveAmount}, oosThreshold=${oosThreshold}, pronta=${prontaEntrega}, encomenda=${sobEncomenda}\n`);
       }
       
       const notasTopo =
