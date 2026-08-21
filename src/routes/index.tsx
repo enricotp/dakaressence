@@ -1,425 +1,339 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 /**
-  * Dakar Essence — Parte 1 de 3
+  * Plano: Melhorias Dakar Essence — Fase 2 (Parte 2 de 3)
   * 
-  * Números permanentes dos perfumes e correção da calculadora
+  * Contexto
   * 
-  * Implemente somente esta primeira parte. Não altere telefone, checkout, regras de estoque, última unidade, movimentações ou textos de marketing neste momento.
+  * Banco de perfumes no Notion: 38858811-29ca-83c5-b57d-0102c05505b1
   * 
-  * Objetivos
+  * Google Sheets: 1YDXLWaevUB9LnrQGImIV9iGBT9ayCbZYdkzaWkXZrWw
   * 
-  * Criar um número permanente e único para cada perfume na database do Notion.
+  * Esta é somente a Parte 2 de 3.
   * 
-  * Parar de gerar Nº XXX pela posição do perfume na consulta.
+  * A Parte 1, referente à numeração permanente dos perfumes e à calculadora, deve ser preservada.
   * 
-  * Preservar corretamente os números nos pedidos.
+  * A lógica avançada de movimentação de estoque ficará para a Parte 3.
   * 
-  * Corrigir a calculadora para identificar o perfume pelo número permanente.
+  * Não alterar os textos comerciais, nomes, descrições or preços atuais sem necessidade. Nesta etapa, o objetivo é fazer os campos editáveis do painel realmente controlarem o site público.
   * 
-  * Impedir cálculos silenciosos com produtos errados.
+  * 1. Telefone/WhatsApp no checkout
   * 
-  * 1. Criar a coluna Número no Notion
+  * Adicionar ao checkout do CartDrawer um campo obrigatório chamado:
   * 
-  * Database de perfumes:
+  * Telefone/WhatsApp
   * 
-  * 38858811-29ca-83c5-b57d-0102c05505b1
+  * Requisitos:
   * 
-  * Crie, caso ainda não exista, uma nova propriedade:
+  * Posicionar o campo após o nome do cliente.
   * 
-  * Nome: Número
+  * Aplicar a máscara visual (99) 99999-9999.
   * 
-  * Tipo: number
+  * Antes de salvar, remover espaços, parênteses, traços e qualquer outro símbolo.
   * 
-  * O valor deve ser armazenado como número puro, por exemplo:
+  * Validar telefone celular brasileiro com DDD e 11 dígitos.
   * 
-  * 1
+  * Exibir uma mensagem clara quando o número estiver incompleto ou inválido.
   * 
-  * 25
+  * Impedir a finalização do pedido enquanto o campo obrigatório estiver inválido.
   * 
-  * 439
+  * Salvar apenas os dígitos do telefone.
   * 
-  * Na interface, ele deve ser formatado como:
+  * Não salvar o prefixo 55 na planilha; adicioná-lo somente ao criar links para o WhatsApp.
   * 
-  * Nº 001
+  * 2. Integração com o Google Sheets
   * 
-  * Nº 025
+  * A aba atual de pedidos contém estas colunas:
   * 
-  * Nº 439
+  * ID, Data, Cliente, Itens, Total, Pagamento, Parcelas, Status
   * 
-  * Não armazene Nº nem zeros à esquerda dentro do Notion.
+  * Não assumir que Telefone estará em uma letra ou posição fixa.
   * 
-  * 2. Não preencher a coluna antes da aprovação
+  * Implementar o seguinte:
   * 
-  * Pode criar a propriedade Número, mas não preencha os perfumes imediatamente.
+  * Ler primeiro os cabeçalhos da aba de pedidos.
   * 
-  * Primeiro, gere um relatório completo contendo:
+  * Procurar a coluna pelo nome exato Telefone.
   * 
-  * ID da página do perfume no Notion;
+  * Caso ela não exista, acrescentá-la depois da última coluna ocupada.
   * 
-  * nome;
+  * Passar a localizar todas as colunas importantes pelo nome do cabeçalho, e não por índices fixos.
   * 
-  * marca;
+  * Salvar o telefone na coluna correspondente ao criar um novo pedido.
   * 
-  * coleção;
+  * Não sobrescrever informações existentes.
   * 
-  * volume;
+  * Manter compatibilidade com os pedidos antigos, que não possuem telefone.
   * 
-  * número atualmente exibido pelo sistema;
+  * Não quebrar Analytics, rastreamento, calculadora ou leitura dos pedidos existentes.
   * 
-  * número permanente proposto;
+  * 3. Telefone no resumo enviado pelo WhatsApp
   * 
-  * situação da propriedade Número;
+  * Atualizar o resumo gerado no checkout para incluir:
   * 
-  * possíveis conflitos;
+  * Telefone/WhatsApp: (XX) XXXXX-XXXX
   * 
-  * possíveis duplicidades;
+  * Esse telefone também deve permanecer salvo no pedido, para que possa ser consultado posteriormente no painel.
   * 
-  * perfumes sem número;
+  * Preservar o restante do formato atual da mensagem, principalmente:
   * 
-  * perfumes repetidos ou suspeitos.
-  * 
-  * O “número atualmente exibido” deve ser capturado usando exatamente a mesma ordenação que o site utiliza hoje para gerar os números por índice.
-  * 
-  * Se a propriedade Número já existir e algum perfume já possuir valor, não sobrescreva. Inclua isso no relatório.
-  * 
-  * Apresente o relatório e aguarde minha aprovação antes de gravar qualquer número nos perfumes.
-  * 
-  * 3. Regras do número permanente
-  * 
-  * Depois que eu aprovar o relatório:
-  * 
-  * Grave os números propostos na propriedade Número.
-  * 
-  * Cada perfume deve possuir apenas um número.
-  * 
-  * Cada número deve pertencer a apenas um perfume.
-  * 
-  * Bloqueie números duplicados.
-  * 
-  * O número não pode mudar quando a consulta do Notion for reordenada.
-  * 
-  * O número não pode mudar quando outro perfume for criado, editado, excluído ou arquivado.
-  * 
-  * Um número já utilizado não deve ser atribuído automaticamente a outro perfume.
-  * 
-  * Novos perfumes devem receber automaticamente o próximo número nunca utilizado.
-  * 
-  * O painel administrativo deve permitir visualizar o número.
-  * 
-  * A edição manual do número deve verificar duplicidade antes de salvar.
-  * 
-  * Se o número já tiver sido usado em pedidos, mostrar um aviso forte antes de permitir alteração.
-  * 
-  * Verifique novamente a unicidade no servidor imediatamente antes de criar ou atualizar o perfume.
-  * 
-  * Não confie apenas na validação visual do frontend.
-  * 
-  * 4. Controle do próximo número
-  * 
-  * Não dependa apenas da posição do item nem de quantidade de perfumes + 1.
-  * 
-  * Utilize o maior número já atribuído como base e preserve o maior número histórico utilizado, inclusive quando um perfume for arquivado.
-  * 
-  * Se a consulta normal do Notion não retornar páginas arquivadas, use um contador persistente na fonte de configurações já existente ou outro mecanismo persistente dentro da arquitetura atual.
-  * 
-  * Não crie outra database sem antes explicar a necessidade.
-  * 
-  * O objetivo é impedir que o número de um perfume arquivado seja reutilizado por um novo perfume.
-  * 
-  * 5. Atualizar o backend de perfumes
-  * 
-  * Arquivo principal:
-  * 
-  * src/lib/perfumes.functions.ts
-  * 
-  * Atualize:
-  * 
-  * tipo/interface Perfume;
-  * 
-  * leitura da propriedade Número;
-  * 
-  * criação de perfume;
-  * 
-  * edição de perfume;
-  * 
-  * validação de duplicidade;
-  * 
-  * atribuição automática de novos números;
-  * 
-  * tratamento de perfumes antigos temporariamente sem número.
-  * 
-  * Durante a migração, o sistema pode manter um fallback temporário para os perfumes ainda sem Número, mas esse fallback deve ser claramente identificado como temporário e removido depois que todos forem migrados.
-  * 
-  * Não volte a usar o índice como número definitivo.
-  * 
-  * 6. Atualizar todas as exibições
-  * 
-  * Depois da migração aprovada, substitua o número baseado em índice pelo valor da propriedade Número em:
-  * 
-  * catálogo;
-  * 
-  * cards dos perfumes;
-  * 
-  * página individual;
-  * 
-  * carrinho;
-  * 
-  * resumo do checkout;
-  * 
-  * mensagem enviada ao WhatsApp;
-  * 
-  * painel administrativo;
-  * 
-  * formulário de edição;
-  * 
-  * cadastro de novo perfume;
-  * 
-  * calculadora;
-  * 
-  * favoritos;
-  * 
-  * qualquer filtro, link ou componente que mostre Nº XXX.
-  * 
-  * Crie uma função única de formatação para evitar implementações diferentes, por exemplo:
-  * 
-  * formatarNumeroPerfume(1) -> "Nº 001"
-  * 
-  * Não duplique essa lógica em vários componentes.
-  * 
-  * 7. Preservar o histórico dos pedidos
-  * 
-  * Quando um pedido for criado, salve uma fotografia dos dados do produto naquele momento:
-  * 
-  * número;
-  * 
-  * ID interno do perfume;
-  * 
-  * nome;
-  * 
-  * marca;
-  * 
-  * coleção;
-  * 
-  * volume;
-  * 
-  * quantidade;
-  * 
-  * preço unitário.
-  * 
-  * Pedidos antigos devem continuar mostrando os dados registrados quando foram feitos.
-  * 
-  * Se um perfume mudar de nome, preço, volume, coleção ou número posteriormente, o histórico do pedido não deve mudar.
-  * 
-  * Não reescreva nem migre silenciosamente os números presentes em pedidos antigos.
-  * 
-  * 8. Corrigir a calculadora
-  * 
-  * Arquivo:
-  * 
-  * src/components/calculadora-panel.tsx
-  * 
-  * A calculadora atualmente utiliza Regex e busca aproximada por nome. O fuzzy search deve continuar existindo, mas apenas como fallback.
-  * 
-  * Nova ordem de identificação:
-  * 
-  * Quando a linha possuir Nº XXX
-  * 
-  * Extrair o número usando Regex.
-  * 
-  * Converter para valor numérico.
-  * 
-  * Buscar correspondência exata na propriedade Número.
-  * 
-  * Localizar apenas o perfume que possui aquele número.
-  * 
-  * Conferir se o nome recebido é compatível com o produto encontrado.
-  * 
-  * Se número e nome forem compatíveis, calcular normalmente.
-  * 
-  * Se o número existir, mas o nome divergir, mostrar um aviso de divergência.
-  * 
-  * Não substituir silenciosamente por outro perfume.
-  * 
-  * Se o número não existir, mostrar “Número de perfume não encontrado”.
-  * 
-  * Quando houver número, o fuzzy search não pode substituir o resultado.
-  * 
-  * Quando a linha não possuir número
-  * 
-  * Utilizar fuzzy search pelo nome.
-  * 
-  * Remover acentos, espaços extras e símbolos apenas para comparação.
-  * 
-  * Se existir uma única correspondência confiável, permitir o cálculo.
-  * 
-  * Se existirem várias opções possíveis, não escolher automaticamente.
-  * 
-  * Exibir uma seleção manual contendo:
-  * 
-  * número;
-  * 
-  * nome;
-  * 
-  * marca;
-  * 
-  * coleção;
-  * 
-  * volume;
-  * 
-  * preço.
-  * 
-  * Se não houver correspondência confiável, destacar a linha como não identificada.
-  * 
-  * 9. Corrigir o erro real encontrado
-  * 
-  * Foi identificado este erro:
-  * 
-  * Entrada:
-  * 
-  * 2x Angel (Nº 439)
-  * 
-  * O sistema recebeu o Nº 439, mas escolheu outro perfume chamado Angel, de outro volume ou coleção, com preço diferente.
-  * 
-  * Depois da correção:
-  * 
-  * A calculadora deve buscar exatamente o perfume cuja propriedade Número seja 439.
-  * 
-  * O nome “Angel” serve somente para conferir a correspondência.
-  * 
-  * Outro Angel nunca poderá substituir o Nº 439.
-  * 
-  * O preço deve vir do perfume Nº 439.
-  * 
-  * Se o Nº 439 e o nome recebido divergirem, o sistema deve interromper aquele item e pedir confirmação.
-  * 
-  * 10. Interface da calculadora
-  * 
-  * Para cada linha processada, mostre:
-  * 
-  * quantidade;
-  * 
-  * número;
-  * 
-  * nome;
-  * 
-  * coleção;
-  * 
-  * volume;
-  * 
-  * preço unitário;
-  * 
-  * subtotal;
-  * 
-  * forma de identificação:
-  * 
-  * Correspondência exata por número;
-  * 
-  * Correspondência aproximada por nome;
-  * 
-  * Selecionado manualmente;
-  * 
-  * Não identificado;
-  * 
-  * Divergência entre nome e número.
-  * 
-  * Não permita calcular o total final enquanto existir item ambíguo, divergente ou não identificado.
-  * 
-  * Mantenha:
-  * 
-  * extração do ID do pedido;
+  * ID do pedido;
   * 
   * nome do cliente;
   * 
+  * números dos perfumes;
+  * 
+  * nomes;
+  * 
   * quantidades;
   * 
-  * cálculo do Pix;
+  * forma de pagamento;
   * 
-  * cálculo do cartão;
+  * demais dados atualmente utilizados pela calculadora.
   * 
-  * parcelamento em até 12 vezes.
+  * 4. Telefone no painel administrativo
   * 
-  * 11. Testes obrigatórios
+  * Na aba Pedidos do painel:
   * 
-  * Teste pelo menos:
+  * Exibir o telefone do cliente.
   * 
-  * Número permanente não muda após reordenar o Notion.
+  * Incluir o telefone na busca de pedidos.
   * 
-  * Número não muda após cadastrar outro perfume.
+  * A busca deve funcionar com ou sem máscara, comparando somente os dígitos.
   * 
-  * Número não muda após arquivar outro perfume.
+  * Adicionar o botão “Falar com o cliente”.
   * 
-  * Tentativa de cadastrar número duplicado.
+  * O botão deve abrir:
   * 
-  * Tentativa de editar para um número já existente.
+  * https://wa.me/55NUMERO
   * 
-  * Novo perfume recebendo o próximo número nunca utilizado.
+  * Exemplo: o telefone (11) 98765-4321 deve gerar https://wa.me/5511987654321.
   * 
-  * Perfumes com o mesmo nome e volumes diferentes.
+  * Para pedidos antigos sem telefone, mostrar Telefone não informado.
   * 
-  * Perfumes com o mesmo nome em coleções diferentes.
+  * Não exibir o botão do WhatsApp quando não houver um número válido.
   * 
-  * Angel Nº 439.
+  * 5. Corrigir a sincronização entre o painel Admin e a página pública
   * 
-  * 1 Million Nº 447.
+  * Existe atualmente um problema importante:
   * 
-  * Nome correto com número correto.
+  * As alterações feitas na seção Página Inicial do painel administrativo são salvas ou aparentam ser salvas, mas não aparecem na página disponível ao público.
   * 
-  * Nome errado com número correto.
+  * Alterar título, introdução, nomes das coleções, descrições, tamanhos ou valores pelo painel não está atualizando corretamente a página inicial pública.
   * 
-  * Número inexistente.
+  * Investigue e corrija todo o fluxo de dados:
   * 
-  * Nome sem número.
+  * Formulário do Admin → Função de servidor → Fonte de persistência → Carregamento da página pública
   * 
-  * Nome com acento.
+  * Verificar especialmente:
   * 
-  * Nome sem acento.
+  * Se o botão de salvar realmente chama a função correta.
   * 
-  * Fuzzy search com uma correspondência.
+  * Se a função grava as informações na fonte de dados esperada.
   * 
-  * Fuzzy search com várias correspondências.
+  * Se existem erros sendo ignorados.
   * 
-  * Linha impossível de identificar.
+  * Se o painel mostra sucesso antes da confirmação real do backend.
   * 
-  * Pedido antigo preservando seu número e preço históricos.
+  * Se src/routes/index.tsx ainda usa informações fixas no código.
   * 
-  * 12. Limites desta parte
+  * Se o painel e a página pública estão lendo fontes de dados diferentes.
+  * 
+  * Se existe cache impedindo a atualização.
+  * 
+  * Se a página pública está utilizando dados antigos carregados durante o build.
+  * 
+  * Se os nomes das propriedades salvas são os mesmos nomes procurados na leitura.
+  * 
+  * Se, após recarregar o painel, aparecem os dados realmente persistidos ou apenas valores mantidos no estado local.
+  * 
+  * 6. Fonte única de verdade para a página inicial
+  * 
+  * Os campos editáveis da seção Página Inicial do Admin devem se tornar a fonte oficial das informações exibidas no site público.
+  * 
+  * Isso inclui, conforme os campos existentes no painel:
+  * 
+  * título principal;
+  * 
+  * texto de introdução;
+  * 
+  * nome de cada coleção;
+  * 
+  * descrição de cada coleção;
+  * 
+  * tamanhos disponíveis;
+  * 
+  * valores apresentados;
+  * 
+  * outras informações públicas que já sejam editáveis nessa seção.
+  * 
+  * Regras:
+  * 
+  * Não manter uma segunda cópia fixa desses mesmos dados em src/routes/index.tsx.
+  * 
+  * Substituir os valores fixos somente nos pontos controlados pelo painel.
+  * 
+  * Não reescrever nem modificar a copy atual.
+  * 
+  * Apenas fazer o conteúdo salvo no painel aparecer corretamente no site público.
+  * 
+  * Manter valores padrão somente quando ainda não existir nenhuma configuração salva.
+  * 
+  * Um erro de carregamento não deve ser tratado silenciosamente como ausência de configuração.
+  * 
+  * Não expor informações internas, credenciais ou configurações privadas na rota pública.
+  * 
+  * 7. Salvamento confiável no Admin
+  * 
+  * Ao salvar alterações na página inicial:
+  * 
+  * Desabilitar o botão durante o processamento.
+  * 
+  * Enviar as informações ao backend.
+  * 
+  * Aguardar a confirmação da persistência.
+  * 
+  * Ler novamente os dados salvos para confirmar.
+  * 
+  * Mostrar sucesso somente se a gravação for confirmada.
+  * 
+  * Exibir erro claro se alguma etapa falhar.
+  * 
+  * Atualizar o estado do formulário com os dados confirmados pelo backend.
+  * 
+  * Invalidar ou atualizar qualquer cache utilizado pela página pública.
+  * 
+  * Evitar mensagens de sucesso otimistas quando o backend não tiver confirmado a alteração.
+  * 
+  * Se existir sistema de logs, registrar:
+  * 
+  * data e hora;
+  * 
+  * usuário responsável;
+  * 
+  * campos alterados;
+  * 
+  * valor anterior;
+  * 
+  * novo valor;
+  * 
+  * resultado da operação.
+  * 
+  * 8. Atualização da página pública
+  * 
+  * Depois de uma alteração confirmada no painel:
+  * 
+  * A página pública deve mostrar os novos dados ao ser atualizada.
+  * 
+  * Abrir o site em uma nova aba ou sessão também deve mostrar os dados novos.
+  * 
+  * Se houver cache no loader, na rota ou na infraestrutura, implementar invalidação ou revalidação.
+  * 
+  * Uma implantação nova não pode ser necessária para atualizar textos ou preços.
+  * 
+  * O painel deve continuar mostrando os valores persistidos depois de sair, entrar novamente ou recarregar a página.
+  * 
+  * 9. Proteção contra sobrescrita
+  * 
+  * Verificar se o formulário envia uma configuração completa baseada em dados antigos.
+  * 
+  * Se houver risco de um campo antigo sobrescrever uma alteração mais recente:
+  * 
+  * atualizar somente os campos enviados;
+  * 
+  * mesclar as alterações com a configuração atual;
+  * 
+  * ou utilizar controle de versão/data da última atualização.
+  * 
+  * Não apagar campos existentes quando eles não fizerem parte da alteração atual.
+  * 
+  * Arquivos principais a verificar
+  * 
+  * src/components/cart-drawer.tsx
+  * 
+  * src/lib/orders.functions.ts
+  * 
+  * src/routes/painel-dakar-a7k9m2.tsx
+  * 
+  * src/routes/index.tsx
+  * 
+  * funções de servidor responsáveis pelas configurações da página inicial;
+  * 
+  * conectores do Notion ou Google Sheets utilizados por essa configuração;
+  * 
+  * loaders, cache e mecanismos de revalidação da página pública.
+  * 
+  * Limites desta parte
   * 
   * Não implementar nesta etapa:
   * 
-  * campo de telefone;
+  * reserva de unidades em pedidos pendentes;
   * 
-  * alteração das colunas da planilha de pedidos;
+  * movimentação protegida de estoque;
   * 
-  * reserva de estoque;
-  * 
-  * última unidade;
-  * 
-  * baixa ou devolução de estoque;
+  * compensação de falhas de estoque;
   * 
   * aba MovimentacoesEstoque;
   * 
-  * mudanças nos status dos pedidos;
+  * aviso ou comportamento especial para última unidade;
   * 
-  * mudanças nos textos da página inicial;
+  * novas alterações na calculadora;
   * 
-  * mudanças nos preços.
+  * nova migração da numeração dos perfumes;
   * 
-  * Entrega esperada
+  * mudanças nos textos comerciais atuais.
   * 
-  * Primeiro:
+  * Preservar integralmente o que já foi implementado na Parte 1.
   * 
-  * Crie somente a propriedade vazia Número, caso ela não exista.
+  * Verificação obrigatória
   * 
-  * Gere o relatório de migração.
+  * Realizar testes para confirmar:
   * 
-  * Mostre conflitos, duplicidades e números propostos.
+  * O checkout exige um telefone válido.
   * 
-  * Liste todos os arquivos que precisarão ser alterados.
+  * A máscara funciona sem alterar o valor normalizado.
   * 
-  * Aguarde minha aprovação.
+  * O telefone é salvo na coluna correta do Google Sheets.
   * 
-  * Não preencha os números no Notion e não publique a nova lógica antes de eu aprovar o relatório.
- */
+  * A coluna é localizada pelo cabeçalho, não por uma posição fixa.
+  * 
+  * Pedidos antigos continuam sendo carregados normalmente.
+  * 
+  * O telefone aparece no painel.
+  * 
+  * A busca por telefone funciona com e sem máscara.
+  * 
+  * O botão “Falar com o cliente” abre o número correto no WhatsApp.
+  * 
+  * O resumo do pedido enviado pelo WhatsApp inclui o telefone.
+  * 
+  * Alterar o título no Admin atualiza o título público.
+  * 
+  * Alterar uma descrição atualiza a descrição pública.
+  * 
+  * Alterar tamanho ou valor atualiza a informação pública.
+  * 
+  * As alterações permanecem depois de recarregar o painel.
+  * 
+  * As alterações aparecem em uma nova sessão ou aba anônima.
+  * 
+  * Nenhuma implantação é necessária para atualizar as informações.
+  * 
+  * Um erro no backend não gera uma mensagem falsa de sucesso.
+  * 
+  * Nenhuma parte implementada na Parte 1 foi quebrada.
+  * 
+  * Ao finalizar, apresente um relatório contendo:
+  * 
+  * A causa encontrada para o painel não atualizar a página pública.
+  * 
+  * A fonte de dados utilizada como fonte única de verdade.
+  * 
+  * Os arquivos modificados.
+  * 
+  * Como o cache ou a revalidação foram tratados.
+  * 
+  * Os testes realizados e seus resultados.
+  */
 import { logoWhite } from "@/lib/constants";
 import { useCart } from "@/lib/cart-context";
 import { CollectionShowcase } from "@/components/collection-showcase";
