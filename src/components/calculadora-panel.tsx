@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { useSuspenseQuery, queryOptions } from "@tanstack/react-query";
-import { getPerfumes, type Perfume } from "@/lib/perfumes.functions";
+import { getPerfumes, type Perfume, formatarNumeroPerfume } from "@/lib/perfumes.functions";
 import { formatBRL } from "@/lib/format";
 
 export const calculadoraPerfumesQuery = queryOptions({
@@ -12,10 +12,12 @@ export const calculadoraPerfumesQuery = queryOptions({
 type LinhaCalculada = {
   qtd: number;
   nome: string;
+  numeroInformado: number | null;
   preco: number | null;
   subtotal: number | null;
   match: Perfume | null;
   raw: string;
+  status: "exato" | "fuzzy" | "manual" | "nao_encontrado" | "divergente";
 };
 
 function normalize(s: string) {
@@ -34,31 +36,58 @@ function parseTexto(texto: string, perfumes: Perfume[]): LinhaCalculada[] {
   const perfumesNorm = perfumes.map((p) => ({ p, n: normalize(p.nome) }));
 
   for (const raw of linhas) {
-    const m = raw.match(/^[•\-\*\s]*(\d+)\s*[xX]\s+(.+?)(?:\s*\([^)]*\))?\s*$/);
+    // Regex para capturar Qtd, Nome e opcionalmente (Nº XXX)
+    const m = raw.match(/^[•\-\*\s]*(\d+)\s*[xX]\s+(.+?)(?:\s*\((?:Nº|No|N|#)\s*(\d+)\))?\s*$/i);
     if (!m) continue;
+
     const qtd = parseInt(m[1], 10);
-    const nome = m[2].trim();
-    const nomeNorm = normalize(nome);
-    let best: { p: Perfume; score: number } | null = null;
-    for (const { p, n } of perfumesNorm) {
-      if (nomeNorm === n) {
-        best = { p, score: 999 };
-        break;
+    const nomeFornecido = m[2].trim();
+    const numeroInformado = m[3] ? parseInt(m[3], 10) : null;
+    const nomeNorm = normalize(nomeFornecido);
+
+    let match: Perfume | null = null;
+    let status: LinhaCalculada["status"] = "nao_encontrado";
+
+    if (numeroInformado !== null) {
+      match = perfumes.find((p) => p.numero === numeroInformado) || null;
+      if (match) {
+        const matchNomeNorm = normalize(match.nome);
+        // Se o nome fornecido não bater nem for parte do nome do perfume encontrado pelo número
+        if (nomeNorm !== matchNomeNorm && !matchNomeNorm.includes(nomeNorm) && !nomeNorm.includes(matchNomeNorm)) {
+          status = "divergente";
+        } else {
+          status = "exato";
+        }
+      } else {
+        status = "nao_encontrado";
       }
-      if (nomeNorm.includes(n) || n.includes(nomeNorm)) {
-        const score = Math.min(n.length, nomeNorm.length);
-        if (!best || score > best.score) best = { p, score };
+    } else {
+      // Fuzzy fallback
+      let best: { p: Perfume; score: number } | null = null;
+      for (const { p, n } of perfumesNorm) {
+        if (nomeNorm === n) {
+          best = { p, score: 999 };
+          break;
+        }
+        if (nomeNorm.includes(n) || n.includes(nomeNorm)) {
+          const score = Math.min(n.length, nomeNorm.length);
+          if (!best || score > best.score) best = { p, score };
+        }
       }
+      match = best?.p ?? null;
+      status = match ? "fuzzy" : "nao_encontrado";
     }
-    const match = best?.p ?? null;
+
     const preco = match?.preco ?? null;
     resultado.push({
       qtd,
-      nome: match?.nome ?? nome,
+      nome: match?.nome ?? nomeFornecido,
+      numeroInformado,
       preco,
       subtotal: preco != null ? preco * qtd : null,
       match,
       raw,
+      status,
     });
   }
   return resultado;
@@ -84,7 +113,8 @@ export function CalculadoraPanel() {
   const pedidoId = useMemo(() => extrairPedidoId(texto), [texto]);
   const nomeCliente = useMemo(() => extrairNome(texto), [texto]);
   const total = linhas.reduce((acc, l) => acc + (l.subtotal ?? 0), 0);
-  const semPreco = linhas.some((l) => l.subtotal == null);
+  
+  const temErros = linhas.some((l) => l.status === "nao_encontrado" || l.status === "divergente" || l.preco == null);
 
   return (
     <div className="grid gap-6">
@@ -117,16 +147,30 @@ export function CalculadoraPanel() {
         <div className="rounded-2xl border border-border/60 bg-card p-6">
           <ul className="divide-y divide-border/60">
             {linhas.map((l, i) => (
-              <li key={i} className="flex items-center justify-between gap-4 py-3">
+              <li key={i} className={`flex items-center justify-between gap-4 py-3 ${l.status === 'divergente' || l.status === 'nao_encontrado' ? 'bg-destructive/5 -mx-2 px-2 rounded-lg' : ''}`}>
                 <div className="min-w-0">
-                  <p className="truncate font-medium">
+                  <p className="truncate font-medium flex items-center gap-2">
                     {l.qtd}× {l.nome}
+                    {l.match && (
+                      <span className="text-[10px] bg-muted px-1.5 py-0.5 rounded text-muted-foreground">
+                        {formatarNumeroPerfume(l.match.numero)} · {l.match.volume}
+                      </span>
+                    )}
                   </p>
-                  {!l.match && (
-                    <p className="text-xs text-destructive">Perfume não encontrado</p>
+                  
+                  {l.status === "nao_encontrado" && (
+                    <p className="text-xs text-destructive">Perfume não encontrado{l.numeroInformado ? ` (Nº ${l.numeroInformado})` : ''}</p>
+                  )}
+                  {l.status === "divergente" && (
+                    <p className="text-xs text-amber-500 font-medium">
+                      Divergência: Nº {l.numeroInformado} é {l.match?.nome}
+                    </p>
+                  )}
+                  {l.status === "fuzzy" && (
+                    <p className="text-[10px] text-muted-foreground italic">Identificado por nome</p>
                   )}
                   {l.match && l.preco == null && (
-                    <p className="text-xs text-muted-foreground">Sem preço cadastrado</p>
+                    <p className="text-xs text-destructive">Sem preço cadastrado</p>
                   )}
                   {l.preco != null && (
                     <p className="text-xs text-muted-foreground">
@@ -149,10 +193,15 @@ export function CalculadoraPanel() {
               {formatBRL(total)}
             </span>
           </div>
-          {semPreco && (
-            <p className="mt-3 text-xs text-muted-foreground">
-              Alguns itens ficaram sem preço — confira manualmente.
-            </p>
+          
+          {temErros && (
+            <div className="mt-4 p-3 rounded-xl bg-destructive/10 border border-destructive/20 text-xs text-destructive flex items-start gap-2">
+              <svg className="h-4 w-4 shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              <div>
+                Existem itens ambíguos, não encontrados ou sem preço.
+                Confira os destaques em vermelho acima antes de finalizar.
+              </div>
+            </div>
           )}
 
           <div className="mt-6 space-y-4 border-t border-border/60 pt-6">

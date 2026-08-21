@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useCart } from "@/lib/cart-context";
-import { getPerfumes, type Perfume } from "@/lib/perfumes.functions";
+import { getPerfumes, type Perfume, formatarNumeroPerfume } from "@/lib/perfumes.functions";
 import { criarPedido } from "@/lib/orders.functions";
 import { formatBRL } from "@/lib/format";
 import perfume1 from "@/assets/perfume-1.jpg";
@@ -11,7 +11,6 @@ import perfume3 from "@/assets/perfume-3.jpg";
 
 const WHATSAPP_NUMBER = "5515997261852";
 const fallbacks = [perfume1, perfume2, perfume3];
-const codigoDoPerfume = (index: number) => `Nº ${String(index + 1).padStart(3, "0")}`;
 const waLink = (msg: string) =>
   `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
 
@@ -58,7 +57,7 @@ export function CartDrawer() {
 
   const perfumeById = useMemo(() => {
     const m = new Map<string, { p: Perfume; codigo: string }>();
-    perfumes.forEach((p, i) => m.set(p.id, { p, codigo: codigoDoPerfume(i) }));
+    perfumes.forEach((p) => m.set(p.id, { p, codigo: formatarNumeroPerfume(p.numero) }));
     return m;
   }, [perfumes]);
 

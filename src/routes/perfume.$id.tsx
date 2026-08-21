@@ -4,7 +4,7 @@ import perfume1 from "@/assets/perfume-1.jpg";
 import perfume2 from "@/assets/perfume-2.jpg";
 import perfume3 from "@/assets/perfume-3.jpg";
 import logoWhite from "@/assets/dakar-essence-white.png.asset.json";
-import { getPerfumes, COLECAO_INFO } from "@/lib/perfumes.functions";
+import { getPerfumes, COLECAO_INFO, formatarNumeroPerfume } from "@/lib/perfumes.functions";
 import { formatBRL } from "@/lib/format";
 import { useCart } from "@/lib/cart-context";
 import { CartButton } from "@/components/cart-drawer";
@@ -43,7 +43,7 @@ function PerfumeDetail() {
   const index = perfumes.findIndex((p) => p.id === id);
   if (index === -1) throw notFound();
   const p = perfumes[index];
-  const codigo = `Nº ${String(index + 1).padStart(3, "0")}`;
+  const codigo = formatarNumeroPerfume(p.numero);
   const imagem = p.imagem ?? fallbacks[index % fallbacks.length];
   const qtd = cart[p.id] ?? 0;
   const prazo = COLECAO_INFO[p.colecao].prazoEncomendaDias;

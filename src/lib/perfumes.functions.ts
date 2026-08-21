@@ -36,6 +36,7 @@ export const COLECAO_INFO: Record<
 export type Perfume = {
   id: string;
   nome: string;
+  numero: number | null;
   emEstoque: boolean;
   status: string;
   imagem: string | null;
@@ -55,6 +56,11 @@ export type Perfume = {
   notasFundo: string;
   volumesSignature: Volume[];
 };
+
+export function formatarNumeroPerfume(n: number | null | undefined): string {
+  if (n == null) return "Nº —";
+  return `Nº ${String(n).padStart(3, "0")}`;
+}
 
 const GENERO_MAP: Record<string, Genero> = {
   angel: "feminino",
@@ -171,6 +177,7 @@ export const getPerfumes = createServerFn({ method: "GET" }).handler(
     return data.results.flatMap((page) => {
       const nome =
         page.properties["Product Name"]?.title?.[0]?.plain_text ?? "Sem nome";
+      const numero = page.properties["Número"]?.number ?? null;
       const amount = page.properties["Amount"]?.number ?? null;
       const oosThreshold = page.properties["OoS threshold"]?.number ?? 0;
       const status = page.properties["Available?"]?.formula?.string ?? "";
@@ -225,6 +232,7 @@ export const getPerfumes = createServerFn({ method: "GET" }).handler(
       const extractBasePerfume = {
         id: page.id,
         nome,
+        numero,
         emEstoque,
         status,
         imagem: extractImage(page),
@@ -277,6 +285,7 @@ export const atualizarPerfume = createServerFn({ method: "POST" })
   .validator(
     (data: {
       id: string;
+      numero?: number | null;
       nome?: string;
       descricao?: string;
       preco?: number | null;
@@ -302,6 +311,7 @@ export const atualizarPerfume = createServerFn({ method: "POST" })
     const properties: Record<string, unknown> = {};
     
     // A disponibilidade agora é automática via fórmula no Notion baseada no 'Amount'.
+    if (data.numero !== undefined) properties["Número"] = { number: data.numero };
     if (data.amount !== undefined) properties["Amount"] = { number: data.amount };
     if (data.nome !== undefined)
       properties["Product Name"] = { title: [{ text: { content: data.nome } }] };
@@ -407,6 +417,7 @@ export async function baixarEstoqueInterno(id: string, qtd: number) {
 export const criarPerfume = createServerFn({ method: "POST" })
   .validator(
     (data: {
+      numero?: number | null;
       nome: string;
       descricao?: string;
       preco?: number | null;
@@ -433,6 +444,7 @@ export const criarPerfume = createServerFn({ method: "POST" })
       "Product Name": { title: [{ text: { content: data.nome } }] },
       Volume: { select: { name: data.volume } },
     };
+    if (data.numero != null) properties["Número"] = { number: data.numero };
     if (data.descricao)
       properties["Descrição"] = { rich_text: [{ text: { content: data.descricao } }] };
     if (data.preco != null) properties["Preço"] = { number: data.preco };
