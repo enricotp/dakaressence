@@ -490,7 +490,16 @@ export const criarPerfume = createServerFn({ method: "POST" })
       properties["Descrição"] = { rich_text: [{ text: { content: data.descricao } }] };
     if (data.preco != null) properties["Preço"] = { number: data.preco };
     if (data.custo != null) properties["Custo"] = { number: data.custo };
-    if (data.amount != null) properties["Amount"] = { number: data.amount };
+    if (data.amount != null) {
+      properties["Amount"] = { number: data.amount };
+      if (data.amount <= (data.oosThreshold ?? 0)) {
+        properties["Sob encomenda"] = { checkbox: true };
+        properties["Pronta entrega"] = { checkbox: false };
+      } else {
+        properties["Sob encomenda"] = { checkbox: false };
+        properties["Pronta entrega"] = { checkbox: true };
+      }
+    }
     if (data.marca) properties["Marca"] = { select: { name: data.marca } };
     if (data.colecao) properties["Coleção"] = { select: { name: data.colecao } };
     if (data.genero)
