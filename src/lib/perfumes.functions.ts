@@ -174,11 +174,8 @@ export const getPerfumes = createServerFn({ method: "GET" }).handler(
         page.properties["Product Name"]?.title?.[0]?.plain_text ?? "Sem nome";
       const amount = page.properties["Amount"]?.number ?? null;
       const oosThreshold = page.properties["OoS threshold"]?.number ?? 0;
-      
-      const fs = require('fs');
-      fs.appendFileSync('/tmp/perfume_amounts.log', `${nome}: amount=${amount}, oos=${oosThreshold}\n`);
-
       const status = page.properties["Available?"]?.formula?.string ?? "";
+
 
       const descricao =
         page.properties["Descrição"]?.rich_text?.map((t) => t.plain_text).join("") ?? "";
@@ -210,11 +207,14 @@ export const getPerfumes = createServerFn({ method: "GET" }).handler(
       // Logic: 
       // 1. Pronta Entrega if amount > oosThreshold OR manually checked in Notion
       // 2. Sob Encomenda if NOT pronta entrega OR manually checked in Notion
-      const prontaEntrega = (amount !== null && amount > oosThreshold) || notionProntaEntrega;
+      // Fallback: If amount is null, treat as 0 (out of stock)
+      const effectiveAmount = amount ?? 0;
+      const prontaEntrega = effectiveAmount > oosThreshold || notionProntaEntrega;
       const sobEncomenda = !prontaEntrega || notionSobEncomenda;
 
       // emEstoque is a legacy field but kept for compatibility
       const emEstoque = prontaEntrega;
+
 
       
       const notasTopo =
