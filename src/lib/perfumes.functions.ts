@@ -369,8 +369,12 @@ export const atualizarPerfume = createServerFn({ method: "POST" })
       properties["Low threshold "] = { number: data.lowThreshold };
     if (data.oosThreshold !== undefined)
       properties["OoS threshold"] = { number: data.oosThreshold };
-    if (data.sobEncomenda !== undefined) properties["Sob encomenda"] = { checkbox: data.sobEncomenda };
-    if (data.prontaEntrega !== undefined) properties["Pronta entrega"] = { checkbox: data.prontaEntrega };
+    // Sob encomenda e Pronta entrega são automatizados se Amount mudar.
+    // Só aplicamos o valor manual se Amount NÃO estiver sendo alterado.
+    if (data.amount === undefined) {
+      if (data.sobEncomenda !== undefined) properties["Sob encomenda"] = { checkbox: data.sobEncomenda };
+      if (data.prontaEntrega !== undefined) properties["Pronta entrega"] = { checkbox: data.prontaEntrega };
+    }
     if (data.notasTopo !== undefined)
       properties["Notas de topo"] = { rich_text: [{ text: { content: data.notasTopo } }] };
     if (data.notasCoracao !== undefined)
