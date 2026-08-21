@@ -428,18 +428,18 @@ export function CatalogViewer({ perfumes }: CatalogViewerProps) {
           </div>
         </div>
 
-        <div className="flex gap-2 items-end">
-          <div className="flex flex-col gap-1">
+        <div className="flex gap-2 self-end">
+          <div className="flex flex-col">
             <button
               type="button"
               onClick={() => setShowNoteSelector(!showNoteSelector)}
-              className={`inline-flex items-center gap-2 rounded-full border px-4 text-sm transition h-[42px] ${
+              className={`inline-flex items-center gap-2 rounded-full border px-4 text-sm transition h-10 ${
                 showNoteSelector || activeNotes.length > 0
                   ? "border-gold bg-gold text-primary-foreground"
                   : "border-border/60 bg-card text-muted-foreground hover:text-foreground"
               }`}
             >
-              <Sparkles className="h-4 w-4" />
+              <Sparkles className="h-4 w-4 shrink-0" />
               <span className="hidden sm:inline">Descoberta por Aroma</span>
               <span className="sm:hidden">Aromas</span>
               {activeNotes.length > 0 && (
@@ -450,18 +450,18 @@ export function CatalogViewer({ perfumes }: CatalogViewerProps) {
             </button>
           </div>
 
-          <div className="flex flex-col gap-1">
+          <div className="flex flex-col">
             <button
               type="button"
               onClick={() => setSoFavoritos((v) => !v)}
               aria-pressed={soFavoritos}
-              className={`inline-flex items-center gap-2 rounded-full border px-4 text-sm transition h-[42px] ${
+              className={`inline-flex items-center gap-2 rounded-full border px-4 text-sm transition h-10 ${
                 soFavoritos
                   ? "border-rose-500 bg-rose-500 text-white"
                   : "border-border/60 bg-card text-muted-foreground hover:text-foreground"
               }`}
             >
-              <span aria-hidden className="text-lg flex items-center justify-center">{soFavoritos ? "♥" : "♡"}</span>
+              <span aria-hidden className="text-lg flex items-center justify-center leading-none">{soFavoritos ? "♥" : "♡"}</span>
               <span className="hidden sm:inline">Favoritos</span>
               {wishlist.count > 0 && <span className="ml-1 text-[10px] font-bold">({wishlist.count})</span>}
             </button>
