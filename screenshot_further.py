@@ -8,9 +8,9 @@ async def main():
         await page.goto("http://localhost:8080/catalogo")
         await page.wait_for_selector(".group.relative.flex.flex-col", timeout=10000)
         
-        # Scroll down more
-        await page.evaluate("window.scrollTo(0, 3000)")
-        await page.wait_for_timeout(1000)
+        # Scroll down
+        await page.mouse.wheel(0, 3000)
+        await page.wait_for_timeout(2000)
         await page.screenshot(path="/tmp/browser/catalogo_further.png")
         
         await browser.close()
