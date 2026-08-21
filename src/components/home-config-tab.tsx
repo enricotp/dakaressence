@@ -30,17 +30,25 @@ export function HomeConfigTab() {
     mutationFn: async (key: string) => {
       const item = formState[key];
       if (!item) return;
-      return update({
-        data: {
-          id: item.id,
-          key: item.key,
-          nome: item.nome,
-          descricao: item.descricao,
-          precos: item.precos,
-          tituloPrincipal: item.tituloPrincipal,
-          textoPrincipal: item.textoPrincipal,
-        }
-      });
+      const tid = toast.loading(`Salvando "${key}"...`);
+      try {
+        const result = await update({
+          data: {
+            id: item.id,
+            key: item.key,
+            nome: item.nome,
+            descricao: item.descricao,
+            precos: item.precos,
+            tituloPrincipal: item.tituloPrincipal,
+            textoPrincipal: item.textoPrincipal,
+          }
+        });
+        toast.dismiss(tid);
+        return result;
+      } catch (err) {
+        toast.dismiss(tid);
+        throw err;
+      }
     },
     onSuccess: (_, key) => {
       toast.success(`Configuração "${key}" salva com sucesso!`);
