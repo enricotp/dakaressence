@@ -264,7 +264,7 @@ export function CatalogViewer({ perfumes }: CatalogViewerProps) {
             >
               <span className="font-bold">{op.label}</span>
               {('sublabel' in op) && (
-                <span className={`text-[9px] lowercase text-center leading-[0] tracking-normal opacity-80 ${disponibilidade === op.id ? "text-primary-foreground" : "text-muted-foreground"}`}>
+                <span className={`text-[9px] lowercase text-center leading-none tracking-normal opacity-80 ${disponibilidade === op.id ? "text-primary-foreground" : "text-muted-foreground"}`}>
                   {op.sublabel}
                 </span>
               )}
