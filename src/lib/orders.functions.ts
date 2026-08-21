@@ -263,11 +263,14 @@ export const listarItensVendidos = createServerFn({ method: "GET" }).handler(
     const { requireAdmin } = await import("./admin.server");
     await requireAdmin();
 
+    const headers = await getHeaders(SHEET_ID, SHEET_NAME);
+    const getIdx = (name: string) => headers.findIndex(h => h.toLowerCase() === name.toLowerCase());
+
     const [itensRes, pedidosRes, perfumesModule] = await Promise.all([
-      fetch(`${GATEWAY}/spreadsheets/${ITEMS_SHEET_ID}/values/${ITEMS_SHEET_NAME}!A2:J10000`, {
+      fetch(`${GATEWAY}/spreadsheets/${ITEMS_SHEET_ID}/values/${ITEMS_SHEET_NAME}!A2:K10000`, {
         headers: sheetsHeaders(),
       }),
-      fetch(`${GATEWAY}/spreadsheets/${SHEET_ID}/values/${SHEET_NAME}!A2:H10000`, {
+      fetch(`${GATEWAY}/spreadsheets/${SHEET_ID}/values/${SHEET_NAME}!A2:Z10000`, {
         headers: sheetsHeaders(),
       }),
       import("./perfumes.functions"),
@@ -305,13 +308,22 @@ export const listarItensVendidos = createServerFn({ method: "GET" }).handler(
       .filter((i) => i.pedidoId);
 
     const derivados: ItemVendido[] = [];
+    const colIndices = {
+      id: getIdx("ID"),
+      data: getIdx("Data"),
+      cliente: getIdx("Cliente"),
+      itens: getIdx("Itens"),
+      status: getIdx("Status"),
+    };
+
     for (const r of pedidosRows) {
-      const pedidoId = r[0] ?? "";
+      const pedidoId = colIndices.id !== -1 ? r[colIndices.id] : r[0];
       if (!pedidoId || pedidosComItens.has(pedidoId)) continue;
-      const dataFmt = r[1] ?? "";
-      const cliente = r[2] ?? "";
-      const status = r[7] ?? "";
-      const itens = parseItensTexto(r[3] ?? "");
+      const dataFmt = colIndices.data !== -1 ? r[colIndices.data] : r[1];
+      const cliente = colIndices.cliente !== -1 ? r[colIndices.cliente] : r[2];
+      const status = colIndices.status !== -1 ? r[colIndices.status] : r[7];
+      const itensRaw = colIndices.itens !== -1 ? r[colIndices.itens] : r[3];
+      const itens = parseItensTexto(itensRaw ?? "");
       for (const it of itens) {
         const p = perfumePorNome.get(it.nome.toLowerCase());
         const precoUnit = p?.preco ?? 0;
@@ -355,7 +367,12 @@ export const atualizarStatusPedido = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     const { requireAdmin, currentAdmin } = await import("./admin.server");
     await requireAdmin();
-    const url = `${GATEWAY}/spreadsheets/${SHEET_ID}/values/${SHEET_NAME}!H${data.row}?valueInputOption=USER_ENTERED`;
+    const headers = await getHeaders(SHEET_ID, SHEET_NAME);
+    const getIdx = (name: string) => headers.findIndex(h => h.toLowerCase() === name.toLowerCase());
+    const statusIdx = getIdx("Status");
+    const colLetter = statusIdx !== -1 ? String.fromCharCode(65 + statusIdx) : "H";
+
+    const url = `${GATEWAY}/spreadsheets/${SHEET_ID}/values/${SHEET_NAME}!${colLetter}${data.row}?valueInputOption=USER_ENTERED`;
     const res = await fetch(url, {
       method: "PUT",
       headers: sheetsHeaders(),
@@ -421,7 +438,12 @@ export const atualizarRastreio = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     const { requireAdmin, currentAdmin } = await import("./admin.server");
     await requireAdmin();
-    const url = `${GATEWAY}/spreadsheets/${SHEET_ID}/values/${SHEET_NAME}!I${data.row}?valueInputOption=USER_ENTERED`;
+    const headers = await getHeaders(SHEET_ID, SHEET_NAME);
+    const getIdx = (name: string) => headers.findIndex(h => h.toLowerCase() === name.toLowerCase());
+    const rastreioIdx = getIdx("Rastreio");
+    const colLetter = rastreioIdx !== -1 ? String.fromCharCode(65 + rastreioIdx) : "I";
+
+    const url = `${GATEWAY}/spreadsheets/${SHEET_ID}/values/${SHEET_NAME}!${colLetter}${data.row}?valueInputOption=USER_ENTERED`;
     const res = await fetch(url, {
       method: "PUT",
       headers: sheetsHeaders(),
