@@ -357,7 +357,7 @@ export const atualizarPerfume = createServerFn({ method: "POST" })
       properties["Descrição"] = { rich_text: [{ text: { content: data.descricao } }] };
     if (data.preco !== undefined) properties["Preço"] = { number: data.preco };
     if (data.custo !== undefined) properties["Custo"] = { number: data.custo };
-    if (data.amount !== undefined) properties["Amount"] = { number: data.amount };
+    // Amount handled above for logic overrides
     if (data.volume !== undefined) properties["Volume"] = { select: { name: data.volume } };
     if (data.marca !== undefined)
       properties["Marca"] = data.marca ? { select: { name: data.marca } } : { select: null };
