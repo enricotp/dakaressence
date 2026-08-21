@@ -311,16 +311,18 @@ function PedidosTab() {
   });
 
   const buscaNorm = busca.trim().toLowerCase();
+  const buscaLimpa = busca.replace(/\D/g, "");
   const dataFiltroBR = dataFiltro ? dataFiltro.split("-").reverse().join("/") : "";
 
   const filtrados = pedidos.filter((p: Pedido) => {
     if (filtro !== "todos" && p.status !== filtro) return false;
-    if (
-      buscaNorm &&
-      !p.id.toLowerCase().includes(buscaNorm) &&
-      !p.cliente.toLowerCase().includes(buscaNorm)
-    )
-      return false;
+    if (buscaNorm) {
+      const nomeMatch = p.cliente.toLowerCase().includes(buscaNorm);
+      const idMatch = p.id.toLowerCase().includes(buscaNorm);
+      const telMatch = p.telefone && p.telefone.replace(/\D/g, "").includes(buscaLimpa);
+      
+      if (!nomeMatch && !idMatch && !telMatch) return false;
+    }
     if (dataFiltroBR && !p.data.startsWith(dataFiltroBR)) return false;
     return true;
   });
