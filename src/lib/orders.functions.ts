@@ -24,6 +24,7 @@ export type Pedido = {
   id: string;
   data: string;
   cliente: string;
+  telefone: string;
   itens: string;
   total: number;
   pagamento: string;
@@ -32,6 +33,34 @@ export type Pedido = {
   rastreio: string;
   row: number;
 };
+
+async function getHeaders(sheetId: string, range: string) {
+  const url = `${GATEWAY}/spreadsheets/${sheetId}/values/${range}!1:1`;
+  const res = await fetch(url, { headers: sheetsHeaders() });
+  if (!res.ok) return [];
+  const json = await res.json() as { values?: string[][] };
+  return json.values?.[0] || [];
+}
+
+async function ensureColumn(sheetId: string, range: string, columnName: string) {
+  const headers = await getHeaders(sheetId, range);
+  const index = headers.findIndex(h => h.toLowerCase() === columnName.toLowerCase());
+  
+  if (index !== -1) return index;
+
+  // Add new column
+  const nextColIndex = headers.length;
+  const colLetter = String.fromCharCode(65 + nextColIndex); // Simple A-Z for now, might need better logic for >26
+  const updateUrl = `${GATEWAY}/spreadsheets/${sheetId}/values/${range}!${colLetter}1?valueInputOption=USER_ENTERED`;
+  
+  await fetch(updateUrl, {
+    method: "PUT",
+    headers: sheetsHeaders(),
+    body: JSON.stringify({ values: [[columnName]] }),
+  });
+
+  return nextColIndex;
+}
 
 
 export const criarPedido = createServerFn({ method: "POST" })
