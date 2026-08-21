@@ -169,66 +169,59 @@ export const getPerfumes = createServerFn({ method: "GET" }).handler(
     const data = { results: allResults } as NotionQueryResponse;
 
 
-    return data.results.map((page) => {
+    return data.results.flatMap((page) => {
       const nome =
         page.properties["Product Name"]?.title?.[0]?.plain_text ?? "Sem nome";
       const amount = page.properties["Amount"]?.number ?? null;
       const oosThreshold = page.properties["OoS threshold"]?.number ?? 0;
       const status = page.properties["Available?"]?.formula?.string ?? "";
 
-
       const descricao =
         page.properties["Descrição"]?.rich_text?.map((t) => t.plain_text).join("") ?? "";
       const preco = page.properties["Preço"]?.number ?? null;
       const custo = page.properties["Custo"]?.number ?? null;
-
       
       const volumeRaw = page.properties["Volume"]?.select?.name ?? "50ml";
-      const volume: Volume = (["25ml", "50ml", "80ml", "100ml"] as const).includes(
+      const volumePrincipal: Volume = (["25ml", "50ml", "80ml", "100ml"] as const).includes(
         volumeRaw as Volume,
       )
         ? (volumeRaw as Volume)
         : "50ml";
+      
       const marca = page.properties["Marca"]?.select?.name ?? null;
       const generoRaw = page.properties["Gênero"]?.select?.name?.toLowerCase() ?? "";
       const genero: Genero =
         generoRaw === "feminino" || generoRaw === "masculino" || generoRaw === "unissex"
           ? (generoRaw as Genero)
           : inferirGenero(nome);
+      
       const colecaoRaw = page.properties["Coleção"]?.select?.name ?? "";
       const colecao: Colecao = (COLECOES as string[]).includes(colecaoRaw)
         ? (colecaoRaw as Colecao)
         : "Signature";
-      const lowThreshold = page.properties["Low threshold "]?.number ?? null;
       
+      const lowThreshold = page.properties["Low threshold "]?.number ?? null;
       const notionSobEncomenda = page.properties["Sob encomenda"]?.checkbox ?? false;
       const notionProntaEntrega = page.properties["Pronta entrega"]?.checkbox ?? false;
 
-      // Logic: 
-      // 1. Pronta Entrega if amount > oosThreshold OR manually checked in Notion
-      // 2. Sob Encomenda if NOT pronta entrega OR manually checked in Notion
-      // Fallback: If amount is null, treat as 0 (out of stock)
       const effectiveAmount = amount ?? 0;
       const prontaEntrega = effectiveAmount > oosThreshold || notionProntaEntrega;
       const sobEncomenda = !prontaEntrega || notionSobEncomenda;
-
-      // emEstoque is a legacy field but kept for compatibility
       const emEstoque = prontaEntrega;
 
-
-      
       const notasTopo =
         page.properties["Notas de topo"]?.rich_text?.map((t) => t.plain_text).join("") ?? "";
       const notasCoracao =
         page.properties["Notas de coração"]?.rich_text?.map((t) => t.plain_text).join("") ?? "";
       const notasFundo =
         page.properties["Notas de fundo"]?.rich_text?.map((t) => t.plain_text).join("") ?? "";
+      
       const volumesSignatureRaw = page.properties["Volumes Signature"]?.multi_select ?? [];
       const volumesSignature = volumesSignatureRaw
         .map((v) => v.name as Volume)
         .filter((v) => (["25ml", "50ml", "80ml", "100ml"] as const).includes(v));
 
-      return {
+      const extractBasePerfume = {
         id: page.id,
         nome,
         emEstoque,
@@ -236,7 +229,6 @@ export const getPerfumes = createServerFn({ method: "GET" }).handler(
         imagem: extractImage(page),
         descricao,
         genero,
-        volume,
         marca,
         preco,
         custo,
@@ -251,6 +243,21 @@ export const getPerfumes = createServerFn({ method: "GET" }).handler(
         notasFundo,
         volumesSignature,
       };
+
+      // Se for Signature e tiver múltiplos volumes, expandimos.
+      // Se não, retornamos apenas o volume principal definido.
+      if (colecao === "Signature" && volumesSignature.length > 0) {
+        return volumesSignature.map((v) => ({
+          ...extractBasePerfume,
+          id: `${page.id}-${v}`,
+          volume: v,
+          // Caso existam preços específicos por volume no futuro, poderíamos mapear aqui.
+          // Por enquanto, o catálogo calcula preço baseado na coleção na Home, 
+          // mas no PerfumeDetail ele usa o p.preco se existir.
+        }));
+      }
+
+      return [{ ...extractBasePerfume, volume: volumePrincipal }];
     });
   },
 );
