@@ -256,7 +256,7 @@ export function CatalogViewer({ perfumes }: CatalogViewerProps) {
               key={op.id}
               type="button"
               onClick={() => setDisponibilidade(op.id)}
-              className={`inline-flex flex-col items-center justify-center gap-0.5 rounded-2xl border px-4 py-2 text-xs uppercase tracking-wider transition min-w-[140px] ${
+              className={`inline-flex flex-col items-center justify-center gap-0.5 rounded-2xl border px-4 py-2 text-xs text-center uppercase tracking-wider transition min-w-[140px] ${
                 disponibilidade === op.id
                   ? "border-gold bg-gold text-primary-foreground"
                   : "border-border/60 bg-card text-muted-foreground hover:text-foreground"
