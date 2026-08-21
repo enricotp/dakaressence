@@ -1,13 +1,150 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 /**
- * A calculadora de pedidos funciona da seguinte forma:
- * 1. O usuário cola o texto do pedido (geralmente copiado do WhatsApp).
- * 2. A função `parseTexto` em `src/components/calculadora-panel.tsx` utiliza uma Regex
- *    (/^[•\-\*\s]*(\d+)\s*[xX]\s+(.+?)(?:\s*\([^)]*\))?\s*$/) para identificar a quantidade e o nome de cada perfume nas linhas.
- * 3. O sistema também extrai automaticamente o ID do pedido (ex: PED-123) e o nome do cliente.
- * 4. Para cada perfume identificado, é feita uma busca fuzzy no banco de dados do Notion (normalizando strings, removendo acentos e caracteres especiais) para encontrar o produto correspondente.
- * 5. Se o perfume for encontrado e tiver preço cadastrado, o sistema calcula o subtotal e o total geral.
- * 6. O painel oferece opções de pagamento (Pix ou Cartão) e simulação de parcelamento em até 12x sem juros (divisão simples).
+  * O plano está quase aprovado. Corrija estes últimos pontos:
+  * 
+  * 1. Não chamar a operação de atômica
+  * 
+  * Validar todos os estoques antes de começar é correto, mas atualizar vários perfumes no Notion sequencialmente não é uma transação atômica.
+  * 
+  * Se o primeiro perfume for atualizado e o segundo falhar, haverá uma baixa parcial.
+  * 
+  * Altere o nome para “processamento protegido com compensação” e implemente:
+  * 
+  * Agrupar produtos repetidos.
+  * 
+  * Validar todos os estoques.
+  * 
+  * Registrar a movimentação como INICIADA.
+  * 
+  * Atualizar os produtos no Notion.
+  * 
+  * Registrar cada produto atualizado.
+  * 
+  * Se algum falhar, tentar reverter os produtos já atualizados.
+  * 
+  * Marcar como:
+  * 
+  * APLICADA, se tudo funcionar;
+  * 
+  * REVERTIDA, se a compensação funcionar;
+  * 
+  * PRECISA_RECONCILIACAO, se atualização ou reversão ficar incompleta.
+  * 
+  * O pedido só pode mudar para Concluído depois que todas as baixas forem aplicadas com sucesso.
+  * 
+  * 2. Criar uma aba própria para movimentações
+  * 
+  * Não salve todo o histórico de movimentações dentro de uma única célula EstoqueMovimentado.
+  * 
+  * Crie no mesmo Google Sheets uma nova aba chamada MovimentacoesEstoque, caso ela ainda não exista.
+  * 
+  * Colunas sugeridas:
+  * 
+  * MovimentoID
+  * 
+  * PedidoID
+  * 
+  * Ciclo
+  * 
+  * Ação
+  * 
+  * Status
+  * 
+  * DataInicio
+  * 
+  * DataFim
+  * 
+  * Itens
+  * 
+  * Erro
+  * 
+  * Usuario
+  * 
+  * A aba Pedidos pode receber apenas:
+  * 
+  * Telefone
+  * 
+  * EstoqueCiclo
+  * 
+  * UltimoMovimentoStatus
+  * 
+  * Localize essas colunas pelos cabeçalhos, sem assumir posições fixas.
+  * 
+  * 3. Corrigir os IDs dos ciclos
+  * 
+  * O identificador não pode ser apenas PED-XXXX:BAIXA, porque um pedido cancelado, reaberto e concluído novamente precisa de uma nova baixa legítima.
+  * 
+  * Use:
+  * 
+  * PED-XXXX:CICLO-1:BAIXA
+  * 
+  * PED-XXXX:CICLO-1:DEVOLUCAO
+  * 
+  * PED-XXXX:CICLO-2:BAIXA
+  * 
+  * PED-XXXX:CICLO-2:DEVOLUCAO
+  * 
+  * Cada ciclo pode ter no máximo uma baixa aplicada e uma devolução aplicada.
+  * 
+  * Ao reabrir um pedido cancelado, incremente EstoqueCiclo. Uma nova conclusão deve verificar o estoque e criar uma nova movimentação.
+  * 
+  * 4. Corrigir a recuperação quando o Sheets falhar
+  * 
+  * A frase “se o Notion funcionar e o Sheets falhar, marcar no Sheets como PRECISA_RECONCILIACAO” é contraditória: se o Sheets falhou, talvez não seja possível escrever nele.
+  * 
+  * A ordem deve ser:
+  * 
+  * Criar no Sheets o movimento INICIADA.
+  * 
+  * Atualizar o Notion.
+  * 
+  * Atualizar o movimento para APLICADA.
+  * 
+  * Se a atualização final do Sheets falhar, o registro continuará como INICIADA, permitindo detectar operações travadas.
+  * 
+  * O painel deve mostrar um alerta para movimentações INICIADA há tempo demais ou com PRECISA_RECONCILIACAO.
+  * 
+  * Também tente novamente a gravação no Sheets com poucas tentativas controladas. Não repita a baixa no Notion durante essas tentativas.
+  * 
+  * 5. Não bloquear a compra da última unidade
+  * 
+  * A decisão atual é não reservar estoque.
+  * 
+  * Portanto, quando Amount === 1:
+  * 
+  * Mostrar “Última unidade — disponibilidade sujeita a confirmação”.
+  * 
+  * Continuar permitindo adicionar ao carrinho e enviar o pedido.
+  * 
+  * Não substituir o botão de compra por “Consultar disponibilidade”.
+  * 
+  * A disponibilidade será validada somente quando eu clicar em “Aceitar venda e baixar estoque”.
+  * 
+  * Se outro pedido já tiver consumido a unidade, bloquear a aceitação do segundo pedido e informar o estoque insuficiente.
+  * 
+  * 6. Preservar testes obrigatórios
+  * 
+  * Inclua novamente os testes descritos no plano anterior, principalmente:
+  * 
+  * pedido com vários produtos e falha no meio da atualização;
+  * 
+  * reversão bem-sucedida;
+  * 
+  * reversão com falha;
+  * 
+  * clique duplo;
+  * 
+  * pedido cancelado e reaberto;
+  * 
+  * nova baixa em um segundo ciclo;
+  * 
+  * movimentação INICIADA que ficou travada;
+  * 
+  * pedidos antigos sem as novas colunas;
+  * 
+  * última unidade continuando disponível para solicitação.
+  * 
+  * Atualize o plano com esses ajustes. Depois disso, apresente o relatório de migração dos números para minha aprovação antes de escrever qualquer número na database do Notion.
  */
 import { logoWhite } from "@/lib/constants";
 import { useCart } from "@/lib/cart-context";
