@@ -85,7 +85,7 @@ function PerfumeDetail() {
             <img
               src={imagem}
               alt={p.nome}
-              className={`h-full w-full object-cover ${!p.emEstoque && !p.sobEncomenda ? "opacity-50" : ""}`}
+              className={`h-full w-full object-cover ${p.disponibilidade !== "Pronta Entrega" ? "opacity-50" : ""}`}
             />
             <span className="absolute left-4 top-4 rounded-full bg-background/80 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.1em] text-gold backdrop-blur">
               {codigo}
@@ -96,7 +96,7 @@ function PerfumeDetail() {
         <div className="flex flex-col justify-center">
           <div className="flex flex-wrap items-center gap-2">
             <span className="text-[11px] uppercase tracking-[0.25em] text-gold">
-              {p.emEstoque ? "Disponível" : (p.sobEncomenda ? "Sob encomenda" : "Esgotado")}
+              {p.disponibilidade}
             </span>
             <span className="rounded-full bg-gold/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.1em] text-gold">
               {p.volume}
@@ -104,12 +104,12 @@ function PerfumeDetail() {
             <span className="rounded-full border border-border/60 px-2 py-0.5 text-[10px] uppercase tracking-wider text-muted-foreground">
               {p.colecao}
             </span>
-            {p.prontaEntrega && (
+            {p.disponibilidade === "Pronta Entrega" && (
               <span className="rounded-full bg-emerald-500/15 px-2 py-0.5 text-[10px] uppercase tracking-wider text-emerald-400">
                 Pronta entrega
               </span>
             )}
-            {p.sobEncomenda && !p.emEstoque && (
+            {p.disponibilidade === "Sob Encomenda" && (
               <span className="rounded-full bg-amber-500/15 px-2 py-0.5 text-[10px] uppercase tracking-wider text-amber-400">
                 Sob encomenda
               </span>
@@ -126,7 +126,7 @@ function PerfumeDetail() {
           <p className="mt-6 text-lg leading-relaxed text-muted-foreground">
             {p.descricao || "Contratipo exclusivo, com alta concentração e fixação prolongada."}
           </p>
-          {p.sobEncomenda && !p.emEstoque && (
+          {p.disponibilidade === "Sob Encomenda" && (
             <p className="mt-4 rounded-lg border border-amber-500/30 bg-amber-500/5 px-4 py-3 text-sm text-amber-300">
               Produto sob encomenda — prazo estimado de {prazo} dias após confirmação. Frete grátis com 3+ itens no pedido.
             </p>
@@ -152,7 +152,7 @@ function PerfumeDetail() {
 
 
           <div className="mt-10 flex flex-col gap-4">
-            {!p.emEstoque && !p.sobEncomenda ? (
+            {p.disponibilidade === "Indisponível" ? (
               <button
                 disabled
                 className="inline-flex cursor-not-allowed items-center justify-center rounded-full bg-foreground/5 px-6 py-3 text-sm font-medium text-muted-foreground"

@@ -647,10 +647,8 @@ function AnalyticsTab() {
     filtrados.forEach((it) => {
       const p = perfumePorNome.get(it.perfume.toLowerCase());
       if (!p) return;
-      if (p.prontaEntrega) acc.pronta += it.qtd;
-      // Item vendido é contado como encomenda se a flag estiver ligada E ele não estava em estoque
-      // Como não temos histórico de estoque no momento da venda aqui, usamos a lógica atual do perfume
-      else if (p.sobEncomenda && !p.emEstoque) acc.encomenda += it.qtd;
+      if (p.disponibilidade === "Pronta Entrega") acc.pronta += it.qtd;
+      else if (p.disponibilidade === "Sob Encomenda") acc.encomenda += it.qtd;
       else acc.outros += it.qtd;
     });
     return acc;
@@ -1059,7 +1057,7 @@ function PerfumesTab() {
       <div className="mb-4 flex items-center justify-between gap-3">
         <h2 className="font-display text-lg">
           {colTab} ({filtrados.length})
-          {COLECAO_INFO[colTab].sobEncomenda && (
+          {COLECAO_INFO[colTab].sobEncomenda && ( // Manter lógica de coleção (Dream/Brand/Arabic = por encomenda por padrão)
             <span className="ml-2 rounded-full bg-amber-500/15 px-2 py-0.5 text-[10px] uppercase tracking-wider text-amber-400">
               Sob encomenda (padrão)
             </span>
@@ -1117,8 +1115,7 @@ function PerfumesTab() {
               colecao: colTab,
               lowThreshold: null,
               oosThreshold: null,
-              sobEncomenda: COLECAO_INFO[colTab].sobEncomenda,
-              prontaEntrega: false,
+              disponibilidade: "Sob Encomenda",
               notasTopo: "",
               notasCoracao: "",
               notasFundo: "",
@@ -1143,8 +1140,6 @@ function PerfumesTab() {
                   genero: patch.genero,
                   lowThreshold: patch.lowThreshold ?? null,
                   oosThreshold: patch.oosThreshold ?? null,
-                  sobEncomenda: patch.sobEncomenda,
-                  prontaEntrega: patch.prontaEntrega,
                   notasTopo: patch.notasTopo,
                   notasCoracao: patch.notasCoracao,
                   notasFundo: patch.notasFundo,
@@ -1251,8 +1246,6 @@ function PerfumesTab() {
                               genero: p.genero,
                               lowThreshold: p.lowThreshold,
                               oosThreshold: p.oosThreshold,
-                              sobEncomenda: p.sobEncomenda,
-                              prontaEntrega: p.prontaEntrega,
                               notasTopo: p.notasTopo,
                               notasCoracao: p.notasCoracao,
                               notasFundo: p.notasFundo,
@@ -1333,8 +1326,6 @@ function EditForm({
     genero?: Genero;
     lowThreshold?: number | null;
     oosThreshold?: number | null;
-    sobEncomenda?: boolean;
-    prontaEntrega?: boolean;
     notasTopo?: string;
     notasCoracao?: string;
     notasFundo?: string;
@@ -1357,7 +1348,7 @@ function EditForm({
   const [lowThreshold, setLowThreshold] = useState(perfume.lowThreshold?.toString() ?? "");
   const [oosThresholdInput, setOosThresholdInput] = useState(perfume.oosThreshold?.toString() ?? "");
   
-  // Automate status based on amount and threshold
+  // A disponibilidade agora é automática via fórmula no Notion baseada no amount.
   const currentAmount = amount === "" ? 0 : parseInt(amount, 10);
   const currentOoS = oosThresholdInput === "" ? 0 : parseInt(oosThresholdInput, 10);
   const isProntaEntrega = currentAmount > currentOoS;
@@ -1404,8 +1395,6 @@ function EditForm({
         genero,
         lowThreshold: lowThreshold === "" ? null : parseInt(lowThreshold, 10),
         oosThreshold: oosThresholdInput === "" ? null : parseInt(oosThresholdInput, 10),
-        sobEncomenda: isSobEncomenda,
-        prontaEntrega: isProntaEntrega,
         notasTopo,
         notasCoracao,
         notasFundo,
