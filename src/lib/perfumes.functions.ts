@@ -206,19 +206,32 @@ export const getPerfumes = createServerFn({ method: "GET" }).handler(
 
       const effectiveAmount = amount ?? 0;
       
-      // Lógica de disponibilidade:
-      // Se algum checkbox no Notion estiver marcado, ele manda.
-      // Caso contrário, usamos a quantidade em estoque (Amount).
+      // Prioridade:
+      // 1. Se "Pronta entrega" estiver marcado no Notion -> Pronta Entrega
+      // 2. Se "Sob encomenda" estiver marcado no Notion -> Sob Encomenda
+      // 3. Se nenhum estiver marcado:
+      //    Se Amount > OoS -> Pronta Entrega
+      //    Senão -> Sob Encomenda
+      
       let prontaEntrega = notionProntaEntrega;
       let sobEncomenda = notionSobEncomenda;
+      
+      // Se AMBOS estiverem marcados, respeitamos ambos (o site mostrará as duas tags).
+      // Mas se o usuário quiser que o saldo automático funcione, ele deve desmarcar os checkboxes.
       
       if (!notionProntaEntrega && !notionSobEncomenda) {
         if (effectiveAmount > oosThreshold) {
           prontaEntrega = true;
+          sobEncomenda = false;
         } else {
+          prontaEntrega = false;
           sobEncomenda = true;
         }
       }
+      
+      // Caso especial: se o usuário colocou saldo (Amount > OoS) mas o checkbox "Sob encomenda" 
+      // ainda está marcado no Notion, o checkbox TEM precedência sobre o cálculo automático.
+      // O usuário provavelmente esqueceu de desmarcar o "Sob encomenda" no Notion.
       
       const emEstoque = prontaEntrega;
 
