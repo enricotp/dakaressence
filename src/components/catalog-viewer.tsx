@@ -428,7 +428,7 @@ export function CatalogViewer({ perfumes }: CatalogViewerProps) {
           </div>
         </div>
 
-        <div className="flex gap-2 self-end">
+        <div className="flex gap-2 items-center sm:items-end">
           <div className="flex flex-col">
             <button
               type="button"
