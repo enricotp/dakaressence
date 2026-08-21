@@ -87,8 +87,7 @@ def run_migration():
             ok, msg = future.result()
             if ok:
                 success += 1
-                if success % 10 == 0:
-                    print(f"Progress: {success}/{len(pages_to_update)}")
+                print(f"Success: {msg} ({success}/{len(pages_to_update)})")
             else:
                 print(f"Error: {msg}")
             # Add a small delay between batches
