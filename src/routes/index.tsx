@@ -1,4 +1,14 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+/**
+ * A calculadora de pedidos funciona da seguinte forma:
+ * 1. O usuário cola o texto do pedido (geralmente copiado do WhatsApp).
+ * 2. A função `parseTexto` em `src/components/calculadora-panel.tsx` utiliza uma Regex
+ *    (/^[•\-\*\s]*(\d+)\s*[xX]\s+(.+?)(?:\s*\([^)]*\))?\s*$/) para identificar a quantidade e o nome de cada perfume nas linhas.
+ * 3. O sistema também extrai automaticamente o ID do pedido (ex: PED-123) e o nome do cliente.
+ * 4. Para cada perfume identificado, é feita uma busca fuzzy no banco de dados do Notion (normalizando strings, removendo acentos e caracteres especiais) para encontrar o produto correspondente.
+ * 5. Se o perfume for encontrado e tiver preço cadastrado, o sistema calcula o subtotal e o total geral.
+ * 6. O painel oferece opções de pagamento (Pix ou Cartão) e simulação de parcelamento em até 12x sem juros (divisão simples).
+ */
 import { logoWhite } from "@/lib/constants";
 import { useCart } from "@/lib/cart-context";
 import { CollectionShowcase } from "@/components/collection-showcase";
