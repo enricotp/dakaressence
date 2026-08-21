@@ -160,6 +160,7 @@ export function CartDrawer() {
       clear();
       setEtapa("carrinho");
       setNome("");
+      setTelefone("");
       setPagamento("Pix");
       setParcelas(1);
       close();
