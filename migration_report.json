@@ -1,0 +1,4532 @@
+[
+  {
+    "id": "39558811-29ca-80d1-b018-c2f8491c3c6c",
+    "nome": "1 Million",
+    "marca": "Paco Rabanne",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 001",
+    "numero_proposto": 1,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81c5-aa5b-c63b14bef4bd",
+    "nome": "212 Animale",
+    "marca": "Carolina Herrera",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 002",
+    "numero_proposto": 2,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8131-a6e9-f9e5580a2fad",
+    "nome": "212 Bad Boy",
+    "marca": "Carolina Herrera",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 003",
+    "numero_proposto": 3,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81bf-a817-f15098ebe819",
+    "nome": "212 Carolina Herrera Eau de Toilette",
+    "marca": "Carolina Herrera",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 004",
+    "numero_proposto": 4,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8116-ae78-d36f48dc83c5",
+    "nome": "212 Heroes",
+    "marca": "Carolina Herrera",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 005",
+    "numero_proposto": 5,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81c9-a61a-f9e8e84ab898",
+    "nome": "212 Heroes",
+    "marca": "Carolina Herrera",
+    "colecao": "Signature",
+    "volume": "100ml",
+    "numero_exibido_atual": "Nº 006",
+    "numero_proposto": 6,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81f9-b7e1-fa63fb00345b",
+    "nome": "212 Heroine",
+    "marca": "Carolina Herrera",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 007",
+    "numero_proposto": 7,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-811d-9255-eb98cb5aa67c",
+    "nome": "212 L'Homme",
+    "marca": "Carolina Herrera",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 008",
+    "numero_proposto": 8,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8193-a99d-cf9c6f235922",
+    "nome": "212 Lacoste White",
+    "marca": "Carolina Herrera",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 009",
+    "numero_proposto": 9,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8109-9d1c-ef334bcc7678",
+    "nome": "212 Men",
+    "marca": "Carolina Herrera",
+    "colecao": "Signature",
+    "volume": "100ml",
+    "numero_exibido_atual": "Nº 010",
+    "numero_proposto": 10,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-817e-b571-e936ab209ffd",
+    "nome": "212 Men",
+    "marca": "Carolina Herrera",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 011",
+    "numero_proposto": 11,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8117-88e5-d8fc6fa188a8",
+    "nome": "212 NYC",
+    "marca": "Carolina Herrera",
+    "colecao": "Signature",
+    "volume": "100ml",
+    "numero_exibido_atual": "Nº 012",
+    "numero_proposto": 12,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81d1-a7f9-df41b396a38f",
+    "nome": "212 Nyc",
+    "marca": "Carolina Herrera",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 013",
+    "numero_proposto": 13,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8107-b2fe-cee86f987e87",
+    "nome": "212 Sexy",
+    "marca": "Carolina Herrera",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 014",
+    "numero_proposto": 14,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81ed-aaca-d901cac3c4ce",
+    "nome": "212 Sexy",
+    "marca": "Carolina Herrera",
+    "colecao": "Signature",
+    "volume": "100ml",
+    "numero_exibido_atual": "Nº 015",
+    "numero_proposto": 15,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-818d-a04e-d0f323832fac",
+    "nome": "212 Sexy Men",
+    "marca": "Carolina Herrera",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 016",
+    "numero_proposto": 16,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81ea-b54a-d884c9d2b306",
+    "nome": "212 Sexy Men",
+    "marca": "Carolina Herrera",
+    "colecao": "Signature",
+    "volume": "100ml",
+    "numero_exibido_atual": "Nº 017",
+    "numero_proposto": 17,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8192-8415-fec07dc881c9",
+    "nome": "212 VIP Black",
+    "marca": "Carolina Herrera",
+    "colecao": "Signature",
+    "volume": "100ml",
+    "numero_exibido_atual": "Nº 018",
+    "numero_proposto": 18,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39558811-29ca-8052-9043-df7eef373e3e",
+    "nome": "212 VIP Black – Own The Party NYC",
+    "marca": "Carolina Herrera",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 019",
+    "numero_proposto": 19,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-816b-9d74-ed2031edbdfd",
+    "nome": "212 VIP Men",
+    "marca": "Carolina Herrera",
+    "colecao": "Signature",
+    "volume": "100ml",
+    "numero_exibido_atual": "Nº 020",
+    "numero_proposto": 20,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39558811-29ca-8015-a406-d64f1d79db1a",
+    "nome": "212 VIP Men – This Is A Private Party! NYC",
+    "marca": "Carolina Herrera",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 021",
+    "numero_proposto": 21,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39558811-29ca-8024-9d8e-fe258a8b4205",
+    "nome": "212 VIP Rosé",
+    "marca": "Carolina Herrera",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 022",
+    "numero_proposto": 22,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81ec-9430-d455872095a7",
+    "nome": "212 Vip",
+    "marca": "Carolina Herrera",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 023",
+    "numero_proposto": 23,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8145-9a76-cdb48077920a",
+    "nome": "212 Vip Black",
+    "marca": "Carolina Herrera",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 024",
+    "numero_proposto": 24,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81a8-bf63-c551284d467b",
+    "nome": "212 Vip Black",
+    "marca": "Carolina Herrera",
+    "colecao": "Dream Brand Collection",
+    "volume": "100ml",
+    "numero_exibido_atual": "Nº 025",
+    "numero_proposto": 25,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-814f-afb7-f0273ee814b2",
+    "nome": "212 Vip Men",
+    "marca": "Carolina Herrera",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 026",
+    "numero_proposto": 26,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81e3-8b7a-cc78ddf16adf",
+    "nome": "212 Vip Men Club Editon",
+    "marca": "Carolina Herrera",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 027",
+    "numero_proposto": 27,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8179-9419-ec17a7fbe6be",
+    "nome": "212 Vip Nyc",
+    "marca": "Carolina Herrera",
+    "colecao": "Signature",
+    "volume": "100ml",
+    "numero_exibido_atual": "Nº 028",
+    "numero_proposto": 28,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-815f-a02e-e63e56ff94f7",
+    "nome": "212 Vip Rose",
+    "marca": "Carolina Herrera",
+    "colecao": "Dream Brand Collection",
+    "volume": "100ml",
+    "numero_exibido_atual": "Nº 029",
+    "numero_proposto": 29,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81f8-85db-c5da1d1bea0c",
+    "nome": "212 Vip Rose",
+    "marca": "Carolina Herrera",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 030",
+    "numero_proposto": 30,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8165-8f91-c33840b2404f",
+    "nome": "212 Vip Rose Extra",
+    "marca": "Carolina Herrera",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 031",
+    "numero_proposto": 31,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8178-b0a2-f5f0f78494e9",
+    "nome": "212 Vip Wins",
+    "marca": "Carolina Herrera",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 032",
+    "numero_proposto": 32,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8139-99aa-fe20b14193a8",
+    "nome": "9 am",
+    "marca": "Afnan",
+    "colecao": "Arabic Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 033",
+    "numero_proposto": 33,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81b5-8f6c-e63ee6ed333d",
+    "nome": "Acqua Di Gio",
+    "marca": "Giorgio Armani",
+    "colecao": "Signature",
+    "volume": "100ml",
+    "numero_exibido_atual": "Nº 034",
+    "numero_proposto": 34,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39558811-29ca-80a5-9e50-d8478002e4bf",
+    "nome": "Acqua di Gio",
+    "marca": "Giorgio Armani",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 035",
+    "numero_proposto": 35,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-810a-8c29-eeb0e3884065",
+    "nome": "Acqua di Giò Giorgio Armani",
+    "marca": "Giorgio Armani",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 036",
+    "numero_proposto": 36,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81d9-add0-c2ba6543c491",
+    "nome": "Ajwad",
+    "marca": "Lattafa",
+    "colecao": "Arabic Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 037",
+    "numero_proposto": 37,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39558811-29ca-801d-ae13-de9adbf10a07",
+    "nome": "Al Noble Wazeer",
+    "marca": "Lattafa",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 038",
+    "numero_proposto": 38,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81e6-8753-d2cf84d223b5",
+    "nome": "Alien",
+    "marca": "Mugler",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 039",
+    "numero_proposto": 39,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81ee-9cd7-da2539915663",
+    "nome": "Alien",
+    "marca": "Mugler",
+    "colecao": "Signature",
+    "volume": "100ml",
+    "numero_exibido_atual": "Nº 040",
+    "numero_proposto": 40,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-814c-a237-f8d710893e1b",
+    "nome": "Alien Flora Futura",
+    "marca": "Mugler",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 041",
+    "numero_proposto": 41,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8101-82ab-e1bea1a1fd50",
+    "nome": "Alien Mugler",
+    "marca": "Mugler",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 042",
+    "numero_proposto": 42,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81aa-9f74-c514d8a093da",
+    "nome": "Allure",
+    "marca": "Chanel",
+    "colecao": "Dream Brand Collection",
+    "volume": "100ml",
+    "numero_exibido_atual": "Nº 043",
+    "numero_proposto": 43,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8199-aab2-c69b8aa15120",
+    "nome": "Allure",
+    "marca": "Chanel",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 044",
+    "numero_proposto": 44,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81fe-98a7-f9f7b7feb995",
+    "nome": "Allure Chanel",
+    "marca": "Chanel",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 045",
+    "numero_proposto": 45,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81d3-815b-c4721fa5471e",
+    "nome": "Allure Homme Sport",
+    "marca": "Chanel",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 046",
+    "numero_proposto": 46,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-812f-9791-ea1477c54104",
+    "nome": "Allure Homme Sport",
+    "marca": "Chanel",
+    "colecao": "Signature",
+    "volume": "100ml",
+    "numero_exibido_atual": "Nº 047",
+    "numero_proposto": 47,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81eb-9ae5-c0f870d394ba",
+    "nome": "Alurrel 212 Vip Men",
+    "marca": "Carolina Herrera",
+    "colecao": "Dream Brand Collection",
+    "volume": "100ml",
+    "numero_exibido_atual": "Nº 048",
+    "numero_proposto": 48,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81fd-9707-d0820a290c4f",
+    "nome": "Ameer",
+    "marca": "Lattafa",
+    "colecao": "Arabic Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 049",
+    "numero_proposto": 49,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8106-8066-fc265e6b135f",
+    "nome": "Amerige",
+    "marca": "Creed",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 050",
+    "numero_proposto": 50,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81c6-8fe9-cc1fd95e8c18",
+    "nome": "Ametisty",
+    "marca": "Lattafa",
+    "colecao": "Arabic Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 051",
+    "numero_proposto": 51,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81d8-a13a-d83e37231c3d",
+    "nome": "Amor Amor",
+    "marca": "Cacharel",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 052",
+    "numero_proposto": 52,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8123-abeb-cfad6288a5d0",
+    "nome": "Amor Amor",
+    "marca": "Cacharel",
+    "colecao": "Signature",
+    "volume": "100ml",
+    "numero_exibido_atual": "Nº 053",
+    "numero_proposto": 53,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81e6-9e66-f5b1b6bfa716",
+    "nome": "Amor Amor",
+    "marca": "Cacharel",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 054",
+    "numero_proposto": 54,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8161-afc6-f3d05535334a",
+    "nome": "Ange Ou Démon",
+    "marca": "Givenchy",
+    "colecao": "Signature",
+    "volume": "100ml",
+    "numero_exibido_atual": "Nº 055",
+    "numero_proposto": 55,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81f4-b20c-f13d7ce8ea5e",
+    "nome": "Ange ou Démon",
+    "marca": "Givenchy",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 056",
+    "numero_proposto": 56,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8143-8c54-d4cea3a59237",
+    "nome": "Angel",
+    "marca": "Mugler",
+    "colecao": "Signature",
+    "volume": "100ml",
+    "numero_exibido_atual": "Nº 057",
+    "numero_proposto": 57,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39558811-29ca-80b2-818d-cc0a93ef3af6",
+    "nome": "Angel",
+    "marca": "Mugler",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 058",
+    "numero_proposto": 58,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8135-a18c-c19e266d5a52",
+    "nome": "Angel Mugler",
+    "marca": "Mugler",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 059",
+    "numero_proposto": 59,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81ec-a284-cd085c300b15",
+    "nome": "Angel Muse",
+    "marca": "Mugler",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 060",
+    "numero_proposto": 60,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8198-878c-c0a2f9a5c518",
+    "nome": "Angel Nova",
+    "marca": "Mugler",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 061",
+    "numero_proposto": 61,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81a4-b7e9-e9cba0db3d97",
+    "nome": "Angel Nova",
+    "marca": "Mugler",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 062",
+    "numero_proposto": 62,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8125-8f5e-dceecd4944c8",
+    "nome": "Animale For Men",
+    "marca": "Animale",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 063",
+    "numero_proposto": 63,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8139-90fd-c1ef96d96c4b",
+    "nome": "Animale Love",
+    "marca": "Animale",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 064",
+    "numero_proposto": 64,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81e2-b6c2-d43fedf4c7f4",
+    "nome": "Animlae",
+    "marca": "Animale",
+    "colecao": "Signature",
+    "volume": "100ml",
+    "numero_exibido_atual": "Nº 065",
+    "numero_proposto": 65,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8177-b8c3-c51a2841b38a",
+    "nome": "Antonio Bandeiras - The Golden Secret",
+    "marca": "Antonio Banderas",
+    "colecao": "Signature",
+    "volume": "100ml",
+    "numero_exibido_atual": "Nº 066",
+    "numero_proposto": 66,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-810c-ad3a-f648f1ef3ea7",
+    "nome": "Aqua Kenzo",
+    "marca": "Kenzo",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 067",
+    "numero_proposto": 67,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81cd-8f36-fc2cdd76e3c4",
+    "nome": "Ariana Grande",
+    "marca": "Ariana Grande",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 068",
+    "numero_proposto": 68,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81e2-a5e9-da9ba0ffd357",
+    "nome": "Armani Code",
+    "marca": "Giorgio Armani",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 069",
+    "numero_proposto": 69,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-811d-8c77-c55ac1649b5c",
+    "nome": "Armani Code",
+    "marca": "Giorgio Armani",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 070",
+    "numero_proposto": 70,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8138-94cc-f547ebadc362",
+    "nome": "Armani Code",
+    "marca": "Giorgio Armani",
+    "colecao": "Signature",
+    "volume": "100ml",
+    "numero_exibido_atual": "Nº 071",
+    "numero_proposto": 71,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-815c-ab2b-d7406727252e",
+    "nome": "Armani Code",
+    "marca": "Giorgio Armani",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 072",
+    "numero_proposto": 72,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8187-8586-dbb546820223",
+    "nome": "Asad",
+    "marca": "Lattafa",
+    "colecao": "Signature",
+    "volume": "100ml",
+    "numero_exibido_atual": "Nº 073",
+    "numero_proposto": 73,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-818d-81dc-f9b8cc113a1f",
+    "nome": "Asad",
+    "marca": "Lattafa",
+    "colecao": "Arabic Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 074",
+    "numero_proposto": 74,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39558811-29ca-801f-b6a8-c341ff74433b",
+    "nome": "Asad",
+    "marca": "Lattafa",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 075",
+    "numero_proposto": 75,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-813d-96aa-fa1addb88735",
+    "nome": "Asad Bourbon",
+    "marca": "Lattafa",
+    "colecao": "Arabic Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 076",
+    "numero_proposto": 76,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81ee-ac8f-c7f45cf0240e",
+    "nome": "Attar",
+    "marca": "N/A",
+    "colecao": "Arabic Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 077",
+    "numero_proposto": 77,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81a8-8b57-e3319426939e",
+    "nome": "Aventus For Her",
+    "marca": "Creed",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 078",
+    "numero_proposto": 78,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81f7-97ea-d2d632b0fcd4",
+    "nome": "Azzaro Chrome",
+    "marca": "Azzaro",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 079",
+    "numero_proposto": 79,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8194-bc78-d3dc2d05b155",
+    "nome": "Azzaro Pour Homme",
+    "marca": "Azzaro",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 080",
+    "numero_proposto": 80,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81ac-a877-d363c84d5f73",
+    "nome": "Azzaro Pour Homme",
+    "marca": "Azzaro",
+    "colecao": "Signature",
+    "volume": "100ml",
+    "numero_exibido_atual": "Nº 081",
+    "numero_proposto": 81,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8151-8375-e742ebb3f9f2",
+    "nome": "Azzaro Pour Homme",
+    "marca": "Azzaro",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 082",
+    "numero_proposto": 82,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8165-8363-db139ddec224",
+    "nome": "Azzaro Silver Black",
+    "marca": "Azzaro",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 083",
+    "numero_proposto": 83,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8141-bcb0-c89c1cbad6e2",
+    "nome": "Azzaro Wanted",
+    "marca": "Azzaro",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 084",
+    "numero_proposto": 84,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8176-861c-da4521c8649f",
+    "nome": "Azzaro Wanted",
+    "marca": "Azzaro",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 085",
+    "numero_proposto": 85,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8129-bea4-c444f62bf1bd",
+    "nome": "Azzaro Wanted By Night",
+    "marca": "Azzaro",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 086",
+    "numero_proposto": 86,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81a2-b2aa-e2ab05f1f69d",
+    "nome": "Azzaro Wanted Girl",
+    "marca": "Azzaro",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 087",
+    "numero_proposto": 87,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81a1-8a0d-edde16201fb3",
+    "nome": "BLV Pour Homme Bvlgari",
+    "marca": "Bvlgari",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 088",
+    "numero_proposto": 88,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81c1-9bcb-fd6af579b74f",
+    "nome": "BVL Gari Black",
+    "marca": "Bvlgari",
+    "colecao": "Signature",
+    "volume": "100ml",
+    "numero_exibido_atual": "Nº 089",
+    "numero_proposto": 89,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-817b-818f-e0f5b14faac2",
+    "nome": "BVLGARI Amethyste",
+    "marca": "Bvlgari",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 090",
+    "numero_proposto": 90,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-810d-a44f-d5b74fa10ec4",
+    "nome": "BVLGARI Crystalline",
+    "marca": "Bvlgari",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 091",
+    "numero_proposto": 91,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81f3-88d6-fa57c9262f3d",
+    "nome": "BVLGARI Green Jade",
+    "marca": "Bvlgari",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 092",
+    "numero_proposto": 92,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-814d-84cd-d00f239f0c4c",
+    "nome": "BVLGARI Man",
+    "marca": "Bvlgari",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 093",
+    "numero_proposto": 93,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81b4-9efc-c35988de6a4d",
+    "nome": "Baccarat",
+    "marca": "Maison Francis Kurkdjian",
+    "colecao": "Dream Brand Collection",
+    "volume": "100ml",
+    "numero_exibido_atual": "Nº 094",
+    "numero_proposto": 94,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81cd-a8de-c84a09f04eef",
+    "nome": "Baccarat Rouge 540",
+    "marca": "Maison Francis Kurkdjian",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 095",
+    "numero_proposto": 95,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8121-b39e-d5fdf0b8f95d",
+    "nome": "Baccarat Rouge 540",
+    "marca": "Maison Francis Kurkdjian",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 096",
+    "numero_proposto": 96,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8139-8bee-d4d5dcb890b6",
+    "nome": "Bad Boy",
+    "marca": "Carolina Herrera",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 097",
+    "numero_proposto": 97,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8164-897e-dabaaf8953c4",
+    "nome": "Bad Boy",
+    "marca": "Carolina Herrera",
+    "colecao": "Signature",
+    "volume": "100ml",
+    "numero_exibido_atual": "Nº 098",
+    "numero_proposto": 98,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-813a-b4c9-cbb1cbf9a3dd",
+    "nome": "Bad Boy",
+    "marca": "Carolina Herrera",
+    "colecao": "Dream Brand Collection",
+    "volume": "100ml",
+    "numero_exibido_atual": "Nº 099",
+    "numero_proposto": 99,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81fd-b50f-f2497195c566",
+    "nome": "Badee Honor",
+    "marca": "Lattafa",
+    "colecao": "Arabic Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 100",
+    "numero_proposto": 100,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81b3-b2ac-e8083b188456",
+    "nome": "Black Opium",
+    "marca": "Yves Saint Laurent",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 101",
+    "numero_proposto": 101,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81a3-ba73-e9816f34e1e5",
+    "nome": "Black Opium Nuit Blanche",
+    "marca": "Yves Saint Laurent",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 102",
+    "numero_proposto": 102,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8198-9825-ec17b799a18e",
+    "nome": "Black Opium Yves Saint Laurent",
+    "marca": "Yves Saint Laurent",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 103",
+    "numero_proposto": 103,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8197-bf6a-e9374607709b",
+    "nome": "Blackxs",
+    "marca": "Paco Rabanne",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 104",
+    "numero_proposto": 104,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8116-adb1-f5e03d5b8ae1",
+    "nome": "Blackxs",
+    "marca": "Paco Rabanne",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 105",
+    "numero_proposto": 105,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81c1-862f-d68c1641c70d",
+    "nome": "Blackxs",
+    "marca": "Paco Rabanne",
+    "colecao": "Signature",
+    "volume": "100ml",
+    "numero_exibido_atual": "Nº 106",
+    "numero_proposto": 106,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8160-93a9-cccce0bdb891",
+    "nome": "Bleu De Chanel",
+    "marca": "Chanel",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 107",
+    "numero_proposto": 107,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81a4-95bf-f198497ef3c0",
+    "nome": "Bleu De Chanel",
+    "marca": "Chanel",
+    "colecao": "Signature",
+    "volume": "100ml",
+    "numero_exibido_atual": "Nº 108",
+    "numero_proposto": 108,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81c3-b5b7-cd2dfc0e3f86",
+    "nome": "Bleu De Chanel",
+    "marca": "Chanel",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 109",
+    "numero_proposto": 109,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8140-81b1-cd5757e76bb4",
+    "nome": "Blue de Chanel",
+    "marca": "Chanel",
+    "colecao": "Dream Brand Collection",
+    "volume": "100ml",
+    "numero_exibido_atual": "Nº 110",
+    "numero_proposto": 110,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8177-98a5-e9d1837c6050",
+    "nome": "Boucheron Quatre",
+    "marca": "Boucheron",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 111",
+    "numero_proposto": 111,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8135-8b8e-cae24e8e91d6",
+    "nome": "Burberry Bur Her",
+    "marca": "Burberry",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 112",
+    "numero_proposto": 112,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8146-b491-ee91ca2b1a95",
+    "nome": "Burberry Her",
+    "marca": "Burberry",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 113",
+    "numero_proposto": 113,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81da-96ed-ec10707fbb85",
+    "nome": "Bvlgari Aqva Pour Homme",
+    "marca": "Bvlgari",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 114",
+    "numero_proposto": 114,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8180-982d-d270063e4a15",
+    "nome": "Bvlgari Pour Femme",
+    "marca": "Bvlgari",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 115",
+    "numero_proposto": 115,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8108-932e-e19edaaa7c2f",
+    "nome": "CH Carolina Herrera",
+    "marca": "Carolina Herrera",
+    "colecao": "Signature",
+    "volume": "100ml",
+    "numero_exibido_atual": "Nº 116",
+    "numero_proposto": 116,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81b9-858f-e87532568ace",
+    "nome": "CH Men",
+    "marca": "Carolina Herrera",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 117",
+    "numero_proposto": 117,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81cb-b21f-e98f28ca3605",
+    "nome": "CK be",
+    "marca": "Calvin Klein",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 118",
+    "numero_proposto": 118,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81e9-9ad0-f88343738503",
+    "nome": "Ch Hc",
+    "marca": "Carolina Herrera",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 119",
+    "numero_proposto": 119,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-812a-a667-eda66e51c1dc",
+    "nome": "Ch Men - Carolina Herrera",
+    "marca": "Carolina Herrera",
+    "colecao": "Signature",
+    "volume": "100ml",
+    "numero_exibido_atual": "Nº 120",
+    "numero_proposto": 120,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8196-8892-eea873dacfc0",
+    "nome": "Ch Tradicional",
+    "marca": "Carolina Herrera",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 121",
+    "numero_proposto": 121,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8148-9083-f7a2f9181bc3",
+    "nome": "Chance Chanel",
+    "marca": "Chanel",
+    "colecao": "Signature",
+    "volume": "100ml",
+    "numero_exibido_atual": "Nº 122",
+    "numero_proposto": 122,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-814d-8912-e5f571fddd3d",
+    "nome": "Chanel Chance",
+    "marca": "Chanel",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 123",
+    "numero_proposto": 123,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8142-92e2-dd6316396f17",
+    "nome": "Chloé",
+    "marca": "Chloé",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 124",
+    "numero_proposto": 124,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8155-b122-f963bf572894",
+    "nome": "Chloé",
+    "marca": "Chloé",
+    "colecao": "Signature",
+    "volume": "100ml",
+    "numero_exibido_atual": "Nº 125",
+    "numero_proposto": 125,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-812c-ba49-cee2e1072a0f",
+    "nome": "Chloé",
+    "marca": "Chloé",
+    "colecao": "Dream Brand Collection",
+    "volume": "80ml",
+    "numero_exibido_atual": "Nº 126",
+    "numero_proposto": 126,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8138-8590-f713901444fd",
+    "nome": "Chloé",
+    "marca": "Chloé",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 127",
+    "numero_proposto": 127,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81ca-a5f1-d020dce2cde5",
+    "nome": "Ck Be",
+    "marca": "Calvin Klein",
+    "colecao": "Signature",
+    "volume": "100ml",
+    "numero_exibido_atual": "Nº 128",
+    "numero_proposto": 128,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81b0-b510-f045a36cee4f",
+    "nome": "Ck One",
+    "marca": "Calvin Klein",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 129",
+    "numero_proposto": 129,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81d2-95cf-e30f7b60220e",
+    "nome": "Ck One",
+    "marca": "Calvin Klein",
+    "colecao": "Signature",
+    "volume": "100ml",
+    "numero_exibido_atual": "Nº 130",
+    "numero_proposto": 130,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81ef-b905-f1a28053d283",
+    "nome": "Club De Nuit Intense",
+    "marca": "Armaf",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 131",
+    "numero_proposto": 131,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81cf-8040-e79d4579ad99",
+    "nome": "Club de Nuit Iconico",
+    "marca": "Armaf",
+    "colecao": "Arabic Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 132",
+    "numero_proposto": 132,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81ce-9076-e9878f50368b",
+    "nome": "Club de Nuit Intense",
+    "marca": "Armaf",
+    "colecao": "Arabic Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 133",
+    "numero_proposto": 133,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-813c-bb05-cdd65b5cc414",
+    "nome": "Club de Nuit Precieux",
+    "marca": "Armaf",
+    "colecao": "Arabic Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 134",
+    "numero_proposto": 134,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81d2-9cc2-d6e5ecfce879",
+    "nome": "Club de nuit",
+    "marca": "Armaf",
+    "colecao": "Signature",
+    "volume": "100ml",
+    "numero_exibido_atual": "Nº 135",
+    "numero_proposto": 135,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8179-9434-f524299c9717",
+    "nome": "Coco Mademoiselle",
+    "marca": "Chanel",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 136",
+    "numero_proposto": 136,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81aa-b172-dd5248cc99ee",
+    "nome": "Coco Mademoiselle",
+    "marca": "Chanel",
+    "colecao": "Signature",
+    "volume": "100ml",
+    "numero_exibido_atual": "Nº 137",
+    "numero_proposto": 137,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81a8-97d3-e464d3174b71",
+    "nome": "Coco Mademoiselle",
+    "marca": "Chanel",
+    "colecao": "Dream Brand Collection",
+    "volume": "80ml",
+    "numero_exibido_atual": "Nº 138",
+    "numero_proposto": 138,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8113-8e8f-cc9c3626d73e",
+    "nome": "Coco Modeimoiselle",
+    "marca": "Chanel",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 139",
+    "numero_proposto": 139,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81b8-8f13-f36379f4a8f0",
+    "nome": "Creed",
+    "marca": "Creed",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 140",
+    "numero_proposto": 140,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8149-87b7-f787158db8e6",
+    "nome": "Creed Aventus",
+    "marca": "Creed",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 141",
+    "numero_proposto": 141,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81c6-b94a-dbc248f08753",
+    "nome": "Dania",
+    "marca": "Orientica",
+    "colecao": "Arabic Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 142",
+    "numero_proposto": 142,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8180-9283-fa73f63c2291",
+    "nome": "Decadence",
+    "marca": "Marc Jacobs",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 143",
+    "numero_proposto": 143,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8142-8002-e6da0294e640",
+    "nome": "Delina",
+    "marca": "Parfums de Marly",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 144",
+    "numero_proposto": 144,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8128-b001-c37f718a419c",
+    "nome": "Delina",
+    "marca": "Parfums de Marly",
+    "colecao": "Dream Brand Collection",
+    "volume": "80ml",
+    "numero_exibido_atual": "Nº 145",
+    "numero_proposto": 145,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81cd-ab86-eed888b71427",
+    "nome": "Delina",
+    "marca": "Parfums de Marly",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 146",
+    "numero_proposto": 146,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81ff-9cbd-c9493b9a9890",
+    "nome": "Delina Meliora",
+    "marca": "Parfums de Marly",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 147",
+    "numero_proposto": 147,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8147-b3e1-e83b36779ca4",
+    "nome": "Devotion",
+    "marca": "Dolce & Gabbana",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 148",
+    "numero_proposto": 148,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8193-b970-fde8ee199024",
+    "nome": "Diesel Bad",
+    "marca": "Diesel",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 149",
+    "numero_proposto": 149,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81bf-b9b4-fb1719a02bf3",
+    "nome": "Diesel Fuel For Life",
+    "marca": "Diesel",
+    "colecao": "Signature",
+    "volume": "100ml",
+    "numero_exibido_atual": "Nº 150",
+    "numero_proposto": 150,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8140-be61-d3fcce91709d",
+    "nome": "Diesel Only The Brave",
+    "marca": "Diesel",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 151",
+    "numero_proposto": 151,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8152-a062-d2d23f14cea0",
+    "nome": "Diesel Only The Brave Tattoo",
+    "marca": "Diesel",
+    "colecao": "Signature",
+    "volume": "100ml",
+    "numero_exibido_atual": "Nº 152",
+    "numero_proposto": 152,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81ab-ac4b-c0fffd3c2752",
+    "nome": "Dior Fahrenheit",
+    "marca": "Dior",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 153",
+    "numero_proposto": 153,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81fe-a48b-cdca20fb3df3",
+    "nome": "Dior Homme",
+    "marca": "Dior",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 154",
+    "numero_proposto": 154,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-814a-9cf1-f05fbce8118d",
+    "nome": "Dior Poison",
+    "marca": "Dior",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 155",
+    "numero_proposto": 155,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81f6-807e-f072bb74c56f",
+    "nome": "Dolce Gabanna King Men",
+    "marca": "Dolce & Gabbana",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 156",
+    "numero_proposto": 156,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-818f-8af1-cb849e536c65",
+    "nome": "Dolce Gabanna Pour Femme",
+    "marca": "Dolce & Gabbana",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 157",
+    "numero_proposto": 157,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8119-9872-f03001f04178",
+    "nome": "Dolce Gabbana Blue",
+    "marca": "Dolce & Gabbana",
+    "colecao": "Signature",
+    "volume": "100ml",
+    "numero_exibido_atual": "Nº 158",
+    "numero_proposto": 158,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81df-a3f7-ed14ab527e55",
+    "nome": "Dolce Gabbana Light Blue",
+    "marca": "Dolce & Gabbana",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 159",
+    "numero_proposto": 159,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-813e-8dd4-f311bbbd3526",
+    "nome": "Dolce Gabbana Light Blue",
+    "marca": "Dolce & Gabbana",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 160",
+    "numero_proposto": 160,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-810e-b6f2-e3444dc8de89",
+    "nome": "Dolce Gabbana Light Blue",
+    "marca": "Dolce & Gabbana",
+    "colecao": "Signature",
+    "volume": "100ml",
+    "numero_exibido_atual": "Nº 161",
+    "numero_proposto": 161,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-811a-b938-cdcbf254a039",
+    "nome": "Dolce Gabbana Pour Femme",
+    "marca": "Dolce & Gabbana",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 162",
+    "numero_proposto": 162,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8184-9397-d43f7f8ff535",
+    "nome": "Dolce Gabbana Pour Homme",
+    "marca": "Dolce & Gabbana",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 163",
+    "numero_proposto": 163,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8193-b43a-f279bd4f7d3e",
+    "nome": "Dolce Gabbana Red",
+    "marca": "Dolce & Gabbana",
+    "colecao": "Signature",
+    "volume": "100ml",
+    "numero_exibido_atual": "Nº 164",
+    "numero_proposto": 164,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8172-bdf0-fc6bd7139cf0",
+    "nome": "Dylan Purple",
+    "marca": "Versace",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 165",
+    "numero_proposto": 165,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81a2-b931-fbb500d8f9bd",
+    "nome": "Eden",
+    "marca": "Cacharel",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 166",
+    "numero_proposto": 166,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8135-9c3e-f1c545c7f279",
+    "nome": "Elie Saab",
+    "marca": "Elie Saab",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 167",
+    "numero_proposto": 167,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8148-8d58-e44c44d1257e",
+    "nome": "Elie Saab Parfum",
+    "marca": "Elie Saab",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 168",
+    "numero_proposto": 168,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81ba-8cbf-f30cedd19647",
+    "nome": "Emporio Armani - Stronger With You",
+    "marca": "Giorgio Armani",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 169",
+    "numero_proposto": 169,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8176-a3a0-ff4e8b717a97",
+    "nome": "Erba Pura",
+    "marca": "Parfums de Marly",
+    "colecao": "Dream Brand Collection",
+    "volume": "100ml",
+    "numero_exibido_atual": "Nº 170",
+    "numero_proposto": 170,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8164-a7ae-ce88cb90b1c1",
+    "nome": "Erba Pura",
+    "marca": "Parfums de Marly",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 171",
+    "numero_proposto": 171,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81e4-94f8-e9bb53d2b186",
+    "nome": "Eternity",
+    "marca": "Calvin Klein",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 172",
+    "numero_proposto": 172,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8105-8c4a-f543ffc2a11f",
+    "nome": "Eternity For Men",
+    "marca": "Calvin Klein",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 173",
+    "numero_proposto": 173,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8167-a54a-fdc6f47ee020",
+    "nome": "Eternity For Men - Ck",
+    "marca": "Calvin Klein",
+    "colecao": "Signature",
+    "volume": "100ml",
+    "numero_exibido_atual": "Nº 174",
+    "numero_proposto": 174,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-812c-8e6c-ef01a90691fc",
+    "nome": "Euphoria",
+    "marca": "Calvin Klein",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 175",
+    "numero_proposto": 175,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8107-a42b-edf2178d3fe2",
+    "nome": "Euphoria",
+    "marca": "Calvin Klein",
+    "colecao": "Signature",
+    "volume": "100ml",
+    "numero_exibido_atual": "Nº 176",
+    "numero_proposto": 176,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8151-9317-deaae1014dce",
+    "nome": "Euphoria",
+    "marca": "Calvin Klein",
+    "colecao": "Dream Brand Collection",
+    "volume": "100ml",
+    "numero_exibido_atual": "Nº 177",
+    "numero_proposto": 177,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8195-a11c-d9943c060923",
+    "nome": "Euphoria",
+    "marca": "Calvin Klein",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 178",
+    "numero_proposto": 178,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8119-819a-c3b4cd430c5e",
+    "nome": "Euphoria Deep",
+    "marca": "Calvin Klein",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 179",
+    "numero_proposto": 179,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8158-8196-c2efeddf92e1",
+    "nome": "Euphoria Men",
+    "marca": "Calvin Klein",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 180",
+    "numero_proposto": 180,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-810c-8b17-c5dd7bd8a5f6",
+    "nome": "Fahrenheit",
+    "marca": "Dior",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 181",
+    "numero_proposto": 181,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8134-a9b2-fac9286ed683",
+    "nome": "Fakhar Gold",
+    "marca": "Lattafa",
+    "colecao": "Arabic Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 182",
+    "numero_proposto": 182,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-817d-b3f8-df0b8e65388f",
+    "nome": "Fakhar Rose",
+    "marca": "Lattafa",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 183",
+    "numero_proposto": 183,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8123-855d-e5bb1118a744",
+    "nome": "Fakhar Rose",
+    "marca": "Lattafa",
+    "colecao": "Arabic Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 184",
+    "numero_proposto": 184,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-816b-b061-c51ad96c8d67",
+    "nome": "Fakhar Silver",
+    "marca": "Lattafa",
+    "colecao": "Arabic Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 185",
+    "numero_proposto": 185,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8173-bd2e-c35258ef0828",
+    "nome": "Fame",
+    "marca": "Paco Rabanne",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 186",
+    "numero_proposto": 186,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81cf-905d-f77c7cb2d917",
+    "nome": "Fame Parfum",
+    "marca": "Paco Rabanne",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 187",
+    "numero_proposto": 187,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8114-9528-cca9e9ee4678",
+    "nome": "Fame Pink",
+    "marca": "Paco Rabanne",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 188",
+    "numero_proposto": 188,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8151-a717-e615d86f9b37",
+    "nome": "Fantasy",
+    "marca": "Britney Spears",
+    "colecao": "Signature",
+    "volume": "100ml",
+    "numero_exibido_atual": "Nº 189",
+    "numero_proposto": 189,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39558811-29ca-804a-a5b9-c01dccaa3909",
+    "nome": "Fantasy",
+    "marca": "Britney Spears",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 190",
+    "numero_proposto": 190,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8153-973f-c218ef6d9b4d",
+    "nome": "Fantasy In Bloom",
+    "marca": "Britney Spears",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 191",
+    "numero_proposto": 191,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81d4-b781-d1a09de62edb",
+    "nome": "Fantasy Naked",
+    "marca": "Britney Spears",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 192",
+    "numero_proposto": 192,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8188-9ef4-fe1eb8206f82",
+    "nome": "Fantsay",
+    "marca": "Britney Spears",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 193",
+    "numero_proposto": 193,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8132-af24-f623282a7e1a",
+    "nome": "Ferarri Black",
+    "marca": "Ferrari",
+    "colecao": "Dream Brand Collection",
+    "volume": "100ml",
+    "numero_exibido_atual": "Nº 194",
+    "numero_proposto": 194,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81f1-9527-d629f45b0be4",
+    "nome": "Ferrari Black",
+    "marca": "Ferrari",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 195",
+    "numero_proposto": 195,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81df-9bb2-ea6fbf4a2d56",
+    "nome": "Ferrari Black",
+    "marca": "Ferrari",
+    "colecao": "Signature",
+    "volume": "100ml",
+    "numero_exibido_atual": "Nº 196",
+    "numero_proposto": 196,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81b3-808d-f51a041a582a",
+    "nome": "Ferrari Forte",
+    "marca": "Ferrari",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 197",
+    "numero_proposto": 197,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81e3-aff0-ee392725a705",
+    "nome": "Ferrari Red",
+    "marca": "Ferrari",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 198",
+    "numero_proposto": 198,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81c2-88f8-ed4e9bc984ef",
+    "nome": "Ferrari Red",
+    "marca": "Ferrari",
+    "colecao": "Signature",
+    "volume": "100ml",
+    "numero_exibido_atual": "Nº 199",
+    "numero_proposto": 199,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-812f-9bd4-fbb982c01663",
+    "nome": "Flowerby Kenzo",
+    "marca": "Kenzo",
+    "colecao": "Signature",
+    "volume": "100ml",
+    "numero_exibido_atual": "Nº 200",
+    "numero_proposto": 200,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81a1-af0f-f10ebeb6d5d1",
+    "nome": "Gabriela Sabatini",
+    "marca": "Gabriela Sabatini",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 201",
+    "numero_proposto": 201,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81bc-b4bb-c7f2c464e3c3",
+    "nome": "Gabriela Sabatini",
+    "marca": "Gabriela Sabatini",
+    "colecao": "Signature",
+    "volume": "100ml",
+    "numero_exibido_atual": "Nº 202",
+    "numero_proposto": 202,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-811c-95ac-cfb217a0107e",
+    "nome": "Gabrielle Chanel",
+    "marca": "Chanel",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 203",
+    "numero_proposto": 203,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8153-9232-ed74f7147a22",
+    "nome": "Gabrielle Chanel",
+    "marca": "Chanel",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 204",
+    "numero_proposto": 204,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8140-8a19-dcec12a40054",
+    "nome": "Gentleman Society",
+    "marca": "Givenchy",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 205",
+    "numero_proposto": 205,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8178-82f0-c6c61050c2a3",
+    "nome": "Giorgio Armani Si Intense",
+    "marca": "Giorgio Armani",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 206",
+    "numero_proposto": 206,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81d5-be8b-c8ff56110428",
+    "nome": "Giorgio Armani Si Tradicional",
+    "marca": "Giorgio Armani",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 207",
+    "numero_proposto": 207,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-810d-abdf-c49bd6843823",
+    "nome": "Good Girl",
+    "marca": "Carolina Herrera",
+    "colecao": "Signature",
+    "volume": "100ml",
+    "numero_exibido_atual": "Nº 208",
+    "numero_proposto": 208,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39558811-29ca-8050-9663-c536a8788a50",
+    "nome": "Good Girl",
+    "marca": "Carolina Herrera",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 209",
+    "numero_proposto": 209,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8178-84ca-f281956a9192",
+    "nome": "Good Girl 212 Vip Men",
+    "marca": "Carolina Herrera",
+    "colecao": "Dream Brand Collection",
+    "volume": "100ml",
+    "numero_exibido_atual": "Nº 210",
+    "numero_proposto": 210,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-817a-9b92-de9ebe445a54",
+    "nome": "Good Girl Blush",
+    "marca": "Carolina Herrera",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 211",
+    "numero_proposto": 211,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-814c-aa00-dabb249d67f0",
+    "nome": "Good Girl Blush Rosa",
+    "marca": "Carolina Herrera",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 212",
+    "numero_proposto": 212,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8194-a22d-c514a6c612e3",
+    "nome": "Good Girl Blush Vermelho",
+    "marca": "Carolina Herrera",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 213",
+    "numero_proposto": 213,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8181-af6d-d23572da73a7",
+    "nome": "Good Girl Glam",
+    "marca": "Carolina Herrera",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 214",
+    "numero_proposto": 214,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81b6-a31f-fb9d877bb270",
+    "nome": "Good Girl Gold",
+    "marca": "Carolina Herrera",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 215",
+    "numero_proposto": 215,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8193-89ff-e2d6215372d8",
+    "nome": "Good Girl New York",
+    "marca": "Carolina Herrera",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 216",
+    "numero_proposto": 216,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81de-8fdb-c2f32e3746ce",
+    "nome": "Good Girl Supreme",
+    "marca": "Carolina Herrera",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 217",
+    "numero_proposto": 217,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-818a-b83f-ef0cb35f098f",
+    "nome": "Good Girl Velvet",
+    "marca": "Carolina Herrera",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 218",
+    "numero_proposto": 218,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8102-a53d-fede48239ce6",
+    "nome": "Good Girl Very",
+    "marca": "Carolina Herrera",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 219",
+    "numero_proposto": 219,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8190-ae5d-c57a32610890",
+    "nome": "Good Girl Very",
+    "marca": "Carolina Herrera",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 220",
+    "numero_proposto": 220,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81d1-acfb-c03675c5591c",
+    "nome": "Gosh",
+    "marca": "Gosh Copenhagen",
+    "colecao": "Arabic Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 221",
+    "numero_proposto": 221,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8124-96f3-ca20ae8d3840",
+    "nome": "Grey",
+    "marca": "Geoffrey Beene",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 222",
+    "numero_proposto": 222,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-818f-9f0e-fe50e734b2be",
+    "nome": "Gucci Bloom",
+    "marca": "Gucci",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 223",
+    "numero_proposto": 223,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81d4-b12b-d237b306c0ac",
+    "nome": "Gucci Bloom Acqua Di Fiori",
+    "marca": "Gucci",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 224",
+    "numero_proposto": 224,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81c1-9738-d0c84a308d6e",
+    "nome": "Gucci Guilty",
+    "marca": "Gucci",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 225",
+    "numero_proposto": 225,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81f7-8573-c6e1cb4637f3",
+    "nome": "Haya",
+    "marca": "Lattafa",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 226",
+    "numero_proposto": 226,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-815f-ac10-eab39b4c5b09",
+    "nome": "Hipnotic Poison",
+    "marca": "Dior",
+    "colecao": "Dream Brand Collection",
+    "volume": "100ml",
+    "numero_exibido_atual": "Nº 227",
+    "numero_proposto": 227,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81d2-a84f-fc97af45279d",
+    "nome": "Hipnotic Poison",
+    "marca": "Dior",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 228",
+    "numero_proposto": 228,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81d5-aa9a-d8ac92ab7d92",
+    "nome": "Hugo Boss",
+    "marca": "Hugo Boss",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 229",
+    "numero_proposto": 229,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81c4-9665-df46f9b329ab",
+    "nome": "Hugo Boss - Bottled",
+    "marca": "Hugo Boss",
+    "colecao": "Signature",
+    "volume": "100ml",
+    "numero_exibido_atual": "Nº 230",
+    "numero_proposto": 230,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8194-b6b1-e8ee7c5f6ba3",
+    "nome": "Hugo Boss Infinite",
+    "marca": "Hugo Boss",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 231",
+    "numero_proposto": 231,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8145-a088-c62f2a2e542f",
+    "nome": "Hugo Boss The Scent",
+    "marca": "Hugo Boss",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 232",
+    "numero_proposto": 232,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8171-8297-c75a8b41cfc3",
+    "nome": "Hugo Just Different",
+    "marca": "Hugo Boss",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 233",
+    "numero_proposto": 233,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8150-9e5c-e1bddb427d0d",
+    "nome": "Hypnotic Poison",
+    "marca": "Dior",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 234",
+    "numero_proposto": 234,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8186-9e3f-cc6b4ddb62d9",
+    "nome": "Hypnôse",
+    "marca": "Lancôme",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 235",
+    "numero_proposto": 235,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-817f-b53e-fab8f7ecb79b",
+    "nome": "Hypnôse",
+    "marca": "Lancôme",
+    "colecao": "Signature",
+    "volume": "100ml",
+    "numero_exibido_atual": "Nº 236",
+    "numero_proposto": 236,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-815b-afdc-c66c80082a1e",
+    "nome": "Hypnôse",
+    "marca": "Lancôme",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 237",
+    "numero_proposto": 237,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-818c-943f-db69398a6ef2",
+    "nome": "Hypnôse",
+    "marca": "Lancôme",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 238",
+    "numero_proposto": 238,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8163-ace1-ec66dc6ecada",
+    "nome": "Idole",
+    "marca": "Lancôme",
+    "colecao": "Signature",
+    "volume": "100ml",
+    "numero_exibido_atual": "Nº 239",
+    "numero_proposto": 239,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81bf-97a2-c9e3f0f62d36",
+    "nome": "Idôle Intense",
+    "marca": "Lancôme",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 240",
+    "numero_proposto": 240,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8175-83a9-c0ab79268e8a",
+    "nome": "Idôle",
+    "marca": "Lancôme",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 241",
+    "numero_proposto": 241,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81cd-90b5-cbdc707192c6",
+    "nome": "Idôle",
+    "marca": "Lancôme",
+    "colecao": "Dream Brand Collection",
+    "volume": "80ml",
+    "numero_exibido_atual": "Nº 242",
+    "numero_proposto": 242,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8197-8607-f7da7df928cc",
+    "nome": "Idôle",
+    "marca": "Lancôme",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 243",
+    "numero_proposto": 243,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8107-bbe3-f51827d5a9b3",
+    "nome": "Inspiração Lady Million Fabulous",
+    "marca": "Paco Rabanne",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 244",
+    "numero_proposto": 244,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8144-b12a-cfca2d9ea943",
+    "nome": "Invictus",
+    "marca": "Paco Rabanne",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 245",
+    "numero_proposto": 245,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81f6-9923-f090d8a19bb5",
+    "nome": "Invictus",
+    "marca": "Paco Rabanne",
+    "colecao": "Signature",
+    "volume": "100ml",
+    "numero_exibido_atual": "Nº 246",
+    "numero_proposto": 246,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8167-aaac-d5257a0700c7",
+    "nome": "Invictus",
+    "marca": "Paco Rabanne",
+    "colecao": "Dream Brand Collection",
+    "volume": "100ml",
+    "numero_exibido_atual": "Nº 247",
+    "numero_proposto": 247,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-810e-b6c2-e04a4bcd5ddd",
+    "nome": "Invictus",
+    "marca": "Paco Rabanne",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 248",
+    "numero_proposto": 248,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-815e-9774-f9d9a2c1b47f",
+    "nome": "Invictus Parfum",
+    "marca": "Paco Rabanne",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 249",
+    "numero_proposto": 249,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8150-9ca8-ef8753c84933",
+    "nome": "Invictus Platinum",
+    "marca": "Paco Rabanne",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 250",
+    "numero_proposto": 250,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8119-85a9-fcdafa5b27a8",
+    "nome": "Invictus Victory",
+    "marca": "Paco Rabanne",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 251",
+    "numero_proposto": 251,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8145-a5bd-c570d850476f",
+    "nome": "Invictus Victory",
+    "marca": "Paco Rabanne",
+    "colecao": "Signature",
+    "volume": "100ml",
+    "numero_exibido_atual": "Nº 252",
+    "numero_proposto": 252,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8195-9715-cdbce166db24",
+    "nome": "Invictus Victory",
+    "marca": "Paco Rabanne",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 253",
+    "numero_proposto": 253,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8135-b943-d4dcf43ab760",
+    "nome": "Irresistible",
+    "marca": "Givenchy",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 254",
+    "numero_proposto": 254,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8120-bb03-db6706e523fa",
+    "nome": "Irresistible Givenchy",
+    "marca": "Givenchy",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 255",
+    "numero_proposto": 255,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-818e-a4b8-c1b7c69e298e",
+    "nome": "Issey Miyake",
+    "marca": "Issey Miyake",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 256",
+    "numero_proposto": 256,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8113-8a5e-f9c5cf53e888",
+    "nome": "Issey Miyake L’eau D’issey",
+    "marca": "Issey Miyake",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 257",
+    "numero_proposto": 257,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81ce-bd40-db704df80a9c",
+    "nome": "Issey Myake",
+    "marca": "Issey Miyake",
+    "colecao": "Signature",
+    "volume": "100ml",
+    "numero_exibido_atual": "Nº 258",
+    "numero_proposto": 258,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8183-851b-ef13143683a0",
+    "nome": "Issey Myaky",
+    "marca": "Issey Miyake",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 259",
+    "numero_proposto": 259,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-812f-9f8c-d9bf2c70cefc",
+    "nome": "J'adore",
+    "marca": "Dior",
+    "colecao": "Dream Brand Collection",
+    "volume": "100ml",
+    "numero_exibido_atual": "Nº 260",
+    "numero_proposto": 260,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81e0-af80-f2b37077eab5",
+    "nome": "J'adore",
+    "marca": "Dior",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 261",
+    "numero_proposto": 261,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81e9-9e6c-de24d09ebd2b",
+    "nome": "Jadore",
+    "marca": "Dior",
+    "colecao": "Signature",
+    "volume": "100ml",
+    "numero_exibido_atual": "Nº 262",
+    "numero_proposto": 262,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81f8-a428-ca0f1ea7401b",
+    "nome": "Jeal Paul Gaultier - Le Male",
+    "marca": "Jean Paul Gaultier",
+    "colecao": "Signature",
+    "volume": "100ml",
+    "numero_exibido_atual": "Nº 263",
+    "numero_proposto": 263,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81c9-a56f-dc04e9e1a2a7",
+    "nome": "Jeal Paul Gaultier Classique",
+    "marca": "Jean Paul Gaultier",
+    "colecao": "Signature",
+    "volume": "100ml",
+    "numero_exibido_atual": "Nº 264",
+    "numero_proposto": 264,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-812f-afdc-c9de8bb52d88",
+    "nome": "Jean Gaultier Le Belle",
+    "marca": "Jean Paul Gaultier",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 265",
+    "numero_proposto": 265,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81a4-b1d7-d8b3d48d915c",
+    "nome": "Jean Paul Classique",
+    "marca": "Jean Paul Gaultier",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 266",
+    "numero_proposto": 266,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-812f-b7ab-c830b61ea70e",
+    "nome": "Jean Paul Gaultier \"Le Beau \"",
+    "marca": "Jean Paul Gaultier",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 267",
+    "numero_proposto": 267,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-817b-b5cd-dc0575e9dfef",
+    "nome": "Jean Paul Gaultier Classique X",
+    "marca": "Jean Paul Gaultier",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 268",
+    "numero_proposto": 268,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-810b-a35c-e6f9d50cdf87",
+    "nome": "Jean Paul Gaultier Divine",
+    "marca": "Jean Paul Gaultier",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 269",
+    "numero_proposto": 269,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81b8-8d08-f4a4957aaa41",
+    "nome": "Jean Paul Le Male",
+    "marca": "Jean Paul Gaultier",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 270",
+    "numero_proposto": 270,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8170-ba9e-d7a56a926bcf",
+    "nome": "Jean Paul Lê Male",
+    "marca": "Jean Paul Gaultier",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 271",
+    "numero_proposto": 271,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81e9-a9a0-d7012b8efffc",
+    "nome": "Jean Paul Ultra Male",
+    "marca": "Jean Paul Gaultier",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 272",
+    "numero_proposto": 272,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-813c-9e02-cdd3f820319b",
+    "nome": "Jean paul Gaultier Divine",
+    "marca": "Jean Paul Gaultier",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 273",
+    "numero_proposto": 273,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81a1-9664-d7f739576905",
+    "nome": "Jimmy Choo Man",
+    "marca": "Jimmy Choo",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 274",
+    "numero_proposto": 274,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-819a-91a5-e342a1f930a8",
+    "nome": "Joop",
+    "marca": "Joop!",
+    "colecao": "Signature",
+    "volume": "100ml",
+    "numero_exibido_atual": "Nº 275",
+    "numero_proposto": 275,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8190-858c-cbf4d483e71d",
+    "nome": "Joop Homme",
+    "marca": "Joop!",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 276",
+    "numero_proposto": 276,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8122-bb4b-d0d14c2b8f06",
+    "nome": "Joop!",
+    "marca": "Joop!",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 277",
+    "numero_proposto": 277,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8190-a6f0-f7d097d6106b",
+    "nome": "Jádore",
+    "marca": "Dior",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 278",
+    "numero_proposto": 278,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81a2-8e41-d8f704bf874f",
+    "nome": "Khamrah",
+    "marca": "Lattafa",
+    "colecao": "Arabic Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 279",
+    "numero_proposto": 279,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8148-a872-ebaf4ad9726f",
+    "nome": "Kilian Angels",
+    "marca": "Kilian",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 280",
+    "numero_proposto": 280,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-812f-8fb4-ecd053ba6429",
+    "nome": "Kouros",
+    "marca": "Yves Saint Laurent",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 281",
+    "numero_proposto": 281,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8141-96eb-ec24d3d8506d",
+    "nome": "Kouros",
+    "marca": "Yves Saint Laurent",
+    "colecao": "Signature",
+    "volume": "100ml",
+    "numero_exibido_atual": "Nº 282",
+    "numero_proposto": 282,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-815c-bcfd-dab272215c24",
+    "nome": "Kouros Body",
+    "marca": "Yves Saint Laurent",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 283",
+    "numero_proposto": 283,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-815e-8945-feedaeec7753",
+    "nome": "L' eau Dissey",
+    "marca": "Issey Miyake",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 284",
+    "numero_proposto": 284,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8121-b86f-e7e0acf3df0d",
+    "nome": "L'Homme Lacoste",
+    "marca": "Lacoste",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 285",
+    "numero_proposto": 285,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8103-b0c6-dcd32b4e3a3c",
+    "nome": "L'Interdit Rouge Givenchy",
+    "marca": "Givenchy",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 286",
+    "numero_proposto": 286,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8165-9886-c1560b5731e2",
+    "nome": "LIbre",
+    "marca": "Yves Saint Laurent",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 287",
+    "numero_proposto": 287,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81e2-838a-fdfb7d59258b",
+    "nome": "La Nuit De L'homme",
+    "marca": "Yves Saint Laurent",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 288",
+    "numero_proposto": 288,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-810b-92a6-f0899fd9c249",
+    "nome": "La Nuit Treso",
+    "marca": "Lancôme",
+    "colecao": "Dream Brand Collection",
+    "volume": "100ml",
+    "numero_exibido_atual": "Nº 289",
+    "numero_proposto": 289,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-811d-95fc-e5f3cf977afa",
+    "nome": "La Nuit Trésor",
+    "marca": "Lancôme",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 290",
+    "numero_proposto": 290,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8111-9209-eeb1be4d5aaa",
+    "nome": "La Nuit Trésor",
+    "marca": "Lancôme",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 291",
+    "numero_proposto": 291,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81d8-9b6e-fbe22622baf5",
+    "nome": "La Nuit Trésor",
+    "marca": "Lancôme",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 292",
+    "numero_proposto": 292,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81da-b2bd-ff729b3c5494",
+    "nome": "La Vi Est Belle",
+    "marca": "Lancôme",
+    "colecao": "Dream Brand Collection",
+    "volume": "100ml",
+    "numero_exibido_atual": "Nº 293",
+    "numero_proposto": 293,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81a1-af6b-e3225463ec30",
+    "nome": "La Vie Est Belle",
+    "marca": "Lancôme",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 294",
+    "numero_proposto": 294,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39558811-29ca-8001-bccb-c72c6982cb07",
+    "nome": "La Vie Est Belle",
+    "marca": "Lancôme",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 295",
+    "numero_proposto": 295,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8171-a257-ebf2cb11a9d4",
+    "nome": "La Vie Est Belle Intensément",
+    "marca": "Lancôme",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 296",
+    "numero_proposto": 296,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81cd-9d90-dde89f852f60",
+    "nome": "La Vie Intense",
+    "marca": "Lancôme",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 297",
+    "numero_proposto": 297,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8107-98d0-cd5e7ac5e7c4",
+    "nome": "La vie Est Belle Soleil Cristal",
+    "marca": "Lancôme",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 298",
+    "numero_proposto": 298,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8184-a966-f066da561ecb",
+    "nome": "Lacoste",
+    "marca": "Lacoste",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 299",
+    "numero_proposto": 299,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81fd-86f0-f06d8b737936",
+    "nome": "Lacoste",
+    "marca": "Lacoste",
+    "colecao": "Signature",
+    "volume": "100ml",
+    "numero_exibido_atual": "Nº 300",
+    "numero_proposto": 300,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8133-956b-ec96c1bb90d6",
+    "nome": "Lacoste L.12.12",
+    "marca": "Lacoste",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 301",
+    "numero_proposto": 301,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-814e-8b32-e7dc9d20e497",
+    "nome": "Lacoste L.12.12 Rose",
+    "marca": "Lacoste",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 302",
+    "numero_proposto": 302,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-813e-915e-e4157deaf707",
+    "nome": "Lady Million",
+    "marca": "Paco Rabanne",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 303",
+    "numero_proposto": 303,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-811f-869b-e675e6fe972e",
+    "nome": "Lady Million",
+    "marca": "Paco Rabanne",
+    "colecao": "Signature",
+    "volume": "100ml",
+    "numero_exibido_atual": "Nº 304",
+    "numero_proposto": 304,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-816c-b65e-f6743e77b6cc",
+    "nome": "Lady Million",
+    "marca": "Paco Rabanne",
+    "colecao": "Dream Brand Collection",
+    "volume": "100ml",
+    "numero_exibido_atual": "Nº 305",
+    "numero_proposto": 305,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-818b-8811-ed4c316044c1",
+    "nome": "Lady Million",
+    "marca": "Paco Rabanne",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 306",
+    "numero_proposto": 306,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8110-9527-f18b830fdae6",
+    "nome": "Lady Million Empire",
+    "marca": "Paco Rabanne",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 307",
+    "numero_proposto": 307,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-818d-ab96-fc36c0f2cdd6",
+    "nome": "Lady Million Lucky",
+    "marca": "Paco Rabanne",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 308",
+    "numero_proposto": 308,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81ef-9348-d48569e8899d",
+    "nome": "Lady Million Privé",
+    "marca": "Paco Rabanne",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 309",
+    "numero_proposto": 309,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81be-a23c-dea7ef80d58c",
+    "nome": "Lapidus Pour Homme",
+    "marca": "Ted Lapidus",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 310",
+    "numero_proposto": 310,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81cc-9d97-c44d0671b5c2",
+    "nome": "Lapidus Woman",
+    "marca": "Ted Lapidus",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 311",
+    "numero_proposto": 311,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81d5-a089-d5fa096f57a7",
+    "nome": "Lavie est belle",
+    "marca": "Lancôme",
+    "colecao": "Signature",
+    "volume": "100ml",
+    "numero_exibido_atual": "Nº 312",
+    "numero_proposto": 312,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-816e-a12b-e9d991020db7",
+    "nome": "Libre",
+    "marca": "Yves Saint Laurent",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 313",
+    "numero_proposto": 313,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-812f-b9a9-eff1f0867be2",
+    "nome": "Light Blue",
+    "marca": "Dolce & Gabbana",
+    "colecao": "Dream Brand Collection",
+    "volume": "100ml",
+    "numero_exibido_atual": "Nº 314",
+    "numero_proposto": 314,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-815e-b877-dc8652920d4d",
+    "nome": "Light Blue",
+    "marca": "Dolce & Gabbana",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 315",
+    "numero_proposto": 315,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-810b-9b87-ca40a2acf012",
+    "nome": "Lily",
+    "marca": "O Boticário",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 316",
+    "numero_proposto": 316,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8170-80b8-f05a8e88676d",
+    "nome": "Lily",
+    "marca": "O Boticário",
+    "colecao": "Signature",
+    "volume": "100ml",
+    "numero_exibido_atual": "Nº 317",
+    "numero_proposto": 317,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8132-94bc-e484d2982fa5",
+    "nome": "Malbec",
+    "marca": "O Boticário",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 318",
+    "numero_proposto": 318,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81ec-a53b-d845ae1fd093",
+    "nome": "Malbec",
+    "marca": "O Boticário",
+    "colecao": "Signature",
+    "volume": "100ml",
+    "numero_exibido_atual": "Nº 319",
+    "numero_proposto": 319,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-814c-b7e8-cbb6a89b3bb4",
+    "nome": "Marina de BourBon Classique",
+    "marca": "Marina de Bourbon",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 320",
+    "numero_proposto": 320,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81b9-bf7e-da5d2fb87e42",
+    "nome": "Marina de Bourbon",
+    "marca": "Marina de Bourbon",
+    "colecao": "Signature",
+    "volume": "100ml",
+    "numero_exibido_atual": "Nº 321",
+    "numero_proposto": 321,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81c0-9f42-c1f287eaf21c",
+    "nome": "Marina de Bourbon Rouge Royal",
+    "marca": "Marina de Bourbon",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 322",
+    "numero_proposto": 322,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8175-b2fa-d3e0e0cf55de",
+    "nome": "Marina de Bourbon Royal Marina",
+    "marca": "Marina de Bourbon",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 323",
+    "numero_proposto": 323,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-816f-bdc2-f0708da151fb",
+    "nome": "Midnight Fantasy",
+    "marca": "Britney Spears",
+    "colecao": "Signature",
+    "volume": "100ml",
+    "numero_exibido_atual": "Nº 324",
+    "numero_proposto": 324,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8141-bd0c-f38dadcd5dea",
+    "nome": "Miracle",
+    "marca": "Lancôme",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 325",
+    "numero_proposto": 325,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8102-ba49-e06560ad643e",
+    "nome": "Miracle",
+    "marca": "Lancôme",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 326",
+    "numero_proposto": 326,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-817a-bdf8-d2f7143b4ea9",
+    "nome": "Miss Dior",
+    "marca": "Dior",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 327",
+    "numero_proposto": 327,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8155-acfd-d19181fa1ac6",
+    "nome": "Miss Dior",
+    "marca": "Dior",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 328",
+    "numero_proposto": 328,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8165-8bbc-dadeefcc469a",
+    "nome": "Miu Miu",
+    "marca": "Miu Miu",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 329",
+    "numero_proposto": 329,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8187-9537-dadb0b7cc85f",
+    "nome": "Miu Miu L' eau Blue",
+    "marca": "Miu Miu",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 330",
+    "numero_proposto": 330,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8154-8205-f9ab8db94266",
+    "nome": "Mont Blanc",
+    "marca": "Montblanc",
+    "colecao": "Signature",
+    "volume": "100ml",
+    "numero_exibido_atual": "Nº 331",
+    "numero_proposto": 331,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8114-909e-d7a1f408c723",
+    "nome": "Mont Blanc Explorer",
+    "marca": "Montblanc",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 332",
+    "numero_proposto": 332,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8194-8600-cba4502255f3",
+    "nome": "Mont Blanc Lady",
+    "marca": "Montblanc",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 333",
+    "numero_proposto": 333,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8146-8732-ed04f9d7873b",
+    "nome": "Mont Blanc Legend",
+    "marca": "Montblanc",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 334",
+    "numero_proposto": 334,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81d1-b23c-eca3a8b88f6b",
+    "nome": "Mont Blanc Presence",
+    "marca": "Montblanc",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 335",
+    "numero_proposto": 335,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8125-b606-f26a8ec7b5df",
+    "nome": "Mussamum cobra",
+    "marca": "Lattafa",
+    "colecao": "Arabic Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 336",
+    "numero_proposto": 336,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-814e-8298-f4b6814e1812",
+    "nome": "My Self",
+    "marca": "Yves Saint Laurent",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 337",
+    "numero_proposto": 337,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-815b-895a-d9482a292fe9",
+    "nome": "My Way",
+    "marca": "Giorgio Armani",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 338",
+    "numero_proposto": 338,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81b9-ba46-e8ebe1c90253",
+    "nome": "My Way Giorgio Armani",
+    "marca": "Giorgio Armani",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 339",
+    "numero_proposto": 339,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8155-837d-dab2c405d980",
+    "nome": "Narcisio Rodriguez",
+    "marca": "Narciso Rodriguez",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 340",
+    "numero_proposto": 340,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8101-b636-f5465f83f3e4",
+    "nome": "Narciso Rodriguez",
+    "marca": "Narciso Rodriguez",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 341",
+    "numero_proposto": 341,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81eb-8cef-f88fb532529f",
+    "nome": "Narciso Rodriguez For Her",
+    "marca": "Narciso Rodriguez",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 342",
+    "numero_proposto": 342,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8113-bcf5-d89d430d35d4",
+    "nome": "Nebra",
+    "marca": "Lattafa",
+    "colecao": "Arabic Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 343",
+    "numero_proposto": 343,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-812a-a563-efb0b969fdcd",
+    "nome": "Nina",
+    "marca": "Nina Ricci",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 344",
+    "numero_proposto": 344,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8157-80ce-c735a40842b5",
+    "nome": "Nina Ricci",
+    "marca": "Nina Ricci",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 345",
+    "numero_proposto": 345,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-815c-9d9e-cf8fc577ae6f",
+    "nome": "Nobel Ameer",
+    "marca": "Lattafa",
+    "colecao": "Arabic Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 346",
+    "numero_proposto": 346,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81cf-9bd4-e7ea973e3d65",
+    "nome": "Nobre Blush",
+    "marca": "Lattafa",
+    "colecao": "Arabic Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 347",
+    "numero_proposto": 347,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-814d-8a61-d491703defa8",
+    "nome": "N°5 Chanel",
+    "marca": "Chanel",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 348",
+    "numero_proposto": 348,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81a6-89ba-e0c4056fd98a",
+    "nome": "N°5 Chanel",
+    "marca": "Chanel",
+    "colecao": "Signature",
+    "volume": "100ml",
+    "numero_exibido_atual": "Nº 349",
+    "numero_proposto": 349,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81a5-93c1-d01fc19e8ef5",
+    "nome": "Olympea",
+    "marca": "Paco Rabanne",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 350",
+    "numero_proposto": 350,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8194-bd75-ca364ed8888d",
+    "nome": "Olympea",
+    "marca": "Paco Rabanne",
+    "colecao": "Signature",
+    "volume": "100ml",
+    "numero_exibido_atual": "Nº 351",
+    "numero_proposto": 351,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-817f-897b-cf064a745d2a",
+    "nome": "Olympea",
+    "marca": "Paco Rabanne",
+    "colecao": "Dream Brand Collection",
+    "volume": "80ml",
+    "numero_exibido_atual": "Nº 352",
+    "numero_proposto": 352,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81e3-ac50-d40b78e98d3d",
+    "nome": "Olympea",
+    "marca": "Paco Rabanne",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 353",
+    "numero_proposto": 353,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81b5-8050-ee8d30085877",
+    "nome": "One Million",
+    "marca": "Paco Rabanne",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 354",
+    "numero_proposto": 354,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8187-9f8d-e5d8254c1f06",
+    "nome": "One Million",
+    "marca": "Paco Rabanne",
+    "colecao": "Signature",
+    "volume": "100ml",
+    "numero_exibido_atual": "Nº 355",
+    "numero_proposto": 355,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8158-96e8-d1a03dce4279",
+    "nome": "One Million",
+    "marca": "Paco Rabanne",
+    "colecao": "Dream Brand Collection",
+    "volume": "100ml",
+    "numero_exibido_atual": "Nº 356",
+    "numero_proposto": 356,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81af-b9b5-fc6d01751317",
+    "nome": "One Million",
+    "marca": "Paco Rabanne",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 357",
+    "numero_proposto": 357,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-816a-bbd4-fedaa3b56623",
+    "nome": "One Million Gold",
+    "marca": "Paco Rabanne",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 358",
+    "numero_proposto": 358,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8104-88a7-fb55d0022144",
+    "nome": "One Million Lucky",
+    "marca": "Paco Rabanne",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 359",
+    "numero_proposto": 359,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81ad-8d43-c16f240e14db",
+    "nome": "One Million Prive",
+    "marca": "Paco Rabanne",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 360",
+    "numero_proposto": 360,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39558811-29ca-8046-a6c9-ed9973ce2557",
+    "nome": "Only The Brave",
+    "marca": "Diesel",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 361",
+    "numero_proposto": 361,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8184-9583-c72676cdc2d5",
+    "nome": "Oriana",
+    "marca": "Parfums de Marly",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 362",
+    "numero_proposto": 362,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81be-b879-f785c296b183",
+    "nome": "Oud For Glory",
+    "marca": "Lattafa",
+    "colecao": "Arabic Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 363",
+    "numero_proposto": 363,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8135-9c95-fc52d186ea46",
+    "nome": "Phantom",
+    "marca": "Paco Rabanne",
+    "colecao": "Signature",
+    "volume": "100ml",
+    "numero_exibido_atual": "Nº 364",
+    "numero_proposto": 364,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8122-951c-fcb228de0d0d",
+    "nome": "Poison Girl",
+    "marca": "Dior",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 365",
+    "numero_proposto": 365,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8182-bc70-edb9e0511948",
+    "nome": "Poison Girl",
+    "marca": "Dior",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 366",
+    "numero_proposto": 366,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8133-99fd-e2966edfa939",
+    "nome": "Polo Black",
+    "marca": "Ralph Lauren",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 367",
+    "numero_proposto": 367,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81b5-b780-d1f6b80d4dd7",
+    "nome": "Polo Black",
+    "marca": "Ralph Lauren",
+    "colecao": "Signature",
+    "volume": "100ml",
+    "numero_exibido_atual": "Nº 368",
+    "numero_proposto": 368,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8152-a1f0-e97e8565b62a",
+    "nome": "Polo Blue",
+    "marca": "Ralph Lauren",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 369",
+    "numero_proposto": 369,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8164-8461-f86edbd6ef87",
+    "nome": "Polo Blue",
+    "marca": "Ralph Lauren",
+    "colecao": "Signature",
+    "volume": "100ml",
+    "numero_exibido_atual": "Nº 370",
+    "numero_proposto": 370,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81bc-91f9-d82d10124dab",
+    "nome": "Polo Blue",
+    "marca": "Ralph Lauren",
+    "colecao": "Dream Brand Collection",
+    "volume": "100ml",
+    "numero_exibido_atual": "Nº 371",
+    "numero_proposto": 371,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8144-be90-d4acf60a88d0",
+    "nome": "Polo Green",
+    "marca": "Ralph Lauren",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 372",
+    "numero_proposto": 372,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-815a-a03b-ee46bdf5b13e",
+    "nome": "Polo Green",
+    "marca": "Ralph Lauren",
+    "colecao": "Signature",
+    "volume": "100ml",
+    "numero_exibido_atual": "Nº 373",
+    "numero_proposto": 373,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81c3-8d9c-c69463a0a6e9",
+    "nome": "Polo Red",
+    "marca": "Ralph Lauren",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 374",
+    "numero_proposto": 374,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-815a-81fc-cd0664c2eb61",
+    "nome": "Polo Red",
+    "marca": "Ralph Lauren",
+    "colecao": "Signature",
+    "volume": "100ml",
+    "numero_exibido_atual": "Nº 375",
+    "numero_proposto": 375,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81e3-a1c1-f54cfb8899dc",
+    "nome": "Polo Sport",
+    "marca": "Ralph Lauren",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 376",
+    "numero_proposto": 376,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8154-9f69-e8fdc4b0a9d2",
+    "nome": "Polo Sport",
+    "marca": "Ralph Lauren",
+    "colecao": "Signature",
+    "volume": "100ml",
+    "numero_exibido_atual": "Nº 377",
+    "numero_proposto": 377,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81cf-ac14-f183a2af0357",
+    "nome": "Prada",
+    "marca": "Prada",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 378",
+    "numero_proposto": 378,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8147-a989-dcf18b652f01",
+    "nome": "Prada Candy",
+    "marca": "Prada",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 379",
+    "numero_proposto": 379,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8175-821e-f5028fa60419",
+    "nome": "Prada Paradoxe",
+    "marca": "Prada",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 380",
+    "numero_proposto": 380,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81cf-a261-cd467b9d3dd8",
+    "nome": "Ricci Nina Ricci",
+    "marca": "Nina Ricci",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 381",
+    "numero_proposto": 381,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81f6-a5f2-d98fb3d4ea29",
+    "nome": "Rouge Royal",
+    "marca": "Marina de Bourbon",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 382",
+    "numero_proposto": 382,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8170-a597-d09a25df30ba",
+    "nome": "Royal Amber",
+    "marca": "Orientica",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 383",
+    "numero_proposto": 383,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-811a-80f6-e42f98b79648",
+    "nome": "Royal Amber",
+    "marca": "Orientica",
+    "colecao": "Arabic Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 384",
+    "numero_proposto": 384,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8195-8d7b-dfb706e1ff91",
+    "nome": "Royal Amber Rouge",
+    "marca": "Orientica",
+    "colecao": "Arabic Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 385",
+    "numero_proposto": 385,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8181-b359-ec8e9ea3b79b",
+    "nome": "Sabah",
+    "marca": "Lattafa",
+    "colecao": "Arabic Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 386",
+    "numero_proposto": 386,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81d4-b3f6-c8607693d82e",
+    "nome": "Sabah Al Ward",
+    "marca": "Lattafa",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 387",
+    "numero_proposto": 387,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8186-ae03-c070c485663e",
+    "nome": "Sabah Al Ward",
+    "marca": "Lattafa",
+    "colecao": "Signature",
+    "volume": "100ml",
+    "numero_exibido_atual": "Nº 388",
+    "numero_proposto": 388,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81fe-95cb-db1f3c9d8766",
+    "nome": "Sakeena",
+    "marca": "Lattafa",
+    "colecao": "Arabic Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 389",
+    "numero_proposto": 389,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-816b-bdad-d6e257ae9af2",
+    "nome": "Samsara",
+    "marca": "Guerlain",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 390",
+    "numero_proposto": 390,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81d7-8594-f981ab417b39",
+    "nome": "Sauvage",
+    "marca": "Dior",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 391",
+    "numero_proposto": 391,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81be-9b26-ef9ff24f2b89",
+    "nome": "Sauvage",
+    "marca": "Dior",
+    "colecao": "Signature",
+    "volume": "100ml",
+    "numero_exibido_atual": "Nº 392",
+    "numero_proposto": 392,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81f3-bd50-d797b903444f",
+    "nome": "Sauvage",
+    "marca": "Dior",
+    "colecao": "Dream Brand Collection",
+    "volume": "100ml",
+    "numero_exibido_atual": "Nº 393",
+    "numero_proposto": 393,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81f0-a4a6-c4b317380d68",
+    "nome": "Sauvage",
+    "marca": "Dior",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 394",
+    "numero_proposto": 394,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81ca-816f-e2c83bfc60ec",
+    "nome": "Sauvage Elixir",
+    "marca": "Dior",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 395",
+    "numero_proposto": 395,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8187-92e9-d8e4ccc58957",
+    "nome": "Sauvage Elixir",
+    "marca": "Dior",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 396",
+    "numero_proposto": 396,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8197-9e93-fe864c3ddc5d",
+    "nome": "Sauvage Elixir",
+    "marca": "Dior",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 397",
+    "numero_proposto": 397,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-813d-a7fe-e3ffe07059f1",
+    "nome": "Scandal",
+    "marca": "Jean Paul Gaultier",
+    "colecao": "Signature",
+    "volume": "100ml",
+    "numero_exibido_atual": "Nº 398",
+    "numero_proposto": 398,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8176-98e9-ed5f98c53181",
+    "nome": "Scandal",
+    "marca": "Jean Paul Gaultier",
+    "colecao": "Dream Brand Collection",
+    "volume": "100ml",
+    "numero_exibido_atual": "Nº 399",
+    "numero_proposto": 399,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81d3-aa1f-f441f570e565",
+    "nome": "Scandal",
+    "marca": "Jean Paul Gaultier",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 400",
+    "numero_proposto": 400,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39558811-29ca-804a-8b95-fba34b6c8b31",
+    "nome": "Scandal",
+    "marca": "Jean Paul Gaultier",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 401",
+    "numero_proposto": 401,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-817f-b0ef-c122cc7d9296",
+    "nome": "Scandal Gold",
+    "marca": "Jean Paul Gaultier",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 402",
+    "numero_proposto": 402,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81dd-975c-c02eb17fe793",
+    "nome": "Si",
+    "marca": "Giorgio Armani",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 403",
+    "numero_proposto": 403,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81f1-9bff-c6c2bed15417",
+    "nome": "Si Passione",
+    "marca": "Giorgio Armani",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 404",
+    "numero_proposto": 404,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81e9-a9d5-c8e8d0481d02",
+    "nome": "Silver Scent",
+    "marca": "Jacques Bogart",
+    "colecao": "Signature",
+    "volume": "100ml",
+    "numero_exibido_atual": "Nº 405",
+    "numero_proposto": 405,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81a1-9a50-caa0ee96c176",
+    "nome": "Silver Scent",
+    "marca": "Jacques Bogart",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 406",
+    "numero_proposto": 406,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81d4-88f3-ce28d8587fc4",
+    "nome": "Silver Scent Intense",
+    "marca": "Jacques Bogart",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 407",
+    "numero_proposto": 407,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8108-a742-c742073c705d",
+    "nome": "Souvenir Branco",
+    "marca": "Afnan",
+    "colecao": "Arabic Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 408",
+    "numero_proposto": 408,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8127-a1ae-d55981906977",
+    "nome": "Sublime",
+    "marca": "Lattafa",
+    "colecao": "Arabic Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 409",
+    "numero_proposto": 409,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8186-9f86-dc8918bfe097",
+    "nome": "Tharwah Gold",
+    "marca": "Lattafa",
+    "colecao": "Arabic Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 410",
+    "numero_proposto": 410,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81dc-867d-ea26e93cab1d",
+    "nome": "The Kingdom",
+    "marca": "Lattafa",
+    "colecao": "Arabic Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 411",
+    "numero_proposto": 411,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81da-8a77-c1fc856a1b11",
+    "nome": "Tiffany",
+    "marca": "Tiffany & Co.",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 412",
+    "numero_proposto": 412,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8123-b970-f6f0e272491a",
+    "nome": "Tom Ford Black Orchid",
+    "marca": "Tom Ford",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 413",
+    "numero_proposto": 413,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81cd-8a00-d5c1022919d9",
+    "nome": "Tom Ford Mandarino di Amalfi",
+    "marca": "Tom Ford",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 414",
+    "numero_proposto": 414,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81c5-a1e6-ed77c591ed89",
+    "nome": "Tom Ford Neroli Portofino",
+    "marca": "Tom Ford",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 415",
+    "numero_proposto": 415,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81b7-a990-fb54187d1a10",
+    "nome": "Tom Ford Tobacco Vanille",
+    "marca": "Tom Ford",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 416",
+    "numero_proposto": 416,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8172-a1d7-f38d0872a085",
+    "nome": "Toy 2 Bubble Gum",
+    "marca": "Moschino",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 417",
+    "numero_proposto": 417,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8159-aabd-d8b9bb8a945c",
+    "nome": "Toy 2 Moschino",
+    "marca": "Moschino",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 418",
+    "numero_proposto": 418,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8152-af4b-cb3a584be1ca",
+    "nome": "Toy Boy",
+    "marca": "Moschino",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 419",
+    "numero_proposto": 419,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8100-bd0e-c04ab323312d",
+    "nome": "Trésor",
+    "marca": "Lancôme",
+    "colecao": "Signature",
+    "volume": "100ml",
+    "numero_exibido_atual": "Nº 420",
+    "numero_proposto": 420,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81df-b946-d797db50c43c",
+    "nome": "Valentina",
+    "marca": "Valentino",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 421",
+    "numero_proposto": 421,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8167-8b0d-f70e4e7577eb",
+    "nome": "Valentina Assoluto Valentino",
+    "marca": "Valentino",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 422",
+    "numero_proposto": 422,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81aa-b3dd-d9c1a38a2b94",
+    "nome": "Valentina Poudre",
+    "marca": "Valentino",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 423",
+    "numero_proposto": 423,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8102-a050-fcd6149f53cc",
+    "nome": "Valentina Valentino",
+    "marca": "Valentino",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 424",
+    "numero_proposto": 424,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81ba-93da-e0d5403c327b",
+    "nome": "Versace Crystal Bright",
+    "marca": "Versace",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 425",
+    "numero_proposto": 425,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8127-bc66-e92953af91a4",
+    "nome": "Versace Dylan Blue",
+    "marca": "Versace",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 426",
+    "numero_proposto": 426,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81a8-afec-fdbfbcaae127",
+    "nome": "Versace Dylan Blue Pour Homme",
+    "marca": "Versace",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 427",
+    "numero_proposto": 427,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8153-955e-ecf79f6fb83d",
+    "nome": "Versace Dylan Purple",
+    "marca": "Versace",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 428",
+    "numero_proposto": 428,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81ef-b505-cb7ca6ce1b7a",
+    "nome": "Versace Eros",
+    "marca": "Versace",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 429",
+    "numero_proposto": 429,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81e1-8aa5-ce5c777ee8e1",
+    "nome": "Versace Eros",
+    "marca": "Versace",
+    "colecao": "Dream Brand Collection",
+    "volume": "100ml",
+    "numero_exibido_atual": "Nº 430",
+    "numero_proposto": 430,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81a3-8cd1-f4854bb19471",
+    "nome": "Versace Eros",
+    "marca": "Versace",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 431",
+    "numero_proposto": 431,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8172-b1df-cb6a2cf044e4",
+    "nome": "Versace Eros Pour Femme",
+    "marca": "Versace",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 432",
+    "numero_proposto": 432,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-819e-a878-e2780f0d144c",
+    "nome": "Versace Pour Femme Dy Lan Blue",
+    "marca": "Versace",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 433",
+    "numero_proposto": 433,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-812d-9f00-e7fc82577c87",
+    "nome": "Victoria Secret Aqua Kiss",
+    "marca": "Victoria's Secret",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 434",
+    "numero_proposto": 434,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-819d-a33d-edba8cfcd31f",
+    "nome": "Victoria Secret Coconut Passion",
+    "marca": "Victoria's Secret",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 435",
+    "numero_proposto": 435,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-814d-9573-c8537b4d50bf",
+    "nome": "Victoria Secret Love Spell",
+    "marca": "Victoria's Secret",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 436",
+    "numero_proposto": 436,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-816a-af47-f16983595a4f",
+    "nome": "Victoria Secret Pearl Glacé",
+    "marca": "Victoria's Secret",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 437",
+    "numero_proposto": 437,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81b7-b387-d49ae3f1b196",
+    "nome": "Victoria Templation",
+    "marca": "Victoria's Secret",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 438",
+    "numero_proposto": 438,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8191-bcbc-c408f6142704",
+    "nome": "Victorias Secret",
+    "marca": "Victoria's Secret",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 439",
+    "numero_proposto": 439,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8103-8413-ea08e4155be0",
+    "nome": "Victorias Secret Crush",
+    "marca": "Victoria's Secret",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 440",
+    "numero_proposto": 440,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-818d-beca-ef2504a18b44",
+    "nome": "Wazeer",
+    "marca": "Lattafa",
+    "colecao": "Arabic Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 441",
+    "numero_proposto": 441,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8171-baad-ee6351e52350",
+    "nome": "Xerjoff Naxos",
+    "marca": "Xerjoff",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 442",
+    "numero_proposto": 442,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81cb-aaf1-fa8b890f2332",
+    "nome": "YSL Mon Paris",
+    "marca": "Yves Saint Laurent",
+    "colecao": "Brand Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 443",
+    "numero_proposto": 443,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-817e-8d21-cbc599e47bed",
+    "nome": "Yara",
+    "marca": "Lattafa",
+    "colecao": "Signature",
+    "volume": "100ml",
+    "numero_exibido_atual": "Nº 444",
+    "numero_proposto": 444,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39558811-29ca-804d-92ec-e72189b50f86",
+    "nome": "Yara",
+    "marca": "Lattafa",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 445",
+    "numero_proposto": 445,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8198-a3bf-d13664308113",
+    "nome": "Yara Branco",
+    "marca": "Lattafa",
+    "colecao": "Arabic Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 446",
+    "numero_proposto": 446,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8170-b790-dcb6279b33db",
+    "nome": "Yara Candy",
+    "marca": "Lattafa",
+    "colecao": "Arabic Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 447",
+    "numero_proposto": 447,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81cc-ba5a-ff866f40b9bd",
+    "nome": "Yara Laranja",
+    "marca": "Lattafa",
+    "colecao": "Arabic Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 448",
+    "numero_proposto": 448,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81ab-89b3-d44e2952ed9a",
+    "nome": "Yara Rosa",
+    "marca": "Lattafa",
+    "colecao": "Arabic Collection",
+    "volume": "25ml",
+    "numero_exibido_atual": "Nº 449",
+    "numero_proposto": 449,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-81fb-8874-e0cbd377a5d3",
+    "nome": "Yves Saint Laurent - Lanuit De L'Homme",
+    "marca": "Yves Saint Laurent",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 450",
+    "numero_proposto": 450,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-8197-8a9e-e410b30bdf27",
+    "nome": "Yves Saint Laurent Libre",
+    "marca": "Yves Saint Laurent",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 451",
+    "numero_proposto": 451,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39958811-29ca-815a-8943-f05af0a52ca0",
+    "nome": "Yves Saint Laurent MYSLF",
+    "marca": "Yves Saint Laurent",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 452",
+    "numero_proposto": 452,
+    "status_propriedade": "Novo"
+  },
+  {
+    "id": "39558811-29ca-80ec-ae3e-c454d54c6332",
+    "nome": "Éclair",
+    "marca": "Lattafa",
+    "colecao": "Signature",
+    "volume": "50ml",
+    "numero_exibido_atual": "Nº 453",
+    "numero_proposto": 453,
+    "status_propriedade": "Novo"
+  }
+]
