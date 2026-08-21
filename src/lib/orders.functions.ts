@@ -181,7 +181,25 @@ export const listarPedidos = createServerFn({ method: "GET" }).handler(
   async (): Promise<Pedido[]> => {
     const { requireAdmin } = await import("./admin.server");
     await requireAdmin();
-    const url = `${GATEWAY}/spreadsheets/${SHEET_ID}/values/${SHEET_NAME}!A2:I10000`;
+    
+    // Get headers first
+    const headers = await getHeaders(SHEET_ID, SHEET_NAME);
+    const getIdx = (name: string) => headers.findIndex(h => h.toLowerCase() === name.toLowerCase());
+
+    const colIndices = {
+      id: getIdx("ID"),
+      data: getIdx("Data"),
+      cliente: getIdx("Cliente"),
+      telefone: getIdx("Telefone"),
+      itens: getIdx("Itens"),
+      total: getIdx("Total"),
+      pagamento: getIdx("Pagamento"),
+      parcelas: getIdx("Parcelas"),
+      status: getIdx("Status"),
+      rastreio: getIdx("Rastreio"),
+    };
+
+    const url = `${GATEWAY}/spreadsheets/${SHEET_ID}/values/${SHEET_NAME}!A2:Z10000`;
     const res = await fetch(url, { headers: sheetsHeaders() });
     if (!res.ok) {
       const text = await res.text();
@@ -189,25 +207,28 @@ export const listarPedidos = createServerFn({ method: "GET" }).handler(
     }
     const json = (await res.json()) as { values?: string[][] };
     const rows = json.values ?? [];
+    
     return rows
       .map((r, i) => {
-        const totalRaw = (r[4] ?? "0").toString().replace(/\./g, "").replace(",", ".");
+        const val = (idx: number) => (idx !== -1 ? r[idx] : "") ?? "";
+        const totalRaw = val(colIndices.total).toString().replace(/\./g, "").replace(",", ".");
         const total = parseFloat(totalRaw) || 0;
+        
         return {
-          id: r[0] ?? "",
-          data: r[1] ?? "",
-          cliente: r[2] ?? "",
-          itens: r[3] ?? "",
+          id: val(colIndices.id),
+          data: val(colIndices.data),
+          cliente: val(colIndices.cliente),
+          telefone: val(colIndices.telefone),
+          itens: val(colIndices.itens),
           total,
-          pagamento: r[5] ?? "",
-          parcelas: r[6] ?? "",
-          status: r[7] ?? "",
-          rastreio: r[8] ?? "",
+          pagamento: val(colIndices.pagamento),
+          parcelas: val(colIndices.parcelas),
+          status: val(colIndices.status),
+          rastreio: val(colIndices.rastreio),
           row: i + 2,
         };
       })
       .filter((p) => p.id);
-
   },
 );
 
