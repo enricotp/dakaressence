@@ -206,7 +206,32 @@ export const getPerfumes = createServerFn({ method: "GET" }).handler(
 
       const effectiveAmount = amount ?? 0;
       const prontaEntrega = effectiveAmount > oosThreshold || notionProntaEntrega;
-      const sobEncomenda = !prontaEntrega || notionSobEncomenda;
+      // Item is only "Sob Encomenda" if it's NOT available for "Pronta Entrega"
+      // OR if it's explicitly marked in Notion AND we want to show both (unlikely, usually one excludes the other)
+      // Re-evaluating: If the user marked "Sob encomenda" checkbox, they might want it to show as such even if in stock.
+      // But typically, Pronta Entrega is preferred. 
+      // If amount > 0, it's Pronta Entrega. If the user also checked "Sob encomenda", it will show both.
+      // We should make them mutually exclusive unless explicitly both checked? 
+      // Actually, let's respect the checkboxes but prioritize Pronta Entrega logic.
+      const sobEncomenda = notionSobEncomenda || (!prontaEntrega);
+      
+      // If both tags are active, let's see if we should prioritize.
+      // If amount > 0, it's Pronta Entrega, we only show Sob Encomenda if the checkbox is manually ON.
+      // But if it's Pronta Entrega, showing "Sob Encomenda" is confusing.
+      // FIX: If it is Pronta Entrega, we ONLY show Sob Encomenda if the user EXPLICITLY checked it AND amount is 0?
+      // No, if the user checked "Sob encomenda" in Notion, they probably want that tag.
+      // However, if the system detected "Pronta Entrega" because amount > 0, we have a conflict.
+      
+      const finalPronta = prontaEntrega;
+      const finalSob = sobEncomenda && !notionProntaEntrega && (amount === null || amount <= oosThreshold || notionSobEncomenda);
+      
+      // Simplified Logic to avoid double tags unless both checkboxes are explicitly checked:
+      // 1. If Pronta Entrega (Amount > OoS or Checkbox) -> Show Pronta Entrega.
+      // 2. If Sob Encomenda (Checkbox or NOT Pronta Entrega) -> Show Sob Encomenda.
+      // 3. To avoid overlap: If it is Pronta Entrega, only show Sob Encomenda if the checkbox is checked AND it's not the manual Pronta checkbox.
+      
+      const isPronta = effectiveAmount > oosThreshold || notionProntaEntrega;
+      const isSob = notionSobEncomenda || (!isPronta);
       const emEstoque = prontaEntrega;
 
       const notasTopo =
