@@ -207,6 +207,10 @@ export const getPerfumes = createServerFn({ method: "GET" }).handler(
       const prontaEntrega = effectiveAmount > oosThreshold || notionProntaEntrega;
       const sobEncomenda = (effectiveAmount <= oosThreshold && !notionProntaEntrega) || notionSobEncomenda;
       
+      if (nome.includes("MYSLF")) {
+        console.log(`DEBUG MYSLF: amount=${amount}, effectiveAmount=${effectiveAmount}, oosThreshold=${oosThreshold}, pronta=${prontaEntrega}, encomenda=${sobEncomenda}`);
+      }
+      
       const notasTopo =
         page.properties["Notas de topo"]?.rich_text?.map((t) => t.plain_text).join("") ?? "";
       const notasCoracao =
