@@ -420,7 +420,7 @@ export function CartDrawer() {
               <button
                 type="button"
                 onClick={confirmar}
-                disabled={enviando || !nome.trim() || cartCount === 0}
+                disabled={enviando || !nome.trim() || !validarTelefone(telefone) || cartCount === 0}
                 className="inline-flex w-full items-center justify-center rounded-full bg-gold px-6 py-3 text-sm font-semibold text-primary-foreground transition hover:brightness-110 disabled:opacity-50"
               >
                 {enviando ? "Registrando…" : "Confirmar e abrir WhatsApp"}
