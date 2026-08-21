@@ -694,7 +694,7 @@ export function CatalogViewer({ perfumes }: CatalogViewerProps) {
             const i = perfumes.indexOf(p);
             const codigo = codigoDoPerfume(i);
             const imagem = p.imagem ?? imagensRotativas[i % imagensRotativas.length];
-            const mostrarSobEncomenda = p.sobEncomenda && !p.emEstoque;
+            const mostrarSobEncomenda = p.sobEncomenda;
             const qtd = cart[p.id] ?? 0;
             return (
               <article
