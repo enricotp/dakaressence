@@ -365,7 +365,7 @@ export function CatalogViewer({ perfumes }: CatalogViewerProps) {
 
 
       {/* Busca por nome + seletor de marca + favoritos */}
-      <div className="mb-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+      <div className="mb-8 flex flex-col items-stretch justify-center gap-3 sm:flex-row sm:items-end">
         <div className="relative w-full max-w-xs text-left">
           <label className="mb-1 block text-[10px] font-semibold uppercase tracking-wider text-muted-foreground ml-2">
             Buscar perfume por nome
