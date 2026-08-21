@@ -31,6 +31,7 @@ export const getHomeConfig = createServerFn({ method: "GET" }).handler(
     const res = await fetch(`${GATEWAY}/databases/${CONFIG_DB_ID}/query`, {
       method: "POST",
       headers: notionHeaders(),
+      cache: "no-store",
       body: JSON.stringify({
         sorts: [{ property: "Ordem", direction: "ascending" }],
       }),
