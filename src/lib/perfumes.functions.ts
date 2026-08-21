@@ -445,7 +445,13 @@ export async function ajustarEstoqueInterno(id: string, delta: number) {
   const res = await fetch(`${GATEWAY}/pages/${id}`, {
     method: "PATCH",
     headers: notionHeaders(),
-    body: JSON.stringify({ properties: { Amount: { number: next } } }),
+    body: JSON.stringify({ 
+      properties: { 
+        Amount: { number: next },
+        "Sob encomenda": { checkbox: next <= 0 },
+        "Pronta entrega": { checkbox: next > 0 }
+      } 
+    }),
   });
   return { ok: res.ok, novoEstoque: next };
 }
