@@ -25,7 +25,8 @@ import {
 import {
  listarPedidos,
  atualizarRastreio,
-  atualizarStatusPedido,
+   atualizarStatusPedido,
+   processarSaidaEstoque,
   listarItensVendidos,
   type Pedido,
   type ItemVendido,
