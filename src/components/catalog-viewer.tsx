@@ -94,7 +94,8 @@ export function CatalogViewer({ perfumes }: CatalogViewerProps) {
 
 
   const marcas = Array.from(new Set(perfumes.map((p) => p.marca).filter((m): m is string => !!m))).sort();
-  const buscaNorm = busca.trim().toLowerCase();
+  const normalize = (str: string) => str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+  const buscaNorm = normalize(busca.trim());
   
   const colecaoOrder: Record<Colecao, number> = {
     Signature: 0,
