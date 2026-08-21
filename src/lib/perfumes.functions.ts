@@ -49,8 +49,7 @@ export type Perfume = {
   colecao: Colecao;
   lowThreshold: number | null;
   oosThreshold: number | null;
-  sobEncomenda: boolean;
-  prontaEntrega: boolean;
+  disponibilidade: string;
   notasTopo: string;
   notasCoracao: string;
   notasFundo: string;
@@ -175,6 +174,7 @@ export const getPerfumes = createServerFn({ method: "GET" }).handler(
       const amount = page.properties["Amount"]?.number ?? null;
       const oosThreshold = page.properties["OoS threshold"]?.number ?? 0;
       const status = page.properties["Available?"]?.formula?.string ?? "";
+      const disponibilidade = page.properties["Disponibilidade"]?.formula?.string ?? "";
 
       const descricao =
         page.properties["Descrição"]?.rich_text?.map((t) => t.plain_text).join("") ?? "";
@@ -201,16 +201,13 @@ export const getPerfumes = createServerFn({ method: "GET" }).handler(
         : "Signature";
       
       const lowThreshold = page.properties["Low threshold "]?.number ?? null;
-      const notionSobEncomenda = page.properties["Sob encomenda"]?.checkbox ?? false;
-      const notionProntaEntrega = page.properties["Pronta entrega"]?.checkbox ?? false;
-
+      
       const effectiveAmount = amount ?? 0;
       
-      // Regra de Ouro: O Saldo em estoque (Amount) é a única verdade para o site.
-      // Isso elimina a necessidade de sincronizar checkboxes manualmente.
-      const prontaEntrega = effectiveAmount > oosThreshold;
-      const sobEncomenda = !prontaEntrega;
-      
+      // A disponibilidade agora é automática no Notion via fórmula.
+      // O site continua calculando internamente para garantir reatividade imediata,
+      // mas usa o campo 'disponibilidade' vindo do Notion como fonte de verdade.
+      const prontaEntrega = disponibilidade === "Pronta Entrega" || effectiveAmount > oosThreshold;
       const emEstoque = prontaEntrega;
 
       const notasTopo =
@@ -240,8 +237,7 @@ export const getPerfumes = createServerFn({ method: "GET" }).handler(
         colecao,
         lowThreshold,
         oosThreshold,
-        sobEncomenda,
-        prontaEntrega,
+        disponibilidade,
         notasTopo,
         notasCoracao,
         notasFundo,
@@ -293,8 +289,6 @@ export const atualizarPerfume = createServerFn({ method: "POST" })
       genero?: Genero;
       lowThreshold?: number | null;
       oosThreshold?: number | null;
-      sobEncomenda?: boolean;
-      prontaEntrega?: boolean;
       notasTopo?: string;
       notasCoracao?: string;
       notasFundo?: string;
@@ -307,10 +301,7 @@ export const atualizarPerfume = createServerFn({ method: "POST" })
 
     const properties: Record<string, unknown> = {};
     
-    // Automação solicitada pelo usuário:
-    // Se o saldo (amount) estiver sendo alterado:
-    //   Saldo <= 0 -> Sob encomenda = true, Pronta entrega = false
-    //   Saldo > 0 -> Sob encomenda = false, Pronta entrega = true
+    // A disponibilidade agora é automática via fórmula no Notion baseada no 'Amount'.
     if (data.amount !== undefined) properties["Amount"] = { number: data.amount };
     if (data.nome !== undefined)
       properties["Product Name"] = { title: [{ text: { content: data.nome } }] };
@@ -329,8 +320,6 @@ export const atualizarPerfume = createServerFn({ method: "POST" })
       properties["Low threshold "] = { number: data.lowThreshold };
     if (data.oosThreshold !== undefined)
       properties["OoS threshold"] = { number: data.oosThreshold };
-    if (data.sobEncomenda !== undefined) properties["Sob encomenda"] = { checkbox: data.sobEncomenda };
-    if (data.prontaEntrega !== undefined) properties["Pronta entrega"] = { checkbox: data.prontaEntrega };
     if (data.notasTopo !== undefined)
       properties["Notas de topo"] = { rich_text: [{ text: { content: data.notasTopo } }] };
     if (data.notasCoracao !== undefined)
@@ -430,8 +419,6 @@ export const criarPerfume = createServerFn({ method: "POST" })
       genero?: Genero;
       lowThreshold?: number | null;
       oosThreshold?: number | null;
-      sobEncomenda?: boolean;
-      prontaEntrega?: boolean;
       notasTopo?: string;
       notasCoracao?: string;
       notasFundo?: string;
@@ -452,13 +439,6 @@ export const criarPerfume = createServerFn({ method: "POST" })
     if (data.custo != null) properties["Custo"] = { number: data.custo };
     if (data.amount != null) {
       properties["Amount"] = { number: data.amount };
-      if (data.amount <= (data.oosThreshold ?? 0)) {
-        properties["Sob encomenda"] = { checkbox: true };
-        properties["Pronta entrega"] = { checkbox: false };
-      } else {
-        properties["Sob encomenda"] = { checkbox: false };
-        properties["Pronta entrega"] = { checkbox: true };
-      }
     }
     if (data.marca) properties["Marca"] = { select: { name: data.marca } };
     if (data.colecao) properties["Coleção"] = { select: { name: data.colecao } };
@@ -468,10 +448,8 @@ export const criarPerfume = createServerFn({ method: "POST" })
       properties["Low threshold "] = { number: data.lowThreshold };
     if (data.oosThreshold != null)
       properties["OoS threshold"] = { number: data.oosThreshold };
-    if (data.amount === undefined) {
-      if (data.sobEncomenda !== undefined) properties["Sob encomenda"] = { checkbox: data.sobEncomenda };
-      if (data.prontaEntrega !== undefined) properties["Pronta entrega"] = { checkbox: data.prontaEntrega };
-    }
+    // As propriedades de checkbox manuais foram removidas.
+    // A disponibilidade é calculada automaticamente via fórmula.
     if (data.notasTopo)
       properties["Notas de topo"] = { rich_text: [{ text: { content: data.notasTopo } }] };
     if (data.notasCoracao)
