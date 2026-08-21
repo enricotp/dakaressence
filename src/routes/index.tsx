@@ -1,150 +1,424 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 /**
-  * O plano está quase aprovado. Corrija estes últimos pontos:
+  * Dakar Essence — Parte 1 de 3
   * 
-  * 1. Não chamar a operação de atômica
+  * Números permanentes dos perfumes e correção da calculadora
   * 
-  * Validar todos os estoques antes de começar é correto, mas atualizar vários perfumes no Notion sequencialmente não é uma transação atômica.
+  * Implemente somente esta primeira parte. Não altere telefone, checkout, regras de estoque, última unidade, movimentações ou textos de marketing neste momento.
   * 
-  * Se o primeiro perfume for atualizado e o segundo falhar, haverá uma baixa parcial.
+  * Objetivos
   * 
-  * Altere o nome para “processamento protegido com compensação” e implemente:
+  * Criar um número permanente e único para cada perfume na database do Notion.
   * 
-  * Agrupar produtos repetidos.
+  * Parar de gerar Nº XXX pela posição do perfume na consulta.
   * 
-  * Validar todos os estoques.
+  * Preservar corretamente os números nos pedidos.
   * 
-  * Registrar a movimentação como INICIADA.
+  * Corrigir a calculadora para identificar o perfume pelo número permanente.
   * 
-  * Atualizar os produtos no Notion.
+  * Impedir cálculos silenciosos com produtos errados.
   * 
-  * Registrar cada produto atualizado.
+  * 1. Criar a coluna Número no Notion
   * 
-  * Se algum falhar, tentar reverter os produtos já atualizados.
+  * Database de perfumes:
   * 
-  * Marcar como:
+  * 38858811-29ca-83c5-b57d-0102c05505b1
   * 
-  * APLICADA, se tudo funcionar;
+  * Crie, caso ainda não exista, uma nova propriedade:
   * 
-  * REVERTIDA, se a compensação funcionar;
+  * Nome: Número
   * 
-  * PRECISA_RECONCILIACAO, se atualização ou reversão ficar incompleta.
+  * Tipo: number
   * 
-  * O pedido só pode mudar para Concluído depois que todas as baixas forem aplicadas com sucesso.
+  * O valor deve ser armazenado como número puro, por exemplo:
   * 
-  * 2. Criar uma aba própria para movimentações
+  * 1
   * 
-  * Não salve todo o histórico de movimentações dentro de uma única célula EstoqueMovimentado.
+  * 25
   * 
-  * Crie no mesmo Google Sheets uma nova aba chamada MovimentacoesEstoque, caso ela ainda não exista.
+  * 439
   * 
-  * Colunas sugeridas:
+  * Na interface, ele deve ser formatado como:
   * 
-  * MovimentoID
+  * Nº 001
   * 
-  * PedidoID
+  * Nº 025
   * 
-  * Ciclo
+  * Nº 439
   * 
-  * Ação
+  * Não armazene Nº nem zeros à esquerda dentro do Notion.
   * 
-  * Status
+  * 2. Não preencher a coluna antes da aprovação
   * 
-  * DataInicio
+  * Pode criar a propriedade Número, mas não preencha os perfumes imediatamente.
   * 
-  * DataFim
+  * Primeiro, gere um relatório completo contendo:
   * 
-  * Itens
+  * ID da página do perfume no Notion;
   * 
-  * Erro
+  * nome;
   * 
-  * Usuario
+  * marca;
   * 
-  * A aba Pedidos pode receber apenas:
+  * coleção;
   * 
-  * Telefone
+  * volume;
   * 
-  * EstoqueCiclo
+  * número atualmente exibido pelo sistema;
   * 
-  * UltimoMovimentoStatus
+  * número permanente proposto;
   * 
-  * Localize essas colunas pelos cabeçalhos, sem assumir posições fixas.
+  * situação da propriedade Número;
   * 
-  * 3. Corrigir os IDs dos ciclos
+  * possíveis conflitos;
   * 
-  * O identificador não pode ser apenas PED-XXXX:BAIXA, porque um pedido cancelado, reaberto e concluído novamente precisa de uma nova baixa legítima.
+  * possíveis duplicidades;
   * 
-  * Use:
+  * perfumes sem número;
   * 
-  * PED-XXXX:CICLO-1:BAIXA
+  * perfumes repetidos ou suspeitos.
   * 
-  * PED-XXXX:CICLO-1:DEVOLUCAO
+  * O “número atualmente exibido” deve ser capturado usando exatamente a mesma ordenação que o site utiliza hoje para gerar os números por índice.
   * 
-  * PED-XXXX:CICLO-2:BAIXA
+  * Se a propriedade Número já existir e algum perfume já possuir valor, não sobrescreva. Inclua isso no relatório.
   * 
-  * PED-XXXX:CICLO-2:DEVOLUCAO
+  * Apresente o relatório e aguarde minha aprovação antes de gravar qualquer número nos perfumes.
   * 
-  * Cada ciclo pode ter no máximo uma baixa aplicada e uma devolução aplicada.
+  * 3. Regras do número permanente
   * 
-  * Ao reabrir um pedido cancelado, incremente EstoqueCiclo. Uma nova conclusão deve verificar o estoque e criar uma nova movimentação.
+  * Depois que eu aprovar o relatório:
   * 
-  * 4. Corrigir a recuperação quando o Sheets falhar
+  * Grave os números propostos na propriedade Número.
   * 
-  * A frase “se o Notion funcionar e o Sheets falhar, marcar no Sheets como PRECISA_RECONCILIACAO” é contraditória: se o Sheets falhou, talvez não seja possível escrever nele.
+  * Cada perfume deve possuir apenas um número.
   * 
-  * A ordem deve ser:
+  * Cada número deve pertencer a apenas um perfume.
   * 
-  * Criar no Sheets o movimento INICIADA.
+  * Bloqueie números duplicados.
   * 
-  * Atualizar o Notion.
+  * O número não pode mudar quando a consulta do Notion for reordenada.
   * 
-  * Atualizar o movimento para APLICADA.
+  * O número não pode mudar quando outro perfume for criado, editado, excluído ou arquivado.
   * 
-  * Se a atualização final do Sheets falhar, o registro continuará como INICIADA, permitindo detectar operações travadas.
+  * Um número já utilizado não deve ser atribuído automaticamente a outro perfume.
   * 
-  * O painel deve mostrar um alerta para movimentações INICIADA há tempo demais ou com PRECISA_RECONCILIACAO.
+  * Novos perfumes devem receber automaticamente o próximo número nunca utilizado.
   * 
-  * Também tente novamente a gravação no Sheets com poucas tentativas controladas. Não repita a baixa no Notion durante essas tentativas.
+  * O painel administrativo deve permitir visualizar o número.
   * 
-  * 5. Não bloquear a compra da última unidade
+  * A edição manual do número deve verificar duplicidade antes de salvar.
   * 
-  * A decisão atual é não reservar estoque.
+  * Se o número já tiver sido usado em pedidos, mostrar um aviso forte antes de permitir alteração.
   * 
-  * Portanto, quando Amount === 1:
+  * Verifique novamente a unicidade no servidor imediatamente antes de criar ou atualizar o perfume.
   * 
-  * Mostrar “Última unidade — disponibilidade sujeita a confirmação”.
+  * Não confie apenas na validação visual do frontend.
   * 
-  * Continuar permitindo adicionar ao carrinho e enviar o pedido.
+  * 4. Controle do próximo número
   * 
-  * Não substituir o botão de compra por “Consultar disponibilidade”.
+  * Não dependa apenas da posição do item nem de quantidade de perfumes + 1.
   * 
-  * A disponibilidade será validada somente quando eu clicar em “Aceitar venda e baixar estoque”.
+  * Utilize o maior número já atribuído como base e preserve o maior número histórico utilizado, inclusive quando um perfume for arquivado.
   * 
-  * Se outro pedido já tiver consumido a unidade, bloquear a aceitação do segundo pedido e informar o estoque insuficiente.
+  * Se a consulta normal do Notion não retornar páginas arquivadas, use um contador persistente na fonte de configurações já existente ou outro mecanismo persistente dentro da arquitetura atual.
   * 
-  * 6. Preservar testes obrigatórios
+  * Não crie outra database sem antes explicar a necessidade.
   * 
-  * Inclua novamente os testes descritos no plano anterior, principalmente:
+  * O objetivo é impedir que o número de um perfume arquivado seja reutilizado por um novo perfume.
   * 
-  * pedido com vários produtos e falha no meio da atualização;
+  * 5. Atualizar o backend de perfumes
   * 
-  * reversão bem-sucedida;
+  * Arquivo principal:
   * 
-  * reversão com falha;
+  * src/lib/perfumes.functions.ts
   * 
-  * clique duplo;
+  * Atualize:
   * 
-  * pedido cancelado e reaberto;
+  * tipo/interface Perfume;
   * 
-  * nova baixa em um segundo ciclo;
+  * leitura da propriedade Número;
   * 
-  * movimentação INICIADA que ficou travada;
+  * criação de perfume;
   * 
-  * pedidos antigos sem as novas colunas;
+  * edição de perfume;
   * 
-  * última unidade continuando disponível para solicitação.
+  * validação de duplicidade;
   * 
-  * Atualize o plano com esses ajustes. Depois disso, apresente o relatório de migração dos números para minha aprovação antes de escrever qualquer número na database do Notion.
+  * atribuição automática de novos números;
+  * 
+  * tratamento de perfumes antigos temporariamente sem número.
+  * 
+  * Durante a migração, o sistema pode manter um fallback temporário para os perfumes ainda sem Número, mas esse fallback deve ser claramente identificado como temporário e removido depois que todos forem migrados.
+  * 
+  * Não volte a usar o índice como número definitivo.
+  * 
+  * 6. Atualizar todas as exibições
+  * 
+  * Depois da migração aprovada, substitua o número baseado em índice pelo valor da propriedade Número em:
+  * 
+  * catálogo;
+  * 
+  * cards dos perfumes;
+  * 
+  * página individual;
+  * 
+  * carrinho;
+  * 
+  * resumo do checkout;
+  * 
+  * mensagem enviada ao WhatsApp;
+  * 
+  * painel administrativo;
+  * 
+  * formulário de edição;
+  * 
+  * cadastro de novo perfume;
+  * 
+  * calculadora;
+  * 
+  * favoritos;
+  * 
+  * qualquer filtro, link ou componente que mostre Nº XXX.
+  * 
+  * Crie uma função única de formatação para evitar implementações diferentes, por exemplo:
+  * 
+  * formatarNumeroPerfume(1) -> "Nº 001"
+  * 
+  * Não duplique essa lógica em vários componentes.
+  * 
+  * 7. Preservar o histórico dos pedidos
+  * 
+  * Quando um pedido for criado, salve uma fotografia dos dados do produto naquele momento:
+  * 
+  * número;
+  * 
+  * ID interno do perfume;
+  * 
+  * nome;
+  * 
+  * marca;
+  * 
+  * coleção;
+  * 
+  * volume;
+  * 
+  * quantidade;
+  * 
+  * preço unitário.
+  * 
+  * Pedidos antigos devem continuar mostrando os dados registrados quando foram feitos.
+  * 
+  * Se um perfume mudar de nome, preço, volume, coleção ou número posteriormente, o histórico do pedido não deve mudar.
+  * 
+  * Não reescreva nem migre silenciosamente os números presentes em pedidos antigos.
+  * 
+  * 8. Corrigir a calculadora
+  * 
+  * Arquivo:
+  * 
+  * src/components/calculadora-panel.tsx
+  * 
+  * A calculadora atualmente utiliza Regex e busca aproximada por nome. O fuzzy search deve continuar existindo, mas apenas como fallback.
+  * 
+  * Nova ordem de identificação:
+  * 
+  * Quando a linha possuir Nº XXX
+  * 
+  * Extrair o número usando Regex.
+  * 
+  * Converter para valor numérico.
+  * 
+  * Buscar correspondência exata na propriedade Número.
+  * 
+  * Localizar apenas o perfume que possui aquele número.
+  * 
+  * Conferir se o nome recebido é compatível com o produto encontrado.
+  * 
+  * Se número e nome forem compatíveis, calcular normalmente.
+  * 
+  * Se o número existir, mas o nome divergir, mostrar um aviso de divergência.
+  * 
+  * Não substituir silenciosamente por outro perfume.
+  * 
+  * Se o número não existir, mostrar “Número de perfume não encontrado”.
+  * 
+  * Quando houver número, o fuzzy search não pode substituir o resultado.
+  * 
+  * Quando a linha não possuir número
+  * 
+  * Utilizar fuzzy search pelo nome.
+  * 
+  * Remover acentos, espaços extras e símbolos apenas para comparação.
+  * 
+  * Se existir uma única correspondência confiável, permitir o cálculo.
+  * 
+  * Se existirem várias opções possíveis, não escolher automaticamente.
+  * 
+  * Exibir uma seleção manual contendo:
+  * 
+  * número;
+  * 
+  * nome;
+  * 
+  * marca;
+  * 
+  * coleção;
+  * 
+  * volume;
+  * 
+  * preço.
+  * 
+  * Se não houver correspondência confiável, destacar a linha como não identificada.
+  * 
+  * 9. Corrigir o erro real encontrado
+  * 
+  * Foi identificado este erro:
+  * 
+  * Entrada:
+  * 
+  * 2x Angel (Nº 439)
+  * 
+  * O sistema recebeu o Nº 439, mas escolheu outro perfume chamado Angel, de outro volume ou coleção, com preço diferente.
+  * 
+  * Depois da correção:
+  * 
+  * A calculadora deve buscar exatamente o perfume cuja propriedade Número seja 439.
+  * 
+  * O nome “Angel” serve somente para conferir a correspondência.
+  * 
+  * Outro Angel nunca poderá substituir o Nº 439.
+  * 
+  * O preço deve vir do perfume Nº 439.
+  * 
+  * Se o Nº 439 e o nome recebido divergirem, o sistema deve interromper aquele item e pedir confirmação.
+  * 
+  * 10. Interface da calculadora
+  * 
+  * Para cada linha processada, mostre:
+  * 
+  * quantidade;
+  * 
+  * número;
+  * 
+  * nome;
+  * 
+  * coleção;
+  * 
+  * volume;
+  * 
+  * preço unitário;
+  * 
+  * subtotal;
+  * 
+  * forma de identificação:
+  * 
+  * Correspondência exata por número;
+  * 
+  * Correspondência aproximada por nome;
+  * 
+  * Selecionado manualmente;
+  * 
+  * Não identificado;
+  * 
+  * Divergência entre nome e número.
+  * 
+  * Não permita calcular o total final enquanto existir item ambíguo, divergente ou não identificado.
+  * 
+  * Mantenha:
+  * 
+  * extração do ID do pedido;
+  * 
+  * nome do cliente;
+  * 
+  * quantidades;
+  * 
+  * cálculo do Pix;
+  * 
+  * cálculo do cartão;
+  * 
+  * parcelamento em até 12 vezes.
+  * 
+  * 11. Testes obrigatórios
+  * 
+  * Teste pelo menos:
+  * 
+  * Número permanente não muda após reordenar o Notion.
+  * 
+  * Número não muda após cadastrar outro perfume.
+  * 
+  * Número não muda após arquivar outro perfume.
+  * 
+  * Tentativa de cadastrar número duplicado.
+  * 
+  * Tentativa de editar para um número já existente.
+  * 
+  * Novo perfume recebendo o próximo número nunca utilizado.
+  * 
+  * Perfumes com o mesmo nome e volumes diferentes.
+  * 
+  * Perfumes com o mesmo nome em coleções diferentes.
+  * 
+  * Angel Nº 439.
+  * 
+  * 1 Million Nº 447.
+  * 
+  * Nome correto com número correto.
+  * 
+  * Nome errado com número correto.
+  * 
+  * Número inexistente.
+  * 
+  * Nome sem número.
+  * 
+  * Nome com acento.
+  * 
+  * Nome sem acento.
+  * 
+  * Fuzzy search com uma correspondência.
+  * 
+  * Fuzzy search com várias correspondências.
+  * 
+  * Linha impossível de identificar.
+  * 
+  * Pedido antigo preservando seu número e preço históricos.
+  * 
+  * 12. Limites desta parte
+  * 
+  * Não implementar nesta etapa:
+  * 
+  * campo de telefone;
+  * 
+  * alteração das colunas da planilha de pedidos;
+  * 
+  * reserva de estoque;
+  * 
+  * última unidade;
+  * 
+  * baixa ou devolução de estoque;
+  * 
+  * aba MovimentacoesEstoque;
+  * 
+  * mudanças nos status dos pedidos;
+  * 
+  * mudanças nos textos da página inicial;
+  * 
+  * mudanças nos preços.
+  * 
+  * Entrega esperada
+  * 
+  * Primeiro:
+  * 
+  * Crie somente a propriedade vazia Número, caso ela não exista.
+  * 
+  * Gere o relatório de migração.
+  * 
+  * Mostre conflitos, duplicidades e números propostos.
+  * 
+  * Liste todos os arquivos que precisarão ser alterados.
+  * 
+  * Aguarde minha aprovação.
+  * 
+  * Não preencha os números no Notion e não publique a nova lógica antes de eu aprovar o relatório.
  */
 import { logoWhite } from "@/lib/constants";
 import { useCart } from "@/lib/cart-context";
