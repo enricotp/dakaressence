@@ -1,5 +1,18 @@
 import { createServerFn } from "@tanstack/react-start";
-import { getPerfumes, atualizarPerfume } from "./perfumes.functions";
+import { getPerfumes } from "./perfumes.functions";
+
+const GATEWAY = "https://connector-gateway.lovable.dev/notion/v1";
+
+function notionHeaders() {
+  const lovableKey = process.env.LOVABLE_API_KEY;
+  const notionKey = process.env.NOTION_API_KEY;
+  if (!lovableKey || !notionKey) throw new Error("Notion connector não configurado");
+  return {
+    Authorization: `Bearer ${lovableKey}`,
+    "X-Connection-Api-Key": notionKey,
+    "Content-Type": "application/json",
+  };
+}
 
 export const sincronizarCheckboxesNotion = createServerFn({ method: "POST" })
   .handler(async () => {
