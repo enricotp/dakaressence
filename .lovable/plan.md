@@ -1,53 +1,50 @@
-# Plan: Dakar Essence Improvements - Phase 2 (Verified)
+# Plan: Dakar Essence Improvements - Phase 2 (Part 1)
 
 ## Context & Strategy
 - **Notion Database**: `38858811-29ca-83c5-b57d-0102c05505b1`.
-- **Google Sheets**: `1YDXLWaevUB9LnrQGImIV9iGBT9ayCbZYdkzaWkXZrWw`.
-- **Stock Strategy**: **Strategy C** (Confirm at acceptance).
-- **Core Principle**: Processamento protegido com compensação (not atomic, but resilient).
+- **Scope**: **Part 1 of 3** - Permanent Perfume Numbers and Calculator Correction.
+- **Current State**: Property `Número` (number) created in Notion. Empty values.
+- **Rules**: Uniqueness, Persistence, Auto-increment (Max+1), historical snapshot in orders.
 
 ## 1. Permanent Perfume Numbers (Notion)
-- **Database Schema**: Add `Número` (type: `number`) to Notion.
-- **Migration Protocol**:
-    1.  **Read & Map**: Fetch all perfumes.
-    2.  **Validation Report**: Generate a report (Notion ID, Name, Collection, Volume, current index number, proposed permanent number).
-    3.  **Approval**: Wait for user approval of the report.
-    4.  **Write**: Persist numbers to Notion.
-- **Auto-Increment**: New items automatically get `Max(Número) + 1`.
-- **Display**: Use `Nº XXX` formatting in UI, but store as a raw number.
+- **Migration Status**: Report generated (453 items). Duplicates identified in Notion (Armani Code, Blackxs, etc.).
+- **Next Steps (Post-Approval)**:
+    - Write proposed numbers (1 to 453) to the `Número` property in Notion.
+    - Resolve duplicates by assigning unique numbers to each ID.
+- **Backend Changes** (`src/lib/perfumes.functions.ts`):
+    - Update `Perfume` type to include `numero: number | null`.
+    - Fetch `Número` in `getPerfumes`.
+    - Implement `formatarNumeroPerfume(n: number): string` (e.g., `Nº 001`).
+    - Update `criarPerfume` to fetch the current max number and assign `Max + 1`.
+    - Update `atualizarPerfume` with duplicate number validation.
 
-## 2. Protected Stock Processing (Strategy C)
-- **Workflow: Accept Sale (Concluído)**:
-    1.  **Group**: Aggregate duplicate items in the order.
-    2.  **Validate**: Fetch latest Notion stock for all items. Block if any item has `amount < requested`.
-    3.  **Sheets Record**: Create row in `MovimentacoesEstoque` with status `INICIADA`.
-    4.  **Notion Update**: Update products one by one. Record each success.
-    5.  **Compensation**: If any fails, attempt to increment (revert) already processed items.
-    6.  **Final Status**: Mark Sheets movement as `APLICADA`, `REVERTIDA`, or `PRECISA_RECONCILIACAO`.
-- **Order Gate**: A status change to `Concluído` is only finalized if the movement is `APLICADA`.
-- **Cycle IDs**: `PED-XXXX:CICLO-N:BAIXA` / `DEVOLUCAO`. Increment `EstoqueCiclo` on Reopen.
+## 2. Calculator Precision (`src/components/calculadora-panel.tsx`)
+- **New Logic Sequence**:
+    1.  **Strict Number Match**: Parse `Nº XXX`, convert to numeric, search `Número` property.
+    2.  **Compatibility Check**: Verify if the name matches. Show warning if names diverge.
+    3.  **Fuzzy Fallback**: Only if no `Nº` is provided, use fuzzy search by name.
+    4.  **Ambiguity Handling**: If fuzzy search yields multiple items, show a manual selection list.
+    5.  **UI Feedback**: Highlight unidentifiable or divergent lines. Prevent total calculation if items are ambiguous.
 
-## 3. Google Sheets Evolution
-- **Dynamic Headers**: Detect columns by name, not fixed index.
-- **New Tab `MovimentacoesEstoque`**:
-    - Columns: `MovimentoID`, `PedidoID`, `Ciclo`, `Ação`, `Status`, `DataInicio`, `DataFim`, `Itens`, `Erro`, `Usuario`.
-- **Pedidos Tab Updates**: Add `Telefone`, `EstoqueCiclo`, `UltimoMovimentoStatus`.
+## 3. Order History Preservation
+- **Checkout Snapshot**: Update `src/lib/orders.functions.ts` to save a JSON snapshot of the product at the time of purchase (Number, Name, Collection, Volume, Price).
+- **Historical Consistency**: Ensure orders created before the migration maintain their displayed numbers (based on indices at the time, if captured).
 
-## 4. Checkout & Admin UX
-- **CartDrawer**: Add validated phone field (10/11 digits). Prepend `55` for WhatsApp.
-- **Availability Labels**: `Amount === 1` shows "Última unidade — disponibilidade sujeita a confirmação".
-- **Admin**:
-    - WhatsApp button "Falar com o cliente".
-    - Search by phone number.
-    - Alert for movements stuck in `INICIADA` or `PRECISA_RECONCILIACAO`.
+## 4. UI Consistency
+- Replace all index-based numbers with the new `formatarNumeroPerfume(p.numero)` in:
+    - Catalog, Cards, Product Page, Cart, Checkout, WhatsApp, Admin Panel.
 
-## 5. Recovery & Resilience
-- **Idempotency**: Check `MovimentacoesEstoque` before starting any new action.
-- **Retry Logic**: If Sheets final update fails, keep status as `INICIADA` to flag a potentially successful Notion update that missed its final Sheets log.
+## Files to be Modified
+- `src/lib/perfumes.functions.ts`
+- `src/lib/orders.functions.ts`
+- `src/components/calculadora-panel.tsx`
+- `src/components/catalog-viewer.tsx`
+- `src/components/cart-drawer.tsx`
+- `src/routes/perfume.$id.tsx`
+- `src/routes/painel-dakar-a7k9m2.tsx`
 
-## Verification Checklist (Tests)
-- [ ] Partial failure recovery (Notion update 1 succeeds, update 2 fails -> revert 1).
-- [ ] Reversion failure -> mark `PRECISA_RECONCILIACAO`.
-- [ ] Double-click protection (idempotency check).
-- [ ] Cycle increment on Cancel -> Reopen -> Conclude.
-- [ ] Orders without phone/cycle data (graceful fallback).
+## Verification (Tests)
+- Unique number assignment and persistence.
+- Auto-increment for new items.
+- Calculator priority: Number > Fuzzy Name.
+- Historical data preservation in orders.
