@@ -263,8 +263,27 @@ export function CartDrawer() {
                           </span>
                         )}
                       </div>
+                      </div>
+                    </li>
+                  );
+                })}
+              </ul>
+            </>
+          ) : (
+            <div className="space-y-5">
+              <div>
+                <label className="text-xs uppercase tracking-wider text-muted-foreground">
+                  Seu nome
+                </label>
+                <input
+                  type="text"
+                  value={nome}
+                  onChange={(e) => setNome(e.target.value)}
+                  placeholder="Como podemos te chamar?"
+                  className="mt-2 w-full rounded-lg border border-border/60 bg-background px-4 py-3 text-sm focus:border-gold focus:outline-none"
+                />
               </div>
-              
+
               <div>
                 <label className="text-xs uppercase tracking-wider text-muted-foreground">
                   Telefone/WhatsApp
@@ -281,25 +300,6 @@ export function CartDrawer() {
                     Insira um número válido com 11 dígitos.
                   </p>
                 )}
-              </div>
-                  </li>
-                );
-              })}
-            </ul>
-            </>
-          ) : (
-            <div className="space-y-5">
-              <div>
-                <label className="text-xs uppercase tracking-wider text-muted-foreground">
-                  Seu nome
-                </label>
-                <input
-                  type="text"
-                  value={nome}
-                  onChange={(e) => setNome(e.target.value)}
-                  placeholder="Como podemos te chamar?"
-                  className="mt-2 w-full rounded-lg border border-border/60 bg-background px-4 py-3 text-sm focus:border-gold focus:outline-none"
-                />
               </div>
 
               <div>
