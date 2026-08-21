@@ -355,12 +355,12 @@ export const Route = createFileRoute("/")({
 function Index() {
   const { cartCount, open } = useCart();
   const getCfg = useServerFn(getHomeConfig);
-  const { data: config } = useSuspenseQuery({
+  const { data: config } = useSuspenseQuery<HomeConfig[]>({
     queryKey: ["home-config"],
     queryFn: () => getCfg(),
   });
 
-  const homeMain = config.find((c) => c.key === "home_main");
+  const homeMain = config.find((c: HomeConfig) => c.key === "home_main");
   const titulo = homeMain?.tituloPrincipal || "A mesma essência, metade do preço.";
   const descricao = homeMain?.textoPrincipal || "Perfumes contratipos com alta concentração e fixação premium. Monte seu pedido e finalize direto no WhatsApp.";
 
