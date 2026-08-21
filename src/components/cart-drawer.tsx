@@ -142,6 +142,7 @@ export function CartDrawer() {
       const { id } = await criar({
         data: {
           cliente: nome,
+          telefone: telefone.replace(/\D/g, ""),
           itens: linhasItens.join("\n"),
           itensDetalhados,
           total,
