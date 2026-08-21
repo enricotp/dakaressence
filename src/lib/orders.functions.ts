@@ -433,6 +433,24 @@ export const atualizarStatusPedido = createServerFn({ method: "POST" })
     return { ok: true };
   });
 
+export const processarSaidaEstoque = createServerFn({ method: "POST" })
+  .validator((data: { row: number; pedidoId: string; itensTexto: string }) => data)
+  .handler(async ({ data }) => {
+    const { requireAdmin } = await import("./admin.server");
+    await requireAdmin();
+
+    return atualizarStatusPedido({
+      data: {
+        row: data.row,
+        pedidoId: data.pedidoId,
+        statusAtual: "Pendente",
+        itensTexto: data.itensTexto,
+        status: "Concluído"
+      }
+    });
+  });
+
+
 export const atualizarRastreio = createServerFn({ method: "POST" })
   .validator((data: { row: number; pedidoId: string; rastreio: string; rastreioAtual: string }) => data)
   .handler(async ({ data }) => {
