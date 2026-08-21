@@ -428,40 +428,44 @@ export function CatalogViewer({ perfumes }: CatalogViewerProps) {
           </div>
         </div>
 
-        <div className="flex gap-2 items-center">
-          <button
-            type="button"
-            onClick={() => setShowNoteSelector(!showNoteSelector)}
-            className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm transition h-[42px] ${
-              showNoteSelector || activeNotes.length > 0
-                ? "border-gold bg-gold text-primary-foreground"
-                : "border-border/60 bg-card text-muted-foreground hover:text-foreground"
-            }`}
-          >
-            <Sparkles className="h-4 w-4" />
-            <span className="hidden sm:inline">Descoberta por Aroma</span>
-            <span className="sm:hidden">Aromas</span>
-            {activeNotes.length > 0 && (
-              <span className="ml-1 rounded-full bg-primary-foreground/20 px-1.5 py-0.5 text-[10px] font-bold">
-                {activeNotes.length}
-              </span>
-            )}
-          </button>
+        <div className="flex gap-2 items-end">
+          <div className="flex flex-col gap-1">
+            <button
+              type="button"
+              onClick={() => setShowNoteSelector(!showNoteSelector)}
+              className={`inline-flex items-center gap-2 rounded-full border px-4 text-sm transition h-[42px] ${
+                showNoteSelector || activeNotes.length > 0
+                  ? "border-gold bg-gold text-primary-foreground"
+                  : "border-border/60 bg-card text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              <Sparkles className="h-4 w-4" />
+              <span className="hidden sm:inline">Descoberta por Aroma</span>
+              <span className="sm:hidden">Aromas</span>
+              {activeNotes.length > 0 && (
+                <span className="ml-1 rounded-full bg-primary-foreground/20 px-1.5 py-0.5 text-[10px] font-bold">
+                  {activeNotes.length}
+                </span>
+              )}
+            </button>
+          </div>
 
-          <button
-            type="button"
-            onClick={() => setSoFavoritos((v) => !v)}
-            aria-pressed={soFavoritos}
-            className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm transition h-[42px] ${
-              soFavoritos
-                ? "border-rose-500 bg-rose-500 text-white"
-                : "border-border/60 bg-card text-muted-foreground hover:text-foreground"
-            }`}
-          >
-            <span aria-hidden className="text-lg leading-none">{soFavoritos ? "♥" : "♡"}</span>
-            <span className="hidden sm:inline">Favoritos</span>
-            {wishlist.count > 0 && <span className="ml-1 text-[10px] font-bold">({wishlist.count})</span>}
-          </button>
+          <div className="flex flex-col gap-1">
+            <button
+              type="button"
+              onClick={() => setSoFavoritos((v) => !v)}
+              aria-pressed={soFavoritos}
+              className={`inline-flex items-center gap-2 rounded-full border px-4 text-sm transition h-[42px] ${
+                soFavoritos
+                  ? "border-rose-500 bg-rose-500 text-white"
+                  : "border-border/60 bg-card text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              <span aria-hidden className="text-lg leading-[0] mt-1">{soFavoritos ? "♥" : "♡"}</span>
+              <span className="hidden sm:inline">Favoritos</span>
+              {wishlist.count > 0 && <span className="ml-1 text-[10px] font-bold">({wishlist.count})</span>}
+            </button>
+          </div>
         </div>
       </div>
 
