@@ -256,7 +256,7 @@ export function CatalogViewer({ perfumes }: CatalogViewerProps) {
               key={op.id}
               type="button"
               onClick={() => setDisponibilidade(op.id)}
-              className={`inline-flex flex-col items-center justify-center gap-0.5 rounded-2xl border px-4 py-2 text-xs uppercase tracking-wider transition min-w-[140px] ${
+              className={`inline-flex flex-col items-center justify-center gap-0.5 rounded-2xl border px-4 py-2 text-xs text-center uppercase tracking-wider transition min-w-[140px] ${
                 disponibilidade === op.id
                   ? "border-gold bg-gold text-primary-foreground"
                   : "border-border/60 bg-card text-muted-foreground hover:text-foreground"
@@ -264,7 +264,7 @@ export function CatalogViewer({ perfumes }: CatalogViewerProps) {
             >
               <span className="font-bold">{op.label}</span>
               {('sublabel' in op) && (
-                <span className={`text-[9px] lowercase tracking-normal opacity-80 ${disponibilidade === op.id ? "text-primary-foreground" : "text-muted-foreground"}`}>
+                <span className={`text-[9px] lowercase text-center leading-tight tracking-normal opacity-80 ${disponibilidade === op.id ? "text-primary-foreground" : "text-muted-foreground"}`}>
                   {op.sublabel}
                 </span>
               )}
@@ -738,7 +738,7 @@ export function CatalogViewer({ perfumes }: CatalogViewerProps) {
                     </span>
                   </span>
                   {p.prontaEntrega && (
-                    <span className="absolute right-2 top-2 flex flex-col items-end rounded-xl bg-emerald-500/90 px-2 py-0.5 backdrop-blur sm:right-4 sm:top-4 sm:px-3 sm:py-1">
+                    <span className="absolute right-2 top-2 flex flex-col items-center rounded-xl bg-emerald-500/90 px-2 py-0.5 backdrop-blur sm:right-4 sm:top-4 sm:px-3 sm:py-1">
                       <span className="text-[8px] uppercase font-bold tracking-[0.15em] text-black sm:text-[10px] sm:tracking-[0.2em]">
                         Pronta entrega
                       </span>
@@ -749,7 +749,7 @@ export function CatalogViewer({ perfumes }: CatalogViewerProps) {
                   )}
                   {mostrarSobEncomenda && (
                     <span
-                      className={`absolute left-2 bottom-2 flex flex-col items-start rounded-xl bg-amber-500/90 px-2 py-0.5 backdrop-blur sm:left-auto sm:right-4 sm:bottom-auto sm:items-end sm:px-3 sm:py-1 ${
+                      className={`absolute left-2 bottom-2 flex flex-col items-center rounded-xl bg-amber-500/90 px-2 py-0.5 backdrop-blur sm:left-auto sm:right-4 sm:bottom-auto sm:px-3 sm:py-1 ${
                         p.prontaEntrega ? "sm:top-[52px]" : "sm:top-4"
                       }`}
                     >
