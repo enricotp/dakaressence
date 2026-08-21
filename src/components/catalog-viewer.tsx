@@ -412,7 +412,7 @@ export function CatalogViewer({ perfumes }: CatalogViewerProps) {
               value={marca}
               onChange={(e) => setMarca(e.target.value)}
               style={{ colorScheme: "dark" }}
-              className="w-full appearance-none rounded-full border border-border/60 bg-card px-4 py-2 pr-10 text-sm text-foreground outline-none transition focus:border-gold"
+              className="w-full appearance-none rounded-full border border-border/60 bg-card px-4 py-2 pr-10 text-sm text-foreground outline-none transition focus:border-gold h-10"
               aria-label="Filtrar por marca"
             >
               <option value="todas">Todas as marcas</option>
