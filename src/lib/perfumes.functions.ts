@@ -508,8 +508,10 @@ export const criarPerfume = createServerFn({ method: "POST" })
       properties["Low threshold "] = { number: data.lowThreshold };
     if (data.oosThreshold != null)
       properties["OoS threshold"] = { number: data.oosThreshold };
-    if (data.sobEncomenda !== undefined) properties["Sob encomenda"] = { checkbox: data.sobEncomenda };
-    if (data.prontaEntrega !== undefined) properties["Pronta entrega"] = { checkbox: data.prontaEntrega };
+    if (data.amount === undefined) {
+      if (data.sobEncomenda !== undefined) properties["Sob encomenda"] = { checkbox: data.sobEncomenda };
+      if (data.prontaEntrega !== undefined) properties["Pronta entrega"] = { checkbox: data.prontaEntrega };
+    }
     if (data.notasTopo)
       properties["Notas de topo"] = { rich_text: [{ text: { content: data.notasTopo } }] };
     if (data.notasCoracao)
