@@ -99,6 +99,13 @@ export function CatalogViewer({ perfumes }: CatalogViewerProps) {
   const perfumesFiltrados = useMemo(() => {
     const buscaNorm = normalize(busca.trim());
     const buscaWords = buscaNorm.split(/\s+/).filter(w => w.length > 0);
+    
+    const colecaoOrder: Record<Colecao, number> = {
+      Signature: 0,
+      "Brand Collection": 1,
+      "Arabic Collection": 2,
+      "Dream Brand Collection": 3,
+    };
 
     return perfumes
       .filter((p) => {
@@ -113,16 +120,11 @@ export function CatalogViewer({ perfumes }: CatalogViewerProps) {
           const descNorm = normalize(p.descricao || "");
           const content = `${nomeNorm} ${marcaNorm} ${descNorm}`;
           
-          // Verifica se todas as palavras da busca estão presentes (ou quase presentes)
           const allWordsMatch = buscaWords.every(word => {
-            // Correspondência exata da palavra ou variação comum (Al vs All)
             if (content.includes(word)) return true;
             if (word === "all" && content.includes("al")) return true;
             if (word === "al" && content.includes("all")) return true;
-            
-            // Pequenas variações em nomes conhecidos
             if (word === "wazer" && content.includes("wazeer")) return true;
-            
             return false;
           });
           
@@ -140,22 +142,22 @@ export function CatalogViewer({ perfumes }: CatalogViewerProps) {
         
         return true;
       })
-    .sort((a, b) => {
-      // Prioritize notes matches if searching by aroma
-      if (activeNotes.length > 0) {
-        const aNotes = [a.notasTopo, a.notasCoracao, a.notasFundo].join(" ").toLowerCase();
-        const bNotes = [b.notasTopo, b.notasCoracao, b.notasFundo].join(" ").toLowerCase();
-        const aMatches = activeNotes.filter(n => aNotes.includes(n.toLowerCase())).length;
-        const bMatches = activeNotes.filter(n => bNotes.includes(n.toLowerCase())).length;
-        if (aMatches !== bMatches) return bMatches - aMatches;
-      }
+      .sort((a, b) => {
+        if (activeNotes.length > 0) {
+          const aNotes = [a.notasTopo, a.notasCoracao, a.notasFundo].join(" ").toLowerCase();
+          const bNotes = [b.notasTopo, b.notasCoracao, b.notasFundo].join(" ").toLowerCase();
+          const aMatches = activeNotes.filter(n => aNotes.includes(n.toLowerCase())).length;
+          const bMatches = activeNotes.filter(n => bNotes.includes(n.toLowerCase())).length;
+          if (aMatches !== bMatches) return bMatches - aMatches;
+        }
 
-      if (a.prontaEntrega && !b.prontaEntrega) return -1;
-      if (!a.prontaEntrega && b.prontaEntrega) return 1;
-      const c = colecaoOrder[a.colecao] - colecaoOrder[b.colecao];
-      if (c !== 0) return c;
-      return 0;
-    });
+        if (a.prontaEntrega && !b.prontaEntrega) return -1;
+        if (!a.prontaEntrega && b.prontaEntrega) return 1;
+        const c = colecaoOrder[a.colecao] - colecaoOrder[b.colecao];
+        if (c !== 0) return c;
+        return 0;
+      });
+  }, [perfumes, busca, colecoesAtivas, filtro, marca, disponibilidade, soFavoritos, selectedVolume, wishlist, activeNotes]);
 
   const imagensRotativas = ["/perfume-1.jpg", "/perfume-2.jpg", "/perfume-3.jpg"];
   const codigoDoPerfume = (index: number) => `Nº ${String(index + 1).padStart(3, "0")}`;
