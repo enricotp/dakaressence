@@ -262,7 +262,25 @@ export function CartDrawer() {
                           </span>
                         )}
                       </div>
-                    </div>
+              </div>
+              
+              <div>
+                <label className="text-xs uppercase tracking-wider text-muted-foreground">
+                  Telefone/WhatsApp
+                </label>
+                <input
+                  type="tel"
+                  value={telefone}
+                  onChange={(e) => setTelefone(aplicarMascaraTelefone(e.target.value))}
+                  placeholder="(99) 99999-9999"
+                  className="mt-2 w-full rounded-lg border border-border/60 bg-background px-4 py-3 text-sm focus:border-gold focus:outline-none"
+                />
+                {!validarTelefone(telefone) && telefone.length > 0 && (
+                  <p className="mt-1 text-[10px] text-amber-400">
+                    Insira um número válido com 11 dígitos.
+                  </p>
+                )}
+              </div>
                   </li>
                 );
               })}
