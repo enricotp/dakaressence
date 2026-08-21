@@ -715,7 +715,7 @@ export function CatalogViewer({ perfumes }: CatalogViewerProps) {
             const i = perfumes.indexOf(p);
             const codigo = codigoDoPerfume(i);
             const imagem = p.imagem ?? imagensRotativas[i % imagensRotativas.length];
-            const mostrarSobEncomenda = p.sobEncomenda;
+            const mostrarSobEncomenda = p.disponibilidade === "Sob Encomenda";
             const qtd = cart[p.id] ?? 0;
             return (
               <article
@@ -775,7 +775,7 @@ export function CatalogViewer({ perfumes }: CatalogViewerProps) {
                   {mostrarSobEncomenda && (
                     <span
                       className={`absolute left-2 bottom-2 flex flex-col items-center rounded-xl bg-amber-500/90 px-2 py-0.5 backdrop-blur sm:left-auto sm:right-4 sm:bottom-auto sm:px-3 sm:py-1 ${
-                        p.prontaEntrega ? "sm:top-[52px]" : "sm:top-4"
+                        p.disponibilidade === "Pronta Entrega" ? "sm:top-[52px]" : "sm:top-4"
                       }`}
                     >
                       <span className="text-[8px] font-semibold uppercase tracking-[0.1em] text-black sm:text-[10px] sm:tracking-[0.15em]">
