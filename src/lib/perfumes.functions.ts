@@ -175,11 +175,14 @@ export const getPerfumes = createServerFn({ method: "GET" }).handler(
       const amount = page.properties["Amount"]?.number ?? null;
       const oosThreshold = page.properties["OoS threshold"]?.number ?? 0;
       const status = page.properties["Available?"]?.formula?.string ?? "";
-      const emEstoque = (amount !== null && amount > oosThreshold) || (status.includes("In Stock") || status.includes("Low"));
+
+
       const descricao =
         page.properties["Descrição"]?.rich_text?.map((t) => t.plain_text).join("") ?? "";
       const preco = page.properties["Preço"]?.number ?? null;
       const custo = page.properties["Custo"]?.number ?? null;
+
+      
       const volumeRaw = page.properties["Volume"]?.select?.name ?? "50ml";
       const volume: Volume = (["25ml", "50ml", "80ml", "100ml"] as const).includes(
         volumeRaw as Volume,
@@ -198,14 +201,21 @@ export const getPerfumes = createServerFn({ method: "GET" }).handler(
         : "Signature";
       const lowThreshold = page.properties["Low threshold "]?.number ?? null;
       
-      // Fallback for amount === null: treat as 0 to ensure tag visibility
-      const effectiveAmount = amount ?? 0;
-      
       const notionSobEncomenda = page.properties["Sob encomenda"]?.checkbox ?? false;
       const notionProntaEntrega = page.properties["Pronta entrega"]?.checkbox ?? false;
 
+      // Logic: 
+      // 1. Pronta Entrega if amount > oosThreshold OR manually checked in Notion
+      // 2. Sob Encomenda if NOT pronta entrega OR manually checked in Notion
+      // Fallback: If amount is null, treat as 0 (out of stock)
+      const effectiveAmount = amount ?? 0;
       const prontaEntrega = effectiveAmount > oosThreshold || notionProntaEntrega;
-      const sobEncomenda = (effectiveAmount <= oosThreshold && !notionProntaEntrega) || notionSobEncomenda;
+      const sobEncomenda = !prontaEntrega || notionSobEncomenda;
+
+      // emEstoque is a legacy field but kept for compatibility
+      const emEstoque = prontaEntrega;
+
+
       
       const notasTopo =
         page.properties["Notas de topo"]?.rich_text?.map((t) => t.plain_text).join("") ?? "";
