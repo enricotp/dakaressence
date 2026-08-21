@@ -428,7 +428,7 @@ export function CatalogViewer({ perfumes }: CatalogViewerProps) {
           </div>
         </div>
 
-        <div className="flex gap-2 items-center sm:items-end">
+        <div className="flex gap-2 items-center sm:items-end sm:pb-[1px]">
           <div className="flex flex-col">
             <button
               type="button"
@@ -461,7 +461,7 @@ export function CatalogViewer({ perfumes }: CatalogViewerProps) {
                   : "border-border/60 bg-card text-muted-foreground hover:text-foreground"
               }`}
             >
-              <span aria-hidden className="text-lg flex items-center justify-center leading-none">{soFavoritos ? "♥" : "♡"}</span>
+              <span aria-hidden className="text-lg flex items-center justify-center leading-none mt-[-2px]">{soFavoritos ? "♥" : "♡"}</span>
               <span className="hidden sm:inline">Favoritos</span>
               {wishlist.count > 0 && <span className="ml-1 text-[10px] font-bold">({wishlist.count})</span>}
             </button>
