@@ -123,12 +123,13 @@ export function CartDrawer() {
         ? "Pagamento: Pix à vista"
         : `Pagamento: Cartão em ${parcelas}x de ${formatBRL(total / parcelas)}`;
     const nomeLinha = nome ? `Nome: ${nome}\n` : "";
+    const telefoneLinha = telefone ? `Telefone/WhatsApp: ${telefone}\n` : "";
     const linhaFrete = freteGratis ? "Frete: GRÁTIS 🎉\n" : "";
     const origin = typeof window !== "undefined" ? window.location.origin : "";
     const linkRastreio = `${origin}/pedido/${pedidoId}`;
     return `Olá! Gostaria de fechar o pedido ${pedidoId}:\n\n${linhasItens.join(
       "\n",
-    )}\n\nTotal: ${formatBRL(total)}\n${linhaFrete}${linhaPagamento}\n${nomeLinha}\nAcompanhe seu pedido: ${linkRastreio}\n\nPodemos confirmar?`;
+    )}\n\nTotal: ${formatBRL(total)}\n${linhaFrete}${linhaPagamento}\n${nomeLinha}${telefoneLinha}\nAcompanhe seu pedido: ${linkRastreio}\n\nPodemos confirmar?`;
   }
 
 
