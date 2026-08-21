@@ -1,44 +1,49 @@
 import { createServerFn } from "@tanstack/react-start";
-import { getPerfumes, atualizarPerfume, Colecao, Volume } from "./perfumes.functions";
+import { getPerfumes, atualizarPerfume } from "./perfumes.functions";
 
 export const sincronizarCheckboxesNotion = createServerFn({ method: "POST" })
   .handler(async () => {
     const { requireAdmin } = await import("./admin.server");
     await requireAdmin();
 
+    // Usamos uma busca fresca do Notion
     const perfumes = await getPerfumes();
-    let total = perfumes.length;
+    const total = perfumes.length;
     let corrigidos = 0;
     let falhas = 0;
 
+    // Processar em pequenos lotes ou sequencialmente para evitar rate limit do Notion
     for (const p of perfumes) {
-      // Para perfumes expandidos (Signature com múltiplos volumes), o ID contém um sufixo (ex: pageId-100ml)
-      // Precisamos do ID real da página no Notion.
-      const pageId = p.id.split("-")[0];
-      
+      // Ignorar IDs virtuais de expansão do Signature (ex: id-100ml)
+      // para não tentar atualizar a mesma página várias vezes na mesma execução
+      if (p.id.includes("-")) continue;
+
       const threshold = p.oosThreshold ?? 0;
       const amount = p.amount ?? 0;
       
       const deveEstarPronta = amount > threshold;
       const deveEstarEncomenda = amount <= threshold;
 
-      // Só atualizamos se houver divergência entre o estado calculado e o estado atual no Notion
+      // Log para debug interno (visível nos logs do servidor se necessário)
+      console.log(`Verificando ${p.nome}: Amount=${amount}, Threshold=${threshold}, Atual(PE=${p.prontaEntrega}, SE=${p.sobEncomenda}), Esperado(PE=${deveEstarPronta}, SE=${deveEstarEncomenda})`);
+
       if (p.prontaEntrega !== deveEstarPronta || p.sobEncomenda !== deveEstarEncomenda) {
         try {
-          await atualizarPerfume({
+          const res = await atualizarPerfume({
             data: {
-              id: pageId,
+              id: p.id,
               prontaEntrega: deveEstarPronta,
               sobEncomenda: deveEstarEncomenda,
-              // Não passamos o amount aqui para não disparar a lógica de automação interna do atualizarPerfume 
-              // que já existe no handler, pois queremos forçar o estado baseado no amount atual do Notion.
-              // Na verdade, o handler de atualizarPerfume usa data.amount para decidir se automatiza.
-              // Se passarmos apenas os checkboxes, ele deve aceitá-los.
             }
           });
-          corrigidos++;
+          
+          if (res.ok) {
+            corrigidos++;
+          } else {
+            falhas++;
+          }
         } catch (e) {
-          console.error(`Erro ao sincronizar perfume ${p.nome} (${p.id}):`, e);
+          console.error(`Falha ao sincronizar ${p.nome}:`, e);
           falhas++;
         }
       }
