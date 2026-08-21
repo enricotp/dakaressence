@@ -53,13 +53,13 @@ const COLLECTION_SHOWCASE_DATA: CollectionData[] = [
 
 export function CollectionShowcase() {
   const getCfg = useServerFn(getHomeConfig);
-  const { data: config = [] } = useQuery({
+  const { data: config } = useSuspenseQuery<HomeConfig[]>({
     queryKey: ["home-config"],
     queryFn: () => getCfg(),
   });
 
   const mergedData = COLLECTION_SHOWCASE_DATA.map((base) => {
-    const notion = config.find((c) => c.key === base.id.toLowerCase().replace(/\s+/g, "_"));
+    const notion = config.find((c: HomeConfig) => c.key === base.id.toLowerCase().replace(/\s+/g, "_"));
     if (!notion) return base;
 
     const sizes = base.sizes.map((s) => ({
