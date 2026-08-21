@@ -428,11 +428,11 @@ export function CatalogViewer({ perfumes }: CatalogViewerProps) {
           </div>
         </div>
 
-        <div className="flex gap-2">
+        <div className="flex gap-2 items-center">
           <button
             type="button"
             onClick={() => setShowNoteSelector(!showNoteSelector)}
-            className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm transition h-[38px] ${
+            className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm transition h-[42px] ${
               showNoteSelector || activeNotes.length > 0
                 ? "border-gold bg-gold text-primary-foreground"
                 : "border-border/60 bg-card text-muted-foreground hover:text-foreground"
@@ -452,13 +452,13 @@ export function CatalogViewer({ perfumes }: CatalogViewerProps) {
             type="button"
             onClick={() => setSoFavoritos((v) => !v)}
             aria-pressed={soFavoritos}
-            className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm transition h-[38px] ${
+            className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm transition h-[42px] ${
               soFavoritos
                 ? "border-rose-500 bg-rose-500 text-white"
                 : "border-border/60 bg-card text-muted-foreground hover:text-foreground"
             }`}
           >
-            <span aria-hidden>{soFavoritos ? "♥" : "♡"}</span>
+            <span aria-hidden className="text-lg leading-none">{soFavoritos ? "♥" : "♡"}</span>
             <span className="hidden sm:inline">Favoritos</span>
             {wishlist.count > 0 && <span className="ml-1 text-[10px] font-bold">({wishlist.count})</span>}
           </button>
