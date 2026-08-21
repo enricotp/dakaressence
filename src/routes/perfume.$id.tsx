@@ -87,7 +87,7 @@ function PerfumeDetail() {
               alt={p.nome}
               className={`h-full w-full object-cover ${!p.emEstoque && !p.sobEncomenda ? "opacity-50" : ""}`}
             />
-            <span className="absolute left-4 top-4 rounded-full bg-background/80 px-3 py-1 text-[10px] uppercase tracking-[0.2em] text-gold backdrop-blur">
+            <span className="absolute left-4 top-4 rounded-full bg-background/80 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.1em] text-gold backdrop-blur">
               {codigo}
             </span>
           </div>
@@ -98,7 +98,7 @@ function PerfumeDetail() {
             <span className="text-[11px] uppercase tracking-[0.25em] text-gold">
               {p.emEstoque ? "Disponível" : (p.sobEncomenda ? "Sob encomenda" : "Esgotado")}
             </span>
-            <span className="rounded-full bg-gold/10 px-2 py-0.5 text-[10px] uppercase tracking-wider text-gold">
+            <span className="rounded-full bg-gold/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.1em] text-gold">
               {p.volume}
             </span>
             <span className="rounded-full border border-border/60 px-2 py-0.5 text-[10px] uppercase tracking-wider text-muted-foreground">

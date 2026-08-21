@@ -200,8 +200,12 @@ export const getPerfumes = createServerFn({ method: "GET" }).handler(
       
       // Fallback for amount === null: treat as 0 to ensure tag visibility
       const effectiveAmount = amount ?? 0;
-      const sobEncomenda = effectiveAmount <= oosThreshold;
-      const prontaEntrega = effectiveAmount > oosThreshold;
+      
+      const notionSobEncomenda = page.properties["Sob encomenda"]?.checkbox ?? false;
+      const notionProntaEntrega = page.properties["Pronta entrega"]?.checkbox ?? false;
+
+      const prontaEntrega = effectiveAmount > oosThreshold || notionProntaEntrega;
+      const sobEncomenda = (effectiveAmount <= oosThreshold && !notionProntaEntrega) || notionSobEncomenda;
       
       const notasTopo =
         page.properties["Notas de topo"]?.rich_text?.map((t) => t.plain_text).join("") ?? "";
