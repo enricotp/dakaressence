@@ -227,6 +227,12 @@ export const getPerfumes = createServerFn({ method: "GET" }).handler(
           prontaEntrega = false;
           sobEncomenda = true;
         }
+      } else {
+        // Se pelo menos um estiver marcado, respeitamos os checkboxes.
+        // No entanto, se o site identificar que eles estão conflitantes ou errados,
+        // o botão de Sincronizar no Admin é quem deve forçar a correção.
+        prontaEntrega = notionProntaEntrega;
+        sobEncomenda = notionSobEncomenda;
       }
       
       // Caso especial: se o usuário colocou saldo (Amount > OoS) mas o checkbox "Sob encomenda" 
