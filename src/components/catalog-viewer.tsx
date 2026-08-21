@@ -95,49 +95,69 @@ export function CatalogViewer({ perfumes }: CatalogViewerProps) {
 
   const marcas = Array.from(new Set(perfumes.map((p) => p.marca).filter((m): m is string => !!m))).sort();
   const normalize = (str: string) => str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
-  const buscaNorm = normalize(busca.trim());
   
-  const colecaoOrder: Record<Colecao, number> = {
-    Signature: 0,
-    "Brand Collection": 1,
-    "Arabic Collection": 2,
-    "Dream Brand Collection": 3,
-  };
+  const perfumesFiltrados = useMemo(() => {
+    const buscaNorm = normalize(busca.trim());
+    const buscaWords = buscaNorm.split(/\s+/).filter(w => w.length > 0);
+    
+    const colecaoOrder: Record<Colecao, number> = {
+      Signature: 0,
+      "Brand Collection": 1,
+      "Arabic Collection": 2,
+      "Dream Brand Collection": 3,
+    };
 
-  const perfumesFiltrados = perfumes
-    .filter((p) => {
-      if (soFavoritos && !wishlist.has(p.id)) return false;
-      if (!colecoesAtivas[p.colecao]) return false;
-      if (filtro !== "todos" && p.genero !== filtro) return false;
-      if (marca !== "todas" && p.marca !== marca) return false;
-      if (buscaNorm && !p.nome.toLowerCase().includes(buscaNorm)) return false;
-      if (disponibilidade === "pronta" && !p.prontaEntrega) return false;
-      if (disponibilidade === "encomenda" && !p.sobEncomenda) return false;
-      if (selectedVolume !== "todos" && p.volume !== selectedVolume) return false;
-      
-      if (activeNotes.length > 0) {
-        const perfumeNotes = [p.notasTopo, p.notasCoracao, p.notasFundo].join(" ").toLowerCase();
-        return activeNotes.some(note => perfumeNotes.includes(note.toLowerCase()));
-      }
-      
-      return true;
-    })
-    .sort((a, b) => {
-      // Prioritize notes matches if searching by aroma
-      if (activeNotes.length > 0) {
-        const aNotes = [a.notasTopo, a.notasCoracao, a.notasFundo].join(" ").toLowerCase();
-        const bNotes = [b.notasTopo, b.notasCoracao, b.notasFundo].join(" ").toLowerCase();
-        const aMatches = activeNotes.filter(n => aNotes.includes(n.toLowerCase())).length;
-        const bMatches = activeNotes.filter(n => bNotes.includes(n.toLowerCase())).length;
-        if (aMatches !== bMatches) return bMatches - aMatches;
-      }
+    return perfumes
+      .filter((p) => {
+        if (soFavoritos && !wishlist.has(p.id)) return false;
+        if (!colecoesAtivas[p.colecao]) return false;
+        if (filtro !== "todos" && p.genero !== filtro) return false;
+        if (marca !== "todas" && p.marca !== marca) return false;
+        
+        if (buscaWords.length > 0) {
+          const nomeNorm = normalize(p.nome);
+          const marcaNorm = normalize(p.marca || "");
+          const descNorm = normalize(p.descricao || "");
+          const content = `${nomeNorm} ${marcaNorm} ${descNorm}`;
+          
+          const allWordsMatch = buscaWords.every(word => {
+            if (content.includes(word)) return true;
+            if (word === "all" && content.includes("al")) return true;
+            if (word === "al" && content.includes("all")) return true;
+            if (word === "wazer" && content.includes("wazeer")) return true;
+            return false;
+          });
+          
+          if (!allWordsMatch) return false;
+        }
 
-      if (a.prontaEntrega && !b.prontaEntrega) return -1;
-      if (!a.prontaEntrega && b.prontaEntrega) return 1;
-      const c = colecaoOrder[a.colecao] - colecaoOrder[b.colecao];
-      if (c !== 0) return c;
-      return 0;
-    });
+        if (disponibilidade === "pronta" && !p.prontaEntrega) return false;
+        if (disponibilidade === "encomenda" && !p.sobEncomenda) return false;
+        if (selectedVolume !== "todos" && p.volume !== selectedVolume) return false;
+        
+        if (activeNotes.length > 0) {
+          const perfumeNotes = [p.notasTopo, p.notasCoracao, p.notasFundo].join(" ").toLowerCase();
+          return activeNotes.some(note => perfumeNotes.includes(note.toLowerCase()));
+        }
+        
+        return true;
+      })
+      .sort((a, b) => {
+        if (activeNotes.length > 0) {
+          const aNotes = [a.notasTopo, a.notasCoracao, a.notasFundo].join(" ").toLowerCase();
+          const bNotes = [b.notasTopo, b.notasCoracao, b.notasFundo].join(" ").toLowerCase();
+          const aMatches = activeNotes.filter(n => aNotes.includes(n.toLowerCase())).length;
+          const bMatches = activeNotes.filter(n => bNotes.includes(n.toLowerCase())).length;
+          if (aMatches !== bMatches) return bMatches - aMatches;
+        }
+
+        if (a.prontaEntrega && !b.prontaEntrega) return -1;
+        if (!a.prontaEntrega && b.prontaEntrega) return 1;
+        const c = colecaoOrder[a.colecao] - colecaoOrder[b.colecao];
+        if (c !== 0) return c;
+        return 0;
+      });
+  }, [perfumes, busca, colecoesAtivas, filtro, marca, disponibilidade, soFavoritos, selectedVolume, wishlist, activeNotes]);
 
   const imagensRotativas = ["/perfume-1.jpg", "/perfume-2.jpg", "/perfume-3.jpg"];
   const codigoDoPerfume = (index: number) => `Nº ${String(index + 1).padStart(3, "0")}`;
