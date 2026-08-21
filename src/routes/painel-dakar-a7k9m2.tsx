@@ -329,6 +329,29 @@ function PedidosTab() {
     return true;
   });
 
+  async function handleProcessarEstoque(p: Pedido) {
+    if (!confirm(`Deseja processar a saída de estoque para o pedido ${p.id}?\nIsso irá subtrair os itens do Notion e marcar o pedido como Concluído.`)) {
+      return;
+    }
+    
+    try {
+      toast.loading("Processando estoque e concluindo pedido...");
+      await processarEstoque({
+        data: {
+          row: p.row,
+          pedidoId: p.id,
+          itensTexto: p.itens
+        }
+      });
+      qc.invalidateQueries({ queryKey: ["pedidos"] });
+      toast.dismiss();
+      toast.success("Pedido processado e concluído com sucesso!");
+    } catch (err) {
+      toast.dismiss();
+      toast.error("Erro ao processar: " + (err instanceof Error ? err.message : "Erro desconhecido"));
+    }
+  }
+
   async function mudarStatus(p: Pedido, status: "Concluído" | "Cancelado" | "Pendente") {
     await atualizar({
       data: {
