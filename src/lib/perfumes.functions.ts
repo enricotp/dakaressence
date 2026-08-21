@@ -170,7 +170,11 @@ export const getPerfumes = createServerFn({ method: "GET" }).handler(
 
 
     return data.results.map((page) => {
+      if (page.properties["Product Name"]?.title?.[0]?.plain_text?.includes("MYSLF")) {
+        console.log("DEBUG MYSLF PROPERTIES:", JSON.stringify(page.properties, null, 2));
+      }
       const nome =
+
         page.properties["Product Name"]?.title?.[0]?.plain_text ?? "Sem nome";
       const amount = page.properties["Amount"]?.number ?? null;
       const oosThreshold = page.properties["OoS threshold"]?.number ?? 0;
