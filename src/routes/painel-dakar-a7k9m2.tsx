@@ -43,6 +43,7 @@ import {
   type Genero,
   type Volume,
 } from "@/lib/perfumes.functions";
+import { sincronizarCheckboxesNotion } from "@/lib/sync.functions";
 import { formatBRL } from "@/lib/format";
 
 export const Route = createFileRoute("/painel-dakar-a7k9m2")({
