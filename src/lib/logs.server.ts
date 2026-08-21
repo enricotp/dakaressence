@@ -1,6 +1,6 @@
 // Server-only: appends a row to the "Logs" Google Sheet. Never throws to the caller.
 const LOGS_SHEET_ID = "1j1FXoolbiDk3WYRY1038cfVXUJ4GBboPnh9nlBmc7EU";
-const LOGS_SHEET_NAME = "Página1";
+const LOGS_SHEET_NAME = "Logs";
 const GATEWAY = "https://connector-gateway.lovable.dev/google_sheets/v4";
 
 export type LogEntry = {

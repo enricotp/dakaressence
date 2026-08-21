@@ -2,9 +2,9 @@ import { useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { type Colecao, type Volume } from "@/lib/perfumes.functions";
 import { formatBRL } from "@/lib/format";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { getHomeConfig } from "@/lib/home-config.functions";
+import { getHomeConfig, type HomeConfig } from "@/lib/home-config.functions";
 
 
 interface CollectionData {
@@ -53,13 +53,13 @@ const COLLECTION_SHOWCASE_DATA: CollectionData[] = [
 
 export function CollectionShowcase() {
   const getCfg = useServerFn(getHomeConfig);
-  const { data: config = [] } = useQuery({
+  const { data: config } = useSuspenseQuery<HomeConfig[]>({
     queryKey: ["home-config"],
     queryFn: () => getCfg(),
   });
 
   const mergedData = COLLECTION_SHOWCASE_DATA.map((base) => {
-    const notion = config.find((c) => c.key === base.id.toLowerCase().replace(/\s+/g, "_"));
+    const notion = config.find((c: HomeConfig) => c.key === base.id.toLowerCase().replace(/\s+/g, "_"));
     if (!notion) return base;
 
     const sizes = base.sizes.map((s) => ({

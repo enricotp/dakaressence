@@ -24,6 +24,7 @@ export type Pedido = {
   id: string;
   data: string;
   cliente: string;
+  telefone: string;
   itens: string;
   total: number;
   pagamento: string;
@@ -33,11 +34,40 @@ export type Pedido = {
   row: number;
 };
 
+async function getHeaders(sheetId: string, range: string) {
+  const url = `${GATEWAY}/spreadsheets/${sheetId}/values/${range}!1:1`;
+  const res = await fetch(url, { headers: sheetsHeaders() });
+  if (!res.ok) return [];
+  const json = await res.json() as { values?: string[][] };
+  return json.values?.[0] || [];
+}
+
+async function ensureColumn(sheetId: string, range: string, columnName: string) {
+  const headers = await getHeaders(sheetId, range);
+  const index = headers.findIndex(h => h.toLowerCase() === columnName.toLowerCase());
+  
+  if (index !== -1) return index;
+
+  // Add new column
+  const nextColIndex = headers.length;
+  const colLetter = String.fromCharCode(65 + nextColIndex); // Simple A-Z for now, might need better logic for >26
+  const updateUrl = `${GATEWAY}/spreadsheets/${sheetId}/values/${range}!${colLetter}1?valueInputOption=USER_ENTERED`;
+  
+  await fetch(updateUrl, {
+    method: "PUT",
+    headers: sheetsHeaders(),
+    body: JSON.stringify({ values: [[columnName]] }),
+  });
+
+  return nextColIndex;
+}
+
 
 export const criarPedido = createServerFn({ method: "POST" })
   .validator(
     (data: {
       cliente: string;
+      telefone: string;
       itens: string;
       itensDetalhados: Array<{ 
         id: string; 
@@ -60,18 +90,38 @@ export const criarPedido = createServerFn({ method: "POST" })
     const dataFmt = now.toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo" });
     const parcelasStr = data.pagamento === "Cartão" ? `${data.parcelas}x` : "-";
 
-    const row = [
-      id,
-      dataFmt,
-      data.cliente,
-      data.itens,
-      data.total.toFixed(2).replace(".", ","),
-      data.pagamento,
-      parcelasStr,
-      "Pendente",
-    ];
+    // Ensure Telefone column exists
+    await ensureColumn(SHEET_ID, SHEET_NAME, "Telefone");
+    
+    // Get headers to determine indices
+    const headers = await getHeaders(SHEET_ID, SHEET_NAME);
+    const getIdx = (name: string) => headers.findIndex(h => h.toLowerCase() === name.toLowerCase());
 
-    const url = `${GATEWAY}/spreadsheets/${SHEET_ID}/values/${SHEET_NAME}!A:H:append?valueInputOption=USER_ENTERED`;
+    const colIndices = {
+      id: getIdx("ID"),
+      data: getIdx("Data"),
+      cliente: getIdx("Cliente"),
+      telefone: getIdx("Telefone"),
+      itens: getIdx("Itens"),
+      total: getIdx("Total"),
+      pagamento: getIdx("Pagamento"),
+      parcelas: getIdx("Parcelas"),
+      status: getIdx("Status"),
+    };
+
+    // Create a row with the correct length based on headers
+    const row = new Array(headers.length).fill("");
+    if (colIndices.id !== -1) row[colIndices.id] = id;
+    if (colIndices.data !== -1) row[colIndices.data] = dataFmt;
+    if (colIndices.cliente !== -1) row[colIndices.cliente] = data.cliente;
+    if (colIndices.telefone !== -1) row[colIndices.telefone] = data.telefone;
+    if (colIndices.itens !== -1) row[colIndices.itens] = data.itens;
+    if (colIndices.total !== -1) row[colIndices.total] = data.total.toFixed(2).replace(".", ",");
+    if (colIndices.pagamento !== -1) row[colIndices.pagamento] = data.pagamento;
+    if (colIndices.parcelas !== -1) row[colIndices.parcelas] = parcelasStr;
+    if (colIndices.status !== -1) row[colIndices.status] = "Pendente";
+
+    const url = `${GATEWAY}/spreadsheets/${SHEET_ID}/values/${SHEET_NAME}!A:Z:append?valueInputOption=USER_ENTERED`;
     const res = await fetch(url, {
       method: "POST",
       headers: sheetsHeaders(),
@@ -131,7 +181,25 @@ export const listarPedidos = createServerFn({ method: "GET" }).handler(
   async (): Promise<Pedido[]> => {
     const { requireAdmin } = await import("./admin.server");
     await requireAdmin();
-    const url = `${GATEWAY}/spreadsheets/${SHEET_ID}/values/${SHEET_NAME}!A2:I10000`;
+    
+    // Get headers first
+    const headers = await getHeaders(SHEET_ID, SHEET_NAME);
+    const getIdx = (name: string) => headers.findIndex(h => h.toLowerCase() === name.toLowerCase());
+
+    const colIndices = {
+      id: getIdx("ID"),
+      data: getIdx("Data"),
+      cliente: getIdx("Cliente"),
+      telefone: getIdx("Telefone"),
+      itens: getIdx("Itens"),
+      total: getIdx("Total"),
+      pagamento: getIdx("Pagamento"),
+      parcelas: getIdx("Parcelas"),
+      status: getIdx("Status"),
+      rastreio: getIdx("Rastreio"),
+    };
+
+    const url = `${GATEWAY}/spreadsheets/${SHEET_ID}/values/${SHEET_NAME}!A2:Z10000`;
     const res = await fetch(url, { headers: sheetsHeaders() });
     if (!res.ok) {
       const text = await res.text();
@@ -139,25 +207,28 @@ export const listarPedidos = createServerFn({ method: "GET" }).handler(
     }
     const json = (await res.json()) as { values?: string[][] };
     const rows = json.values ?? [];
+    
     return rows
       .map((r, i) => {
-        const totalRaw = (r[4] ?? "0").toString().replace(/\./g, "").replace(",", ".");
+        const val = (idx: number) => (idx !== -1 ? r[idx] : "") ?? "";
+        const totalRaw = val(colIndices.total).toString().replace(/\./g, "").replace(",", ".");
         const total = parseFloat(totalRaw) || 0;
+        
         return {
-          id: r[0] ?? "",
-          data: r[1] ?? "",
-          cliente: r[2] ?? "",
-          itens: r[3] ?? "",
+          id: val(colIndices.id),
+          data: val(colIndices.data),
+          cliente: val(colIndices.cliente),
+          telefone: val(colIndices.telefone),
+          itens: val(colIndices.itens),
           total,
-          pagamento: r[5] ?? "",
-          parcelas: r[6] ?? "",
-          status: r[7] ?? "",
-          rastreio: r[8] ?? "",
+          pagamento: val(colIndices.pagamento),
+          parcelas: val(colIndices.parcelas),
+          status: val(colIndices.status),
+          rastreio: val(colIndices.rastreio),
           row: i + 2,
         };
       })
       .filter((p) => p.id);
-
   },
 );
 
@@ -192,11 +263,14 @@ export const listarItensVendidos = createServerFn({ method: "GET" }).handler(
     const { requireAdmin } = await import("./admin.server");
     await requireAdmin();
 
+    const headers = await getHeaders(SHEET_ID, SHEET_NAME);
+    const getIdx = (name: string) => headers.findIndex(h => h.toLowerCase() === name.toLowerCase());
+
     const [itensRes, pedidosRes, perfumesModule] = await Promise.all([
-      fetch(`${GATEWAY}/spreadsheets/${ITEMS_SHEET_ID}/values/${ITEMS_SHEET_NAME}!A2:J10000`, {
+      fetch(`${GATEWAY}/spreadsheets/${ITEMS_SHEET_ID}/values/${ITEMS_SHEET_NAME}!A2:K10000`, {
         headers: sheetsHeaders(),
       }),
-      fetch(`${GATEWAY}/spreadsheets/${SHEET_ID}/values/${SHEET_NAME}!A2:H10000`, {
+      fetch(`${GATEWAY}/spreadsheets/${SHEET_ID}/values/${SHEET_NAME}!A2:Z10000`, {
         headers: sheetsHeaders(),
       }),
       import("./perfumes.functions"),
@@ -234,13 +308,22 @@ export const listarItensVendidos = createServerFn({ method: "GET" }).handler(
       .filter((i) => i.pedidoId);
 
     const derivados: ItemVendido[] = [];
+    const colIndices = {
+      id: getIdx("ID"),
+      data: getIdx("Data"),
+      cliente: getIdx("Cliente"),
+      itens: getIdx("Itens"),
+      status: getIdx("Status"),
+    };
+
     for (const r of pedidosRows) {
-      const pedidoId = r[0] ?? "";
+      const pedidoId = colIndices.id !== -1 ? r[colIndices.id] : r[0];
       if (!pedidoId || pedidosComItens.has(pedidoId)) continue;
-      const dataFmt = r[1] ?? "";
-      const cliente = r[2] ?? "";
-      const status = r[7] ?? "";
-      const itens = parseItensTexto(r[3] ?? "");
+      const dataFmt = colIndices.data !== -1 ? r[colIndices.data] : r[1];
+      const cliente = colIndices.cliente !== -1 ? r[colIndices.cliente] : r[2];
+      const status = colIndices.status !== -1 ? r[colIndices.status] : r[7];
+      const itensRaw = colIndices.itens !== -1 ? r[colIndices.itens] : r[3];
+      const itens = parseItensTexto(itensRaw ?? "");
       for (const it of itens) {
         const p = perfumePorNome.get(it.nome.toLowerCase());
         const precoUnit = p?.preco ?? 0;
@@ -284,7 +367,12 @@ export const atualizarStatusPedido = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     const { requireAdmin, currentAdmin } = await import("./admin.server");
     await requireAdmin();
-    const url = `${GATEWAY}/spreadsheets/${SHEET_ID}/values/${SHEET_NAME}!H${data.row}?valueInputOption=USER_ENTERED`;
+    const headers = await getHeaders(SHEET_ID, SHEET_NAME);
+    const getIdx = (name: string) => headers.findIndex(h => h.toLowerCase() === name.toLowerCase());
+    const statusIdx = getIdx("Status");
+    const colLetter = statusIdx !== -1 ? String.fromCharCode(65 + statusIdx) : "H";
+
+    const url = `${GATEWAY}/spreadsheets/${SHEET_ID}/values/${SHEET_NAME}!${colLetter}${data.row}?valueInputOption=USER_ENTERED`;
     const res = await fetch(url, {
       method: "PUT",
       headers: sheetsHeaders(),
@@ -345,12 +433,35 @@ export const atualizarStatusPedido = createServerFn({ method: "POST" })
     return { ok: true };
   });
 
+export const processarSaidaEstoque = createServerFn({ method: "POST" })
+  .validator((data: { row: number; pedidoId: string; itensTexto: string }) => data)
+  .handler(async ({ data }) => {
+    const { requireAdmin } = await import("./admin.server");
+    await requireAdmin();
+
+    return atualizarStatusPedido({
+      data: {
+        row: data.row,
+        pedidoId: data.pedidoId,
+        statusAtual: "Pendente",
+        itensTexto: data.itensTexto,
+        status: "Concluído"
+      }
+    });
+  });
+
+
 export const atualizarRastreio = createServerFn({ method: "POST" })
   .validator((data: { row: number; pedidoId: string; rastreio: string; rastreioAtual: string }) => data)
   .handler(async ({ data }) => {
     const { requireAdmin, currentAdmin } = await import("./admin.server");
     await requireAdmin();
-    const url = `${GATEWAY}/spreadsheets/${SHEET_ID}/values/${SHEET_NAME}!I${data.row}?valueInputOption=USER_ENTERED`;
+    const headers = await getHeaders(SHEET_ID, SHEET_NAME);
+    const getIdx = (name: string) => headers.findIndex(h => h.toLowerCase() === name.toLowerCase());
+    const rastreioIdx = getIdx("Rastreio");
+    const colLetter = rastreioIdx !== -1 ? String.fromCharCode(65 + rastreioIdx) : "I";
+
+    const url = `${GATEWAY}/spreadsheets/${SHEET_ID}/values/${SHEET_NAME}!${colLetter}${data.row}?valueInputOption=USER_ENTERED`;
     const res = await fetch(url, {
       method: "PUT",
       headers: sheetsHeaders(),

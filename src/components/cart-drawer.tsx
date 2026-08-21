@@ -50,10 +50,26 @@ export function CartDrawer() {
 
   const [etapa, setEtapa] = useState<"carrinho" | "checkout">("carrinho");
   const [nome, setNome] = useState("");
+  const [telefone, setTelefone] = useState("");
   const [pagamento, setPagamento] = useState<Pagamento>("Pix");
   const [parcelas, setParcelas] = useState(1);
   const [enviando, setEnviando] = useState(false);
   const [erro, setErro] = useState<string | null>(null);
+
+  function aplicarMascaraTelefone(value: string) {
+    // Remove tudo que não é dígito
+    const digits = value.replace(/\D/g, "").slice(0, 11);
+    
+    if (digits.length <= 2) return digits;
+    if (digits.length <= 6) return `(${digits.slice(0, 2)}) ${digits.slice(2)}`;
+    if (digits.length <= 10) return `(${digits.slice(0, 2)}) ${digits.slice(2, 6)}-${digits.slice(6)}`;
+    return `(${digits.slice(0, 2)}) ${digits.slice(2, 7)}-${digits.slice(7)}`;
+  }
+
+  function validarTelefone(value: string) {
+    const digits = value.replace(/\D/g, "");
+    return digits.length === 11;
+  }
 
   const perfumeById = useMemo(() => {
     const m = new Map<string, { p: Perfume; codigo: string }>();
@@ -107,12 +123,13 @@ export function CartDrawer() {
         ? "Pagamento: Pix à vista"
         : `Pagamento: Cartão em ${parcelas}x de ${formatBRL(total / parcelas)}`;
     const nomeLinha = nome ? `Nome: ${nome}\n` : "";
+    const telefoneLinha = telefone ? `Telefone/WhatsApp: ${telefone}\n` : "";
     const linhaFrete = freteGratis ? "Frete: GRÁTIS 🎉\n" : "";
     const origin = typeof window !== "undefined" ? window.location.origin : "";
     const linkRastreio = `${origin}/pedido/${pedidoId}`;
     return `Olá! Gostaria de fechar o pedido ${pedidoId}:\n\n${linhasItens.join(
       "\n",
-    )}\n\nTotal: ${formatBRL(total)}\n${linhaFrete}${linhaPagamento}\n${nomeLinha}\nAcompanhe seu pedido: ${linkRastreio}\n\nPodemos confirmar?`;
+    )}\n\nTotal: ${formatBRL(total)}\n${linhaFrete}${linhaPagamento}\n${nomeLinha}${telefoneLinha}\nAcompanhe seu pedido: ${linkRastreio}\n\nPodemos confirmar?`;
   }
 
 
@@ -125,6 +142,7 @@ export function CartDrawer() {
       const { id } = await criar({
         data: {
           cliente: nome,
+          telefone: telefone.replace(/\D/g, ""),
           itens: linhasItens.join("\n"),
           itensDetalhados,
           total,
@@ -142,6 +160,7 @@ export function CartDrawer() {
       clear();
       setEtapa("carrinho");
       setNome("");
+      setTelefone("");
       setPagamento("Pix");
       setParcelas(1);
       close();
@@ -244,7 +263,25 @@ export function CartDrawer() {
                           </span>
                         )}
                       </div>
-                    </div>
+              </div>
+              
+              <div>
+                <label className="text-xs uppercase tracking-wider text-muted-foreground">
+                  Telefone/WhatsApp
+                </label>
+                <input
+                  type="tel"
+                  value={telefone}
+                  onChange={(e) => setTelefone(aplicarMascaraTelefone(e.target.value))}
+                  placeholder="(99) 99999-9999"
+                  className="mt-2 w-full rounded-lg border border-border/60 bg-background px-4 py-3 text-sm focus:border-gold focus:outline-none"
+                />
+                {!validarTelefone(telefone) && telefone.length > 0 && (
+                  <p className="mt-1 text-[10px] text-amber-400">
+                    Insira um número válido com 11 dígitos.
+                  </p>
+                )}
+              </div>
                   </li>
                 );
               })}
@@ -384,7 +421,7 @@ export function CartDrawer() {
               <button
                 type="button"
                 onClick={confirmar}
-                disabled={enviando || !nome.trim() || cartCount === 0}
+                disabled={enviando || !nome.trim() || !validarTelefone(telefone) || cartCount === 0}
                 className="inline-flex w-full items-center justify-center rounded-full bg-gold px-6 py-3 text-sm font-semibold text-primary-foreground transition hover:brightness-110 disabled:opacity-50"
               >
                 {enviando ? "Registrando…" : "Confirmar e abrir WhatsApp"}

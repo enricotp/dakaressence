@@ -25,7 +25,8 @@ import {
 import {
  listarPedidos,
  atualizarRastreio,
-  atualizarStatusPedido,
+   atualizarStatusPedido,
+   processarSaidaEstoque,
   listarItensVendidos,
   type Pedido,
   type ItemVendido,
@@ -46,6 +47,7 @@ import {
 } from "@/lib/perfumes.functions";
 
 import { formatBRL } from "@/lib/format";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/painel-dakar-a7k9m2")({
   component: AdminPage,
@@ -294,6 +296,7 @@ function PedidosTab() {
   const listar = useServerFn(listarPedidos);
   const atualizar = useServerFn(atualizarStatusPedido);
   const salvarRastreio = useServerFn(atualizarRastreio);
+  const processarEstoque = useServerFn(processarSaidaEstoque);
   const qc = useQueryClient();
 
   const [filtro, setFiltro] = useState<"todos" | "Pendente" | "Concluído" | "Cancelado">(
@@ -311,19 +314,44 @@ function PedidosTab() {
   });
 
   const buscaNorm = busca.trim().toLowerCase();
+  const buscaLimpa = busca.replace(/\D/g, "");
   const dataFiltroBR = dataFiltro ? dataFiltro.split("-").reverse().join("/") : "";
 
   const filtrados = pedidos.filter((p: Pedido) => {
     if (filtro !== "todos" && p.status !== filtro) return false;
-    if (
-      buscaNorm &&
-      !p.id.toLowerCase().includes(buscaNorm) &&
-      !p.cliente.toLowerCase().includes(buscaNorm)
-    )
-      return false;
+    if (buscaNorm) {
+      const nomeMatch = p.cliente.toLowerCase().includes(buscaNorm);
+      const idMatch = p.id.toLowerCase().includes(buscaNorm);
+      const telMatch = p.telefone && p.telefone.replace(/\D/g, "").includes(buscaLimpa);
+      
+      if (!nomeMatch && !idMatch && !telMatch) return false;
+    }
     if (dataFiltroBR && !p.data.startsWith(dataFiltroBR)) return false;
     return true;
   });
+
+  async function handleProcessarEstoque(p: Pedido) {
+    if (!confirm(`Deseja processar a saída de estoque para o pedido ${p.id}?\nIsso irá subtrair os itens do Notion e marcar o pedido como Concluído.`)) {
+      return;
+    }
+    
+    try {
+      toast.loading("Processando estoque e concluindo pedido...");
+      await processarEstoque({
+        data: {
+          row: p.row,
+          pedidoId: p.id,
+          itensTexto: p.itens
+        }
+      });
+      qc.invalidateQueries({ queryKey: ["pedidos"] });
+      toast.dismiss();
+      toast.success("Pedido processado e concluído com sucesso!");
+    } catch (err) {
+      toast.dismiss();
+      toast.error("Erro ao processar: " + (err instanceof Error ? err.message : "Erro desconhecido"));
+    }
+  }
 
   async function mudarStatus(p: Pedido, status: "Concluído" | "Cancelado" | "Pendente") {
     await atualizar({
@@ -420,7 +448,31 @@ function PedidosTab() {
                       <StatusBadge status={p.status} />
                       <span className="text-xs text-muted-foreground">{p.data}</span>
                     </div>
-                    <p className="mt-2 font-semibold">{p.cliente || "—"}</p>
+                    <p className="mt-2 font-semibold">
+                      {p.cliente || "—"}
+                      {p.telefone && (
+                        <span className="ml-2 text-xs font-normal text-muted-foreground">
+                          · ({p.telefone.slice(0, 2)}) {p.telefone.slice(2, 7)}-{p.telefone.slice(7)}
+                        </span>
+                      )}
+                    </p>
+                    <div className="mt-2 flex items-center gap-3">
+                      {p.telefone ? (
+                        <a
+                          href={`https://wa.me/55${p.telefone}`}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-3 py-1 text-[10px] font-medium text-emerald-400 transition hover:bg-emerald-500/20"
+                        >
+                          <svg viewBox="0 0 24 24" className="h-3 w-3" fill="currentColor">
+                            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.653a11.888 11.888 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+                          </svg>
+                          Falar com o cliente
+                        </a>
+                      ) : (
+                        <span className="text-[10px] text-muted-foreground italic">Telefone não informado</span>
+                      )}
+                    </div>
                     <pre className="mt-2 whitespace-pre-wrap font-sans text-sm text-muted-foreground">
                       {p.itens}
                     </pre>
@@ -434,12 +486,20 @@ function PedidosTab() {
                       {formatBRL(p.total)}
                     </span>
                     <div className="flex gap-2">
-                      {p.status !== "Concluído" && (
+                      {p.status === "Pendente" && (
+                        <button
+                          onClick={() => handleProcessarEstoque(p)}
+                          className="rounded-full bg-gold px-4 py-2 text-xs font-bold text-primary-foreground shadow-lg shadow-gold/20 hover:brightness-110 active:scale-95 transition-all"
+                        >
+                          Processar e Atualizar Estoque
+                        </button>
+                      )}
+                      {p.status === "Cancelado" && (
                         <button
                           onClick={() => mudarStatus(p, "Concluído")}
-                          className="rounded-full bg-gold px-3 py-1.5 text-xs font-semibold text-primary-foreground hover:brightness-110"
+                          className="rounded-full bg-emerald-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-emerald-700"
                         >
-                          Concluir
+                          Concluir (sem baixa)
                         </button>
                       )}
                       {p.status !== "Cancelado" && (

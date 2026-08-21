@@ -338,23 +338,29 @@ import { logoWhite } from "@/lib/constants";
 import { useCart } from "@/lib/cart-context";
 import { CollectionShowcase } from "@/components/collection-showcase";
 import { Header } from "@/components/header";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { getHomeConfig } from "@/lib/home-config.functions";
+import { getHomeConfig, type HomeConfig } from "@/lib/home-config.functions";
 
 export const Route = createFileRoute("/")({
+  loader: async ({ context }) => {
+    await context.queryClient.ensureQueryData({
+      queryKey: ["home-config"],
+      queryFn: () => getHomeConfig(),
+    });
+  },
   component: Index,
 });
 
 function Index() {
   const { cartCount, open } = useCart();
   const getCfg = useServerFn(getHomeConfig);
-  const { data: config = [] } = useQuery({
+  const { data: config } = useSuspenseQuery<HomeConfig[]>({
     queryKey: ["home-config"],
     queryFn: () => getCfg(),
   });
 
-  const homeMain = config.find((c) => c.key === "home_main");
+  const homeMain = config.find((c: HomeConfig) => c.key === "home_main");
   const titulo = homeMain?.tituloPrincipal || "A mesma essência, metade do preço.";
   const descricao = homeMain?.textoPrincipal || "Perfumes contratipos com alta concentração e fixação premium. Monte seu pedido e finalize direto no WhatsApp.";
 
