@@ -3,7 +3,7 @@ import { Link, useSearch, useNavigate } from "@tanstack/react-router";
 import { formatBRL } from "@/lib/format";
 import { useWishlist } from "@/lib/wishlist-context";
 import { useCart } from "@/lib/cart-context";
-import { COLECOES, COLECAO_INFO, type Colecao, type Volume, type Perfume } from "@/lib/perfumes.functions";
+import { COLECOES, COLECAO_INFO, type Colecao, type Volume, type Perfume, formatarNumeroPerfume } from "@/lib/perfumes.functions";
 import { X, HelpCircle, Sparkles, Filter } from "lucide-react";
 
 
@@ -160,7 +160,7 @@ export function CatalogViewer({ perfumes }: CatalogViewerProps) {
   }, [perfumes, busca, colecoesAtivas, filtro, marca, disponibilidade, soFavoritos, selectedVolume, wishlist, activeNotes]);
 
   const imagensRotativas = ["/perfume-1.jpg", "/perfume-2.jpg", "/perfume-3.jpg"];
-  const codigoDoPerfume = (index: number) => `Nº ${String(index + 1).padStart(3, "0")}`;
+  const codigoDoPerfume = (p: Perfume) => formatarNumeroPerfume(p.numero);
 
   return (
     <div className="mx-auto max-w-7xl px-4 sm:px-6 relative">
@@ -713,7 +713,7 @@ export function CatalogViewer({ perfumes }: CatalogViewerProps) {
         ) : (
           perfumesFiltrados.map((p) => {
             const i = perfumes.indexOf(p);
-            const codigo = codigoDoPerfume(i);
+            const codigo = codigoDoPerfume(p);
             const imagem = p.imagem ?? imagensRotativas[i % imagensRotativas.length];
             const mostrarSobEncomenda = p.disponibilidade === "Sob Encomenda";
             const qtd = cart[p.id] ?? 0;

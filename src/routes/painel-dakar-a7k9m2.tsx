@@ -36,6 +36,7 @@ import {
   criarPerfume,
   excluirPerfume,
   aplicarCustosPadrao,
+  formatarNumeroPerfume,
   COLECOES,
   COLECAO_INFO,
   type Perfume,
@@ -1102,6 +1103,7 @@ function PerfumesTab() {
             perfume={{
               id: "",
               nome: "",
+              numero: null,
               emEstoque: false,
               status: "",
               imagem: null,
@@ -1181,7 +1183,7 @@ function PerfumesTab() {
                   )}
                   <div className="flex-1">
                     <div className="flex flex-wrap items-center gap-2">
-                      <p className="font-semibold">{p.nome}</p>
+                      <p className="font-semibold">{formatarNumeroPerfume(p.numero)} · {p.nome}</p>
                       <span className="rounded-full bg-gold/15 px-2.5 py-1 text-sm font-bold uppercase tracking-wider text-gold">
                         {p.volume}
                       </span>
@@ -1314,6 +1316,7 @@ function EditForm({
 }: {
   perfume: Perfume;
   onSave: (patch: {
+    numero?: number | null;
     nome?: string;
     descricao?: string;
     preco?: number | null;
@@ -1335,6 +1338,7 @@ function EditForm({
   marcasSugestoes?: string[];
   nomesSugestoes?: string[];
 }) {
+  const [numero, setNumero] = useState(perfume.numero?.toString() ?? "");
   const [nome, setNome] = useState(perfume.nome);
   const [descricao, setDescricao] = useState(perfume.descricao);
   const [preco, setPreco] = useState(perfume.preco?.toString() ?? "");
@@ -1384,6 +1388,7 @@ function EditForm({
     setErro(null);
     try {
       const patch: Parameters<typeof onSave>[0] = {
+        numero: numero === "" ? null : parseInt(numero, 10),
         nome,
         descricao,
         preco: preco === "" ? null : parseFloat(preco.replace(",", ".")),
@@ -1411,6 +1416,15 @@ function EditForm({
 
   return (
     <div className="space-y-3">
+      <Field label="Número Permanente (ex: 001)">
+        <input
+          value={numero}
+          onChange={(e) => setNumero(e.target.value)}
+          placeholder="Deixe vazio para gerar automático"
+          className="input"
+          inputMode="numeric"
+        />
+      </Field>
       <Field label="Nome">
         <input
           value={nome}

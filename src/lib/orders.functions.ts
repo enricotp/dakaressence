@@ -39,7 +39,16 @@ export const criarPedido = createServerFn({ method: "POST" })
     (data: {
       cliente: string;
       itens: string;
-      itensDetalhados: Array<{ id: string; nome: string; qtd: number; precoUnit: number }>;
+      itensDetalhados: Array<{ 
+        id: string; 
+        nome: string; 
+        qtd: number; 
+        precoUnit: number;
+        numero?: number | null;
+        colecao?: string;
+        volume?: string;
+        marca?: string | null;
+      }>;
       total: number;
       pagamento: "Pix" | "Cartão";
       parcelas: number;
@@ -76,18 +85,19 @@ export const criarPedido = createServerFn({ method: "POST" })
 
     if (data.itensDetalhados.length > 0) {
       // Enriquecer com coleção/volume via Notion.
-      let porId = new Map<string, { colecao: string; volume: string }>();
+      let porId = new Map<string, { colecao: string; volume: string; numero: number | null }>();
       try {
         const { getPerfumes } = await import("./perfumes.functions");
         const perfumes = await getPerfumes();
         porId = new Map(
-          perfumes.map((p) => [p.id, { colecao: p.colecao, volume: p.volume }]),
+          perfumes.map((p) => [p.id, { colecao: p.colecao, volume: p.volume, numero: p.numero }]),
         );
       } catch (err) {
         console.error("Falha ao enriquecer itens com coleção/volume:", err);
       }
       const itemRows = data.itensDetalhados.map((it) => {
-        const extra = porId.get(it.id) ?? { colecao: "", volume: "" };
+        const extra = porId.get(it.id) ?? { colecao: "", volume: "", numero: null };
+        // Salva uma fotografia do produto no momento da compra
         return [
           dataFmt,
           id,
@@ -97,11 +107,12 @@ export const criarPedido = createServerFn({ method: "POST" })
           (it.precoUnit * it.qtd).toFixed(2).replace(".", ","),
           data.cliente,
           it.id,
-          extra.colecao,
-          extra.volume,
+          it.colecao || extra.colecao,
+          it.volume || extra.volume,
+          it.numero !== undefined ? it.numero : extra.numero,
         ];
       });
-      const itemsUrl = `${GATEWAY}/spreadsheets/${ITEMS_SHEET_ID}/values/${ITEMS_SHEET_NAME}!A:J:append?valueInputOption=USER_ENTERED`;
+      const itemsUrl = `${GATEWAY}/spreadsheets/${ITEMS_SHEET_ID}/values/${ITEMS_SHEET_NAME}!A:K:append?valueInputOption=USER_ENTERED`;
       const itemsRes = await fetch(itemsUrl, {
         method: "POST",
         headers: sheetsHeaders(),
