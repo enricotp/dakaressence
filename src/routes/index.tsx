@@ -338,7 +338,7 @@ import { logoWhite } from "@/lib/constants";
 import { useCart } from "@/lib/cart-context";
 import { CollectionShowcase } from "@/components/collection-showcase";
 import { Header } from "@/components/header";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { getHomeConfig } from "@/lib/home-config.functions";
 
