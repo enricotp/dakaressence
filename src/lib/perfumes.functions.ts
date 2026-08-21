@@ -206,38 +206,10 @@ export const getPerfumes = createServerFn({ method: "GET" }).handler(
 
       const effectiveAmount = amount ?? 0;
       
-      // Prioridade:
-      // 1. Se "Pronta entrega" estiver marcado no Notion -> Pronta Entrega
-      // 2. Se "Sob encomenda" estiver marcado no Notion -> Sob Encomenda
-      // 3. Se nenhum estiver marcado:
-      //    Se Amount > OoS -> Pronta Entrega
-      //    Senão -> Sob Encomenda
-      
-      let prontaEntrega = notionProntaEntrega;
-      let sobEncomenda = notionSobEncomenda;
-      
-      // Se AMBOS estiverem marcados, respeitamos ambos (o site mostrará as duas tags).
-      // Mas se o usuário quiser que o saldo automático funcione, ele deve desmarcar os checkboxes.
-      
-      if (!notionProntaEntrega && !notionSobEncomenda) {
-        if (effectiveAmount > oosThreshold) {
-          prontaEntrega = true;
-          sobEncomenda = false;
-        } else {
-          prontaEntrega = false;
-          sobEncomenda = true;
-        }
-      } else {
-        // Se pelo menos um estiver marcado, respeitamos os checkboxes.
-        // No entanto, se o site identificar que eles estão conflitantes ou errados,
-        // o botão de Sincronizar no Admin é quem deve forçar a correção.
-        prontaEntrega = notionProntaEntrega;
-        sobEncomenda = notionSobEncomenda;
-      }
-      
-      // Caso especial: se o usuário colocou saldo (Amount > OoS) mas o checkbox "Sob encomenda" 
-      // ainda está marcado no Notion, o checkbox TEM precedência sobre o cálculo automático.
-      // O usuário provavelmente esqueceu de desmarcar o "Sob encomenda" no Notion.
+      // Regra de Ouro: O Saldo em estoque (Amount) é a única verdade para o site.
+      // Isso elimina a necessidade de sincronizar checkboxes manualmente.
+      const prontaEntrega = effectiveAmount > oosThreshold;
+      const sobEncomenda = !prontaEntrega;
       
       const emEstoque = prontaEntrega;
 
