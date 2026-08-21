@@ -175,6 +175,11 @@ export const getPerfumes = createServerFn({ method: "GET" }).handler(
       const amount = page.properties["Amount"]?.number ?? null;
       const oosThreshold = page.properties["OoS threshold"]?.number ?? 0;
       const status = page.properties["Available?"]?.formula?.string ?? "";
+      const descricao =
+        page.properties["Descrição"]?.rich_text?.map((t) => t.plain_text).join("") ?? "";
+      const preco = page.properties["Preço"]?.number ?? null;
+      const custo = page.properties["Custo"]?.number ?? null;
+
       
       const volumeRaw = page.properties["Volume"]?.select?.name ?? "50ml";
       const volume: Volume = (["25ml", "50ml", "80ml", "100ml"] as const).includes(
