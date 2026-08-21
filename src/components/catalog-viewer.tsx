@@ -264,7 +264,7 @@ export function CatalogViewer({ perfumes }: CatalogViewerProps) {
             >
               <span className="font-bold">{op.label}</span>
               {('sublabel' in op) && (
-                <span className={`text-[9px] lowercase text-center leading-tight tracking-normal opacity-80 ${disponibilidade === op.id ? "text-primary-foreground" : "text-muted-foreground"}`}>
+                <span className={`text-[9px] lowercase text-center leading-none tracking-normal opacity-80 mt-0.5 ${disponibilidade === op.id ? "text-primary-foreground" : "text-muted-foreground"}`}>
                   {op.sublabel}
                 </span>
               )}
@@ -461,7 +461,7 @@ export function CatalogViewer({ perfumes }: CatalogViewerProps) {
                   : "border-border/60 bg-card text-muted-foreground hover:text-foreground"
               }`}
             >
-              <span aria-hidden className="text-lg leading-[0] mt-1">{soFavoritos ? "♥" : "♡"}</span>
+              <span aria-hidden className="text-lg flex items-center justify-center">{soFavoritos ? "♥" : "♡"}</span>
               <span className="hidden sm:inline">Favoritos</span>
               {wishlist.count > 0 && <span className="ml-1 text-[10px] font-bold">({wishlist.count})</span>}
             </button>
