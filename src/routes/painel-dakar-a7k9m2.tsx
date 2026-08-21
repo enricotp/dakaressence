@@ -47,6 +47,7 @@ import {
 } from "@/lib/perfumes.functions";
 
 import { formatBRL } from "@/lib/format";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/painel-dakar-a7k9m2")({
   component: AdminPage,
