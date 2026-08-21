@@ -1115,6 +1115,7 @@ function PerfumesTab() {
               colecao: colTab,
               lowThreshold: null,
               oosThreshold: null,
+              disponibilidade: "Sob Encomenda",
               notasTopo: "",
               notasCoracao: "",
               notasFundo: "",
@@ -1348,6 +1349,10 @@ function EditForm({
   const [oosThresholdInput, setOosThresholdInput] = useState(perfume.oosThreshold?.toString() ?? "");
   
   // A disponibilidade agora é automática via fórmula no Notion baseada no amount.
+  const currentAmount = amount === "" ? 0 : parseInt(amount, 10);
+  const currentOoS = oosThresholdInput === "" ? 0 : parseInt(oosThresholdInput, 10);
+  const isProntaEntrega = currentAmount > currentOoS;
+  const isSobEncomenda = currentAmount <= currentOoS;
   const [notasTopo, setNotasTopo] = useState(perfume.notasTopo);
   const [notasCoracao, setNotasCoracao] = useState(perfume.notasCoracao);
   const [notasFundo, setNotasFundo] = useState(perfume.notasFundo);
