@@ -12,28 +12,28 @@ export const sincronizarCheckboxesNotion = createServerFn({ method: "POST" })
     let corrigidos = 0;
     let falhas = 0;
 
-    // Processar em pequenos lotes ou sequencialmente para evitar rate limit do Notion
+    const processados = new Set<string>();
+    
     for (const p of perfumes) {
-      // Ignorar IDs virtuais de expansão do Signature (ex: id-100ml)
-      // para não tentar atualizar a mesma página várias vezes na mesma execução
-      if (p.id.includes("-")) continue;
+      // Extrair o ID real da página do Notion (removendo sufixo de volume se houver)
+      const pageId = p.id.split("-")[0];
+      
+      // Evitar processar a mesma página do Notion múltiplas vezes
+      if (processados.has(pageId)) continue;
+      processados.add(pageId);
 
       const threshold = p.oosThreshold ?? 0;
       const amount = p.amount ?? 0;
       
-      // Regra de negócio: Se Amount > OoS threshold, deve ser Pronta Entrega.
-      // Senão, deve ser Sob Encomenda.
       const deveEstarPronta = amount > threshold;
       const deveEstarEncomenda = !deveEstarPronta;
 
-      // Log para debug interno (visível nos logs do servidor se necessário)
-      console.log(`Sincronizando ${p.nome}: Amount=${amount}, Threshold=${threshold}, Atual(PE=${p.prontaEntrega}, SE=${p.sobEncomenda}), Esperado(PE=${deveEstarPronta}, SE=${deveEstarEncomenda})`);
-
       if (p.prontaEntrega !== deveEstarPronta || p.sobEncomenda !== deveEstarEncomenda) {
+        console.log(`Sincronizando ${p.nome} (${pageId}): Amount=${amount}, Threshold=${threshold}, PE=${p.prontaEntrega}->${deveEstarPronta}, SE=${p.sobEncomenda}->${deveEstarEncomenda}`);
         try {
           const res = await atualizarPerfume({
             data: {
-              id: p.id,
+              id: pageId,
               prontaEntrega: deveEstarPronta,
               sobEncomenda: deveEstarEncomenda,
             }
