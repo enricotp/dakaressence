@@ -486,12 +486,20 @@ function PedidosTab() {
                       {formatBRL(p.total)}
                     </span>
                     <div className="flex gap-2">
-                      {p.status !== "Concluído" && (
+                      {p.status === "Pendente" && (
+                        <button
+                          onClick={() => handleProcessarEstoque(p)}
+                          className="rounded-full bg-gold px-4 py-2 text-xs font-bold text-primary-foreground shadow-lg shadow-gold/20 hover:brightness-110 active:scale-95 transition-all"
+                        >
+                          Processar e Atualizar Estoque
+                        </button>
+                      )}
+                      {p.status === "Cancelado" && (
                         <button
                           onClick={() => mudarStatus(p, "Concluído")}
-                          className="rounded-full bg-gold px-3 py-1.5 text-xs font-semibold text-primary-foreground hover:brightness-110"
+                          className="rounded-full bg-emerald-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-emerald-700"
                         >
-                          Concluir
+                          Concluir (sem baixa)
                         </button>
                       )}
                       {p.status !== "Cancelado" && (
