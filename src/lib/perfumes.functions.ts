@@ -1,3 +1,4 @@
+import { notionFetchWithRetry } from "./notion-fetch";
 import { createServerFn } from "@tanstack/react-start";
 
 const DATABASE_ID = "38858811-29ca-83c5-b57d-0102c05505b1";
@@ -167,7 +168,7 @@ export const getPerfumes = createServerFn({ method: "GET" }).handler(
     while (hasMore) {
       const body: Record<string, unknown> = { page_size: 100 };
       if (startCursor) body.start_cursor = startCursor;
-      const res = await fetch(`${GATEWAY}/databases/${DATABASE_ID}/query`, {
+      const res = await notionFetchWithRetry(`${GATEWAY}/databases/${DATABASE_ID}/query`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${lovableKey}`,
@@ -186,6 +187,8 @@ export const getPerfumes = createServerFn({ method: "GET" }).handler(
       startCursor = pageData.next_cursor ?? undefined;
     }
     const data = { results: allResults } as NotionQueryResponse;
+
+
 
 
     return data.results.flatMap((page) => {
