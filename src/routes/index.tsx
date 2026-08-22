@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 /**
-  * Mano, não tem lugar para colocar os numeros no checkout
+  * O que você fez, resuma todas alterações do dia
   */
 import { logoWhite } from "@/lib/constants";
 import { useCart } from "@/lib/cart-context";
