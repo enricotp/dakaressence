@@ -1,3 +1,4 @@
+import { notionFetchWithRetry } from "./notion-fetch";
 import { createServerFn } from "@tanstack/react-start";
 
 const DATABASE_ID = "38858811-29ca-83c5-b57d-0102c05505b1";
@@ -151,34 +152,6 @@ function extractImage(page: NotionPage): string | null {
     }
   }
   return null;
-}
-
-async function notionFetchWithRetry(
-  url: string,
-  init: RequestInit,
-  attempts = 3,
-): Promise<Response> {
-  let lastError: unknown;
-  for (let i = 0; i < attempts; i++) {
-    try {
-      const res = await fetch(url, {
-        ...init,
-        signal: AbortSignal.timeout(20_000),
-      });
-      if (res.status >= 500 && i < attempts - 1) {
-        await new Promise((r) => setTimeout(r, 500 * (i + 1)));
-        continue;
-      }
-      return res;
-    } catch (err) {
-      // "TypeError: terminated" / abort / socket reset -> tenta de novo
-      lastError = err;
-      await new Promise((r) => setTimeout(r, 500 * (i + 1)));
-    }
-  }
-  throw lastError instanceof Error
-    ? lastError
-    : new Error("Falha ao conectar ao Notion");
 }
 
 export const getPerfumes = createServerFn({ method: "GET" }).handler(
