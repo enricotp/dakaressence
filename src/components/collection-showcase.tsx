@@ -90,7 +90,7 @@ export function CollectionShowcase() {
         </p>
       </div>
 
-      <div className="grid gap-8 md:grid-cols-2">
+      <div className="grid gap-8">
         {mergedData.map((collection) => (
           <CollectionCard key={collection.id} collection={collection} />
         ))}
@@ -117,7 +117,7 @@ function CollectionCarousel({ images, collectionName }: { images: string[], coll
 
   return (
     <div 
-      className="relative mb-8 aspect-square w-full overflow-hidden rounded-2xl border border-border/40 bg-muted/20"
+      className="relative aspect-square w-full shrink-0 overflow-hidden rounded-2xl border border-border/40 bg-muted/20 md:w-48 lg:w-56"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
       onTouchStart={() => setIsPaused(true)}
@@ -190,11 +190,12 @@ function CollectionCard({ collection }: { collection: CollectionData }) {
   };
 
   return (
-    <div className="group relative flex flex-col rounded-3xl border border-border/60 bg-card p-6 transition-all hover:border-gold/30 hover:shadow-xl sm:p-8">
+    <div className="group relative flex flex-col rounded-3xl border border-border/60 bg-card p-6 transition-all hover:border-gold/30 hover:shadow-xl sm:p-8 md:flex-row md:gap-8">
       {collection.imagens && collection.imagens.length > 0 && (
         <CollectionCarousel images={collection.imagens} collectionName={collection.name} />
       )}
-      <div className="mb-6">
+      <div className="flex flex-1 flex-col">
+        <div className="mb-6">
         <h3 className="font-display text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
           {collection.name}
         </h3>
@@ -243,6 +244,7 @@ function CollectionCard({ collection }: { collection: CollectionData }) {
             Descobrir Fragrâncias
           </button>
         </div>
+      </div>
       </div>
     </div>
   );
