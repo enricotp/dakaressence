@@ -1539,7 +1539,7 @@ function PerfumesTab() {
                               notasTopo: p.notasTopo,
                               notasCoracao: p.notasCoracao,
                               notasFundo: p.notasFundo,
-                              volumesSignature: p.volumesSignature,
+                              volumesSignature: p.volumesSignature ?? [],
                             },
                           });
                           await qc.invalidateQueries({ queryKey: ["perfumes"] });
@@ -1620,7 +1620,7 @@ function EditForm({
     notasTopo?: string;
     notasCoracao?: string;
     notasFundo?: string;
-    volumesSignature?: Volume[];
+    volumesSignature?: Volume[] | null;
   }) => Promise<void>;
   onCancel: () => void;
   marcasSugestoes?: string[];
@@ -1691,7 +1691,7 @@ function EditForm({
         notasTopo,
         notasCoracao,
         notasFundo,
-        volumesSignature,
+        volumesSignature: colecao === "Signature" ? volumesSignature : null,
       };
       if (imagemUrl.trim()) patch.imagemUrl = imagemUrl.trim();
       await onSave(patch);
@@ -1797,7 +1797,7 @@ function EditForm({
         <Field label="Volumes disponíveis (Signature)">
           <div className="flex flex-wrap gap-2">
             {(["50ml", "100ml"] as Volume[]).map((v) => {
-              const selected = volumesSignature.includes(v);
+              const selected = volumesSignature?.includes(v) ?? false;
               return (
                 <button
                   key={v}

@@ -1,6 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 /**
- * Você não entendeu, veja quais estão dando a imagem estranha, e investigue,
+ * O erro "Volumes Signature is not a property that exists" ocorreu porque o código tentava enviar 
+ * essa propriedade para todas as coleções, mas ela só existe no Notion para a coleção "Signature".
+ * Corrigi adicionando uma verificação para que ela só seja enviada se colecao === "Signature".
  */
 import { logoWhite } from "@/lib/constants";
 import { useCart } from "@/lib/cart-context";

@@ -54,7 +54,7 @@ export type Perfume = {
   notasTopo: string;
   notasCoracao: string;
   notasFundo: string;
-  volumesSignature: Volume[];
+  volumesSignature: Volume[] | null;
 };
 
 export function formatarNumeroPerfume(n: number | null | undefined): string {
@@ -265,7 +265,7 @@ export const getPerfumes = createServerFn({ method: "GET" }).handler(
         notasTopo,
         notasCoracao,
         notasFundo,
-        volumesSignature,
+        volumesSignature: volumesSignature.length > 0 ? volumesSignature : null,
       };
 
       // Se for Signature e tiver múltiplos volumes, expandimos.
@@ -317,7 +317,7 @@ export const atualizarPerfume = createServerFn({ method: "POST" })
       notasTopo?: string;
       notasCoracao?: string;
       notasFundo?: string;
-      volumesSignature?: Volume[];
+      volumesSignature?: Volume[] | null;
     }) => data,
   )
   .handler(async ({ data }) => {
@@ -352,8 +352,8 @@ export const atualizarPerfume = createServerFn({ method: "POST" })
       properties["Notas de coração"] = { rich_text: [{ text: { content: data.notasCoracao } }] };
     if (data.notasFundo !== undefined)
       properties["Notas de fundo"] = { rich_text: [{ text: { content: data.notasFundo } }] };
-    if (data.volumesSignature !== undefined)
-      properties["Volumes Signature"] = { multi_select: data.volumesSignature.map((v) => ({ name: v })) };
+    if (data.colecao === "Signature" && data.volumesSignature !== undefined)
+      properties["Volumes Signature"] = data.volumesSignature ? { multi_select: data.volumesSignature.map((v) => ({ name: v })) } : { multi_select: [] };
 
     const body: Record<string, unknown> = { properties };
     if (data.imagemUrl !== undefined && data.imagemUrl) {
@@ -449,7 +449,7 @@ export const criarPerfume = createServerFn({ method: "POST" })
       notasTopo?: string;
       notasCoracao?: string;
       notasFundo?: string;
-      volumesSignature?: Volume[];
+      volumesSignature?: Volume[] | null;
     }) => data,
   )
   .handler(async ({ data }) => {
@@ -484,8 +484,8 @@ export const criarPerfume = createServerFn({ method: "POST" })
       properties["Notas de coração"] = { rich_text: [{ text: { content: data.notasCoracao } }] };
     if (data.notasFundo)
       properties["Notas de fundo"] = { rich_text: [{ text: { content: data.notasFundo } }] };
-    if (data.volumesSignature)
-      properties["Volumes Signature"] = { multi_select: data.volumesSignature.map((v) => ({ name: v })) };
+    if (data.colecao === "Signature" && data.volumesSignature !== undefined)
+      properties["Volumes Signature"] = data.volumesSignature ? { multi_select: data.volumesSignature.map((v) => ({ name: v })) } : { multi_select: [] };
 
     const body: Record<string, unknown> = {
       parent: { database_id: DATABASE_ID },
