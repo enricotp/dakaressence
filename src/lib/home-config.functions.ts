@@ -53,6 +53,15 @@ export const getHomeConfig = createServerFn({ method: "GET" }).handler(
       const ordem = props.Ordem?.number ?? 0;
       const tituloPrincipal = props["Título Principal"]?.rich_text?.[0]?.plain_text ?? "";
       const textoPrincipal = props["Texto Principal"]?.rich_text?.map((t: any) => t.plain_text).join("") ?? "";
+      const imagensRaw = props["ImagensCarrossel"]?.rich_text?.[0]?.plain_text ?? "[]";
+      
+      let imagens: string[] = [];
+      try {
+        imagens = JSON.parse(imagensRaw);
+        if (!Array.isArray(imagens)) imagens = [];
+      } catch {
+        imagens = [];
+      }
 
       const precos: Partial<Record<Volume, number>> = {};
       if (props["Preço 25ml"]?.number !== undefined) precos["25ml"] = props["Preço 25ml"].number;
@@ -69,6 +78,7 @@ export const getHomeConfig = createServerFn({ method: "GET" }).handler(
         precos,
         tituloPrincipal,
         textoPrincipal,
+        imagens,
       };
     });
   }
