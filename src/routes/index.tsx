@@ -1,4 +1,10 @@
-export default function Index() {
+import { createFileRoute } from "@tanstack/react-router";
+
+export const Route = createFileRoute("/")({
+  component: Index,
+});
+
+function Index() {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center p-4 text-center">
       <h1 className="text-2xl font-bold">Dakar Essence</h1>
