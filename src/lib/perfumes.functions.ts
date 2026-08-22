@@ -352,8 +352,12 @@ export const atualizarPerfume = createServerFn({ method: "POST" })
       properties["Notas de coração"] = { rich_text: [{ text: { content: data.notasCoracao } }] };
     if (data.notasFundo !== undefined)
       properties["Notas de fundo"] = { rich_text: [{ text: { content: data.notasFundo } }] };
-    if (data.colecao === "Signature" && data.volumesSignature !== undefined)
+    if (data.colecao === "Signature" && data.volumesSignature !== undefined) {
       properties["Volumes Signature"] = data.volumesSignature ? { multi_select: data.volumesSignature.map((v) => ({ name: v })) } : { multi_select: [] };
+    } else {
+      // Se não for Signature, removemos explicitamente a propriedade do payload para evitar erro 400 no Notion
+      delete properties["Volumes Signature"];
+    }
 
     const body: Record<string, unknown> = { properties };
     if (data.imagemUrl !== undefined && data.imagemUrl) {
@@ -484,8 +488,9 @@ export const criarPerfume = createServerFn({ method: "POST" })
       properties["Notas de coração"] = { rich_text: [{ text: { content: data.notasCoracao } }] };
     if (data.notasFundo)
       properties["Notas de fundo"] = { rich_text: [{ text: { content: data.notasFundo } }] };
-    if (data.colecao === "Signature" && data.volumesSignature !== undefined)
+    if (data.colecao === "Signature" && data.volumesSignature !== undefined) {
       properties["Volumes Signature"] = data.volumesSignature ? { multi_select: data.volumesSignature.map((v) => ({ name: v })) } : { multi_select: [] };
+    }
 
     const body: Record<string, unknown> = {
       parent: { database_id: DATABASE_ID },
