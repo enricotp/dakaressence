@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 /**
-  * O que você fez, resuma todas alterações do dia
-  */
+ * Deixe o (confirme agora) nas tags, e o (Receba Hoje) um poucoo maiores e mais visíveis
+ */
 import { logoWhite } from "@/lib/constants";
 import { useCart } from "@/lib/cart-context";
 import { CollectionShowcase } from "@/components/collection-showcase";
