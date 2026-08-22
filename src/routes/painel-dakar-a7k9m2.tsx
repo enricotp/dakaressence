@@ -1691,7 +1691,7 @@ function EditForm({
         notasTopo,
         notasCoracao,
         notasFundo,
-        volumesSignature,
+        volumesSignature: colecao === "Signature" ? volumesSignature : null,
       };
       if (imagemUrl.trim()) patch.imagemUrl = imagemUrl.trim();
       await onSave(patch);
