@@ -127,7 +127,7 @@ function CollectionCarousel({ images, collectionName }: { images: string[], coll
         style={{ transform: `translateX(-${currentIndex * 100}%)` }}
       >
         {images.map((src, i) => (
-          <div key={i} className="flex h-full w-full shrink-0 items-center justify-center p-4">
+          <div key={i} className="flex h-full w-full shrink-0 items-center justify-center p-1 sm:p-2">
             <img
               src={src}
               alt={`Exemplo visual da coleção ${collectionName} - ${i + 1}`}
