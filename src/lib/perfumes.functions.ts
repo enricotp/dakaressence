@@ -373,8 +373,23 @@ export const atualizarPerfume = createServerFn({ method: "POST" })
       body: JSON.stringify(body),
     });
     if (!res.ok) {
-      const text = await res.text();
-      throw new Error(`Notion update failed [${res.status}]: ${text}`);
+      const responseText = await res.text();
+      let errorData;
+      try {
+        errorData = JSON.parse(responseText);
+      } catch {
+        errorData = responseText;
+      }
+
+      console.error("Notion update failed", {
+        status: res.status,
+        perfumeId: data.id,
+        nome: data.nome,
+        propertiesSent: Object.keys(properties),
+        error: errorData,
+      });
+
+      throw new Error(`Notion update failed [${res.status}]: ${JSON.stringify(errorData)}`);
     }
     try {
       const { appendLog } = await import("./logs.server");
