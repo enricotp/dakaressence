@@ -317,7 +317,7 @@ export const atualizarPerfume = createServerFn({ method: "POST" })
       notasTopo?: string;
       notasCoracao?: string;
       notasFundo?: string;
-      volumesSignature?: Volume[];
+      volumesSignature?: Volume[] | null;
     }) => data,
   )
   .handler(async ({ data }) => {
