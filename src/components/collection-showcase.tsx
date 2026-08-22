@@ -191,6 +191,9 @@ function CollectionCard({ collection }: { collection: CollectionData }) {
 
   return (
     <div className="group relative flex flex-col rounded-3xl border border-border/60 bg-card p-6 transition-all hover:border-gold/30 hover:shadow-xl sm:p-8">
+      {collection.imagens && collection.imagens.length > 0 && (
+        <CollectionCarousel images={collection.imagens} collectionName={collection.name} />
+      )}
       <div className="mb-6">
         <h3 className="font-display text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
           {collection.name}
