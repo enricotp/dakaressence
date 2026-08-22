@@ -353,7 +353,7 @@ export const atualizarPerfume = createServerFn({ method: "POST" })
     if (data.notasFundo !== undefined)
       properties["Notas de fundo"] = { rich_text: [{ text: { content: data.notasFundo } }] };
     if (data.volumesSignature !== undefined)
-      properties["Volumes Signature"] = { multi_select: data.volumesSignature.map((v) => ({ name: v })) };
+      properties["Volumes Signature"] = data.volumesSignature ? { multi_select: data.volumesSignature.map((v) => ({ name: v })) } : { multi_select: [] };
 
     const body: Record<string, unknown> = { properties };
     if (data.imagemUrl !== undefined && data.imagemUrl) {
