@@ -4,6 +4,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Suspense, useMemo, useState } from "react";
 import { CalculadoraPanel } from "@/components/calculadora-panel";
 import { HomeConfigTab } from "@/components/home-config-tab";
+import { X } from "lucide-react";
 import {
   CartesianGrid,
   Legend,
@@ -14,6 +15,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+
 
 import { isAdmin, loginAdmin, logoutAdmin } from "@/lib/admin.functions";
 import {
