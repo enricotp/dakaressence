@@ -265,7 +265,7 @@ export const getPerfumes = createServerFn({ method: "GET" }).handler(
         notasTopo,
         notasCoracao,
         notasFundo,
-        volumesSignature,
+        volumesSignature: volumesSignature.length > 0 ? volumesSignature : null,
       };
 
       // Se for Signature e tiver múltiplos volumes, expandimos.
