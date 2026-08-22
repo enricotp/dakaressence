@@ -42,6 +42,7 @@ export function HomeConfigTab() {
             precos: item.precos,
             tituloPrincipal: item.tituloPrincipal,
             textoPrincipal: item.textoPrincipal,
+            imagens: item.imagens,
           }
         });
         toast.dismiss(tid);
