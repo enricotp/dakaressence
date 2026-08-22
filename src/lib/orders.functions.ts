@@ -397,58 +397,79 @@ export const atualizarStatusPedido = createServerFn({ method: "POST" })
       });
     } catch {}
 
-    // Ajuste de estoque conforme transição (idempotente por transição).
-    // Concluído → baixa. Sair de Concluído (Cancelado/Pendente) → devolve.
-    const saiuDeConcluido =
-      data.statusAtual === "Concluído" && data.status !== "Concluído";
-    const entrouEmConcluido =
-      data.statusAtual !== "Concluído" && data.status === "Concluído";
+    // A baixa de estoque agora é feita manualmente pelo administrador através de 'aceitarVendaEBaixarEstoque'
+    // para garantir consistência e validação antes da alteração no Notion.
+    return { ok: true };
+  });
 
-    if (entrouEmConcluido || saiuDeConcluido) {
-      try {
-        const { getPerfumes, ajustarEstoqueInterno } = await import("./perfumes.functions");
-        const perfumes = await getPerfumes();
-        const porNome = new Map(perfumes.map((p) => [p.nome.toLowerCase(), p]));
-        const itens = parseItensTextoLocal(data.itensTexto);
-        const delta = entrouEmConcluido ? -1 : 1;
-        await Promise.all(
-          itens.map(async (it) => {
-            const p = porNome.get(it.nome.toLowerCase());
-            if (!p) {
-              console.error(`Perfume não encontrado para ajuste: "${it.nome}"`);
-              return;
-            }
-            try {
-              await ajustarEstoqueInterno(p.id, delta * it.qtd);
-            } catch (err) {
-              console.error("ajustarEstoque falhou:", err);
-            }
-          }),
-        );
-      } catch (err) {
-        console.error("Erro ao processar ajuste de estoque:", err);
-      }
+export const previewBaixaEstoque = createServerFn({ method: "POST" })
+  .validator((data: { pedidoId: string; itensTexto: string }) => data)
+  .handler(async ({ data }) => {
+    const { requireAdmin } = await import("./admin.server");
+    await requireAdmin();
+    const { resolverItensPedido, validarEstoque } = await import("./estoque.server");
+    const { getPerfumes } = await import("./perfumes.functions");
+
+    const catalogo = await getPerfumes();
+    const resolucao = await resolverItensPedido(data.pedidoId, data.itensTexto, catalogo);
+    const validacao = await validarEstoque(resolucao.itens, -1);
+
+    return { resolucao, validacao };
+  });
+
+export const aceitarVendaEBaixarEstoque = createServerFn({ method: "POST" })
+  .validator((data: { row: number; pedidoId: string; itensTexto: string }) => data)
+  .handler(async ({ data }) => {
+    const { requireAdmin, currentAdmin } = await import("./admin.server");
+    await requireAdmin();
+    const {
+      resolverItensPedido,
+      executarMovimento,
+      lerCicloPedido,
+      escreverCicloPedido,
+      escreverUltimoMovimentoStatus,
+      escreverStatusPedido,
+    } = await import("./estoque.server");
+    const { getPerfumes } = await import("./perfumes.functions");
+
+    const me = await currentAdmin();
+    const catalogo = await getPerfumes();
+    const resolucao = await resolverItensPedido(data.pedidoId, data.itensTexto, catalogo);
+
+    const cicloAtual = await lerCicloPedido(data.row);
+    const novoCiclo = cicloAtual + 1;
+
+    const res = await executarMovimento({
+      pedidoId: data.pedidoId,
+      ciclo: novoCiclo,
+      acao: "BAIXA",
+      itens: resolucao.itens,
+      usuario: me?.login || "admin",
+      role: me?.role || "gerente",
+    });
+
+    if (res.ok) {
+      await Promise.all([
+        escreverCicloPedido(data.row, novoCiclo),
+        escreverUltimoMovimentoStatus(data.row, res.status),
+        escreverStatusPedido(data.row, "Concluído"),
+      ]);
+    } else {
+      await escreverUltimoMovimentoStatus(data.row, `${res.status}${res.erro ? `: ${res.erro}` : ""}`);
     }
 
-    return { ok: true };
+    return res;
+  });
+
   });
 
 export const processarSaidaEstoque = createServerFn({ method: "POST" })
   .validator((data: { row: number; pedidoId: string; itensTexto: string }) => data)
   .handler(async ({ data }) => {
-    const { requireAdmin } = await import("./admin.server");
-    await requireAdmin();
-
-    return atualizarStatusPedido({
-      data: {
-        row: data.row,
-        pedidoId: data.pedidoId,
-        statusAtual: "Pendente",
-        itensTexto: data.itensTexto,
-        status: "Concluído"
-      }
-    });
+    // Redireciona para o novo motor
+    return aceitarVendaEBaixarEstoque({ data });
   });
+
 
 
 export const atualizarRastreio = createServerFn({ method: "POST" })
