@@ -1793,7 +1793,8 @@ function EditForm({
           ))}
         </div>
       </Field>
-      {colecao === "Signature" && (
+      {/* A propriedade Volumes Signature foi removida do Notion por não existir no schema atual */}
+      {/* {colecao === "Signature" && (
         <Field label="Volumes disponíveis (Signature)">
           <div className="flex flex-wrap gap-2">
             {(["50ml", "100ml"] as Volume[]).map((v) => {
@@ -1821,7 +1822,7 @@ function EditForm({
             })}
           </div>
         </Field>
-      )}
+      )} */}
       <Field label="Gênero">
         <div className="flex flex-wrap gap-2">
           {(["feminino", "masculino", "unissex"] as const).map((g) => (
