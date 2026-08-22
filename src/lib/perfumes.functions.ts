@@ -352,7 +352,7 @@ export const atualizarPerfume = createServerFn({ method: "POST" })
       properties["Notas de coração"] = { rich_text: [{ text: { content: data.notasCoracao } }] };
     if (data.notasFundo !== undefined)
       properties["Notas de fundo"] = { rich_text: [{ text: { content: data.notasFundo } }] };
-    if (data.volumesSignature !== undefined)
+    if (data.colecao === "Signature" && data.volumesSignature !== undefined)
       properties["Volumes Signature"] = data.volumesSignature ? { multi_select: data.volumesSignature.map((v) => ({ name: v })) } : { multi_select: [] };
 
     const body: Record<string, unknown> = { properties };
