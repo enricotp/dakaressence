@@ -469,6 +469,59 @@ export const processarSaidaEstoque = createServerFn({ method: "POST" })
     return aceitarVendaEBaixarEstoque({ data });
   });
 
+export const cancelarPedidoEDevolverEstoque = createServerFn({ method: "POST" })
+  .validator((data: { row: number; pedidoId: string; itensTexto: string; statusAtual: string }) => data)
+  .handler(async ({ data }) => {
+    const { requireAdmin, currentAdmin } = await import("./admin.server");
+    await requireAdmin();
+    const {
+      executarMovimento,
+      lerCicloPedido,
+      escreverUltimoMovimentoStatus,
+      escreverStatusPedido,
+      listarMovimentosRaw,
+      movimentoId
+    } = await import("./estoque.server");
+
+    const me = await currentAdmin();
+    const cicloAtual = await lerCicloPedido(data.row);
+
+    // 1. Verificar se existe uma baixa APLICADA no ciclo atual
+    const movs = await listarMovimentosRaw();
+    const baixaId = movimentoId(data.pedidoId, cicloAtual, "BAIXA");
+    const baixaAplicada = movs.find(m => m.movimentoId === baixaId && m.status === "APLICADA");
+
+    if (!baixaAplicada) {
+      // Se não houve baixa aplicada, apenas cancelamos o status no Sheets
+      await escreverStatusPedido(data.row, "Cancelado");
+      return { ok: true, status: "Cancelado (sem devolução necessária)" };
+    }
+
+    // 2. Executar a devolução usando os itens da baixa original
+    const res = await executarMovimento({
+      pedidoId: data.pedidoId,
+      ciclo: cicloAtual,
+      acao: "DEVOLUCAO",
+      itens: baixaAplicada.itens,
+      usuario: me?.login || "admin",
+      role: me?.role || "gerente",
+    });
+
+    if (res.ok) {
+      // 3. Só concluir o cancelamento se a devolução for APLICADA
+      await Promise.all([
+        escreverUltimoMovimentoStatus(data.row, res.status),
+        escreverStatusPedido(data.row, "Cancelado"),
+      ]);
+    } else {
+      // Se falhou ou precisa de reconciliação, atualizamos o status do movimento no pedido, mas não cancelamos o pedido ainda
+      await escreverUltimoMovimentoStatus(data.row, `${res.status}${res.erro ? `: ${res.erro}` : ""}`);
+    }
+
+    return res;
+  });
+
+
 
 
 export const atualizarRastreio = createServerFn({ method: "POST" })

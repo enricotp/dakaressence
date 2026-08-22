@@ -306,7 +306,9 @@ function PedidosTab() {
   const atualizar = useServerFn(atualizarStatusPedido);
   const salvarRastreio = useServerFn(atualizarRastreio);
   const processarEstoque = useServerFn(processarSaidaEstoque);
+  const cancelarComEstoque = useServerFn(cancelarPedidoEDevolverEstoque);
   const getPreview = useServerFn(previewBaixaEstoque);
+
   const qc = useQueryClient();
 
 
@@ -382,6 +384,37 @@ function PedidosTab() {
 
 
   async function mudarStatus(p: Pedido, status: "Concluído" | "Cancelado" | "Pendente") {
+    if (status === "Cancelado" && p.status === "Concluído") {
+      if (!confirm("Cancelar este pedido irá devolver as unidades ao estoque no Notion (se houver uma baixa aplicada). Deseja continuar?")) {
+        return;
+      }
+      
+      try {
+        toast.loading("Devolvendo estoque e cancelando pedido...");
+        const res = await cancelarComEstoque({
+          data: {
+            row: p.row,
+            pedidoId: p.id,
+            itensTexto: p.itens,
+            statusAtual: p.status,
+          }
+        });
+        toast.dismiss();
+        if (res.ok) {
+          toast.success("Pedido cancelado e estoque devolvido!");
+          qc.invalidateQueries({ queryKey: ["pedidos"] });
+          qc.invalidateQueries({ queryKey: ["perfumes"] });
+          qc.invalidateQueries({ queryKey: ["movimentacoes-estoque"] });
+        } else {
+          toast.error("Falha ao cancelar: " + res.erro);
+        }
+      } catch (err) {
+        toast.dismiss();
+        toast.error("Erro fatal: " + (err instanceof Error ? err.message : String(err)));
+      }
+      return;
+    }
+
     await atualizar({
       data: {
         row: p.row,
@@ -395,6 +428,7 @@ function PedidosTab() {
     qc.invalidateQueries({ queryKey: ["itens-vendidos"] });
     qc.invalidateQueries({ queryKey: ["perfumes"] });
   }
+
 
   async function salvarCodigo(p: Pedido) {
     const novo = (rastreioEdit[p.id] ?? p.rastreio ?? "").trim();
