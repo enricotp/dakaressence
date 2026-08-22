@@ -484,8 +484,8 @@ export const criarPerfume = createServerFn({ method: "POST" })
       properties["Notas de coração"] = { rich_text: [{ text: { content: data.notasCoracao } }] };
     if (data.notasFundo)
       properties["Notas de fundo"] = { rich_text: [{ text: { content: data.notasFundo } }] };
-    if (data.volumesSignature)
-      properties["Volumes Signature"] = { multi_select: data.volumesSignature.map((v) => ({ name: v })) };
+    if (data.volumesSignature !== undefined)
+      properties["Volumes Signature"] = data.volumesSignature ? { multi_select: data.volumesSignature.map((v) => ({ name: v })) } : { multi_select: [] };
 
     const body: Record<string, unknown> = {
       parent: { database_id: DATABASE_ID },
