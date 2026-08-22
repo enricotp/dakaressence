@@ -54,7 +54,7 @@ export type Perfume = {
   notasTopo: string;
   notasCoracao: string;
   notasFundo: string;
-  volumesSignature: Volume[];
+  volumesSignature: Volume[] | null;
 };
 
 export function formatarNumeroPerfume(n: number | null | undefined): string {
