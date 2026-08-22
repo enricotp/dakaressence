@@ -196,7 +196,7 @@ export const getPerfumes = createServerFn({ method: "GET" }).handler(
       const amount = page.properties["Amount"]?.number ?? null;
       const oosThreshold = page.properties["OoS threshold"]?.number ?? 0;
       const status = page.properties["Available?"]?.formula?.string ?? "";
-      const disponibilidade = page.properties["Disponibilidade"]?.formula?.string ?? "";
+      const disponibilidade = (page.properties["Disponibilidade"]?.formula?.string ?? "").trim();
 
       const descricao =
         page.properties["Descrição"]?.rich_text?.map((t) => t.plain_text).join("") ?? "";
