@@ -5,6 +5,7 @@ import { getHomeConfig, updateHomeConfig, type HomeConfig } from "@/lib/home-con
 import { type Volume } from "@/lib/perfumes.functions";
 import { formatBRL } from "@/lib/format";
 import { toast } from "sonner";
+import { Plus, Trash2, ArrowUp, ArrowDown, Image as ImageIcon } from "lucide-react";
 
 export function HomeConfigTab() {
   const qc = useQueryClient();
