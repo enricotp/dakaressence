@@ -774,29 +774,31 @@ export function CatalogViewer({ perfumes }: CatalogViewerProps) {
                     </span>
                   </span>
                   {p.disponibilidade.toLowerCase() === "pronta entrega" && (
-                    <span className="absolute left-2 bottom-2 flex flex-col items-center rounded-lg bg-emerald-500/90 px-1.5 py-0.5 shadow-lg backdrop-blur sm:left-auto sm:right-4 sm:top-4 sm:bottom-auto sm:rounded-xl sm:px-4 sm:py-1.5">
-                      <span className="text-[8px] font-bold uppercase tracking-[0.08em] text-black sm:text-[11px] sm:tracking-[0.18em]">
+                    <span className="absolute left-2 bottom-2 flex flex-col items-center rounded-lg bg-emerald-500/90 px-1 py-0.5 shadow-lg backdrop-blur sm:left-auto sm:right-4 sm:top-4 sm:bottom-auto sm:rounded-xl sm:px-4 sm:py-1.5">
+                      <span className="text-[7px] font-bold uppercase tracking-[0.05em] text-black sm:text-[11px] sm:tracking-[0.18em]">
                         {p.amount === 1 ? "Última unidade" : "Pronta entrega"}
                       </span>
-                      <span className="text-[7px] font-bold lowercase tracking-normal text-black/90 sm:text-[10px]">
+                      <span className="text-[6px] font-bold lowercase tracking-normal text-black/90 sm:text-[10px]">
                         {p.amount === 1 ? "Confirme agora" : "Receba hoje"}
                       </span>
                     </span>
+
                   )}
 
                   {mostrarSobEncomenda && (
                     <span
-                      className={`absolute left-2 bottom-2 flex flex-col items-center rounded-xl bg-amber-500/90 px-2 py-0.5 backdrop-blur sm:left-auto sm:right-4 sm:bottom-auto sm:px-3 sm:py-1 ${
+                      className={`absolute left-2 bottom-2 flex flex-col items-center rounded-lg bg-amber-500/90 px-1 py-0.5 backdrop-blur sm:left-auto sm:right-4 sm:bottom-auto sm:rounded-xl sm:px-3 sm:py-1 ${
                         p.disponibilidade.toLowerCase() === "pronta entrega" ? "sm:top-[52px]" : "sm:top-4"
                       }`}
                     >
-                      <span className="text-[8px] font-semibold uppercase tracking-[0.1em] text-black sm:text-[10px] sm:tracking-[0.15em]">
+                      <span className="text-[7px] font-semibold uppercase tracking-[0.05em] text-black sm:text-[10px] sm:tracking-[0.15em]">
                         Sob encomenda
                       </span>
-                      <span className="text-[7px] lowercase tracking-normal text-black/80 sm:text-[8px]">
+                      <span className="text-[6px] lowercase tracking-normal text-black/80 sm:text-[8px]">
                         Em 6 dias
                       </span>
                     </span>
+
                   )}
 
                 </Link>
