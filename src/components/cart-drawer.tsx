@@ -231,6 +231,12 @@ export function CartDrawer() {
                     <img
                       src={img}
                       alt={item.p.nome}
+                      crossOrigin="anonymous"
+                      referrerPolicy="no-referrer"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.src = fallbacks[0];
+                      }}
                       className="h-16 w-16 rounded-lg object-cover"
                     />
                     <div className="flex flex-1 flex-col">

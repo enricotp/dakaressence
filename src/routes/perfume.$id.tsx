@@ -85,6 +85,14 @@ function PerfumeDetail() {
             <img
               src={imagem}
               alt={p.nome}
+              crossOrigin="anonymous"
+              referrerPolicy="no-referrer"
+              onError={(e) => {
+                const target = e.target as HTMLImageElement;
+                if (!target.src.includes("placeholder")) {
+                  target.src = "/placeholder.svg";
+                }
+              }}
               className={`h-full w-full object-cover ${p.disponibilidade !== "Pronta Entrega" ? "opacity-50" : ""}`}
             />
             <span className="absolute left-4 top-4 rounded-full bg-background/80 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.1em] text-gold backdrop-blur">

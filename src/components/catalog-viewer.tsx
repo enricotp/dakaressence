@@ -754,9 +754,12 @@ export function CatalogViewer({ perfumes }: CatalogViewerProps) {
                     width={800}
                     height={1000}
                     loading="lazy"
+                    crossOrigin="anonymous"
+                    referrerPolicy="no-referrer"
                     onError={(e) => {
                       const target = e.target as HTMLImageElement;
                       if (target.src !== "/placeholder.svg") {
+                        console.error("Image failed to load:", p.nome, target.src);
                         target.src = "/placeholder.svg";
                       }
                     }}
