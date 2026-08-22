@@ -501,6 +501,38 @@ export async function executarMovimento(params: {
       movimentoId: movId,
       erro:
         bloqueante.status === "APLICADA"
+          ? `Esta movimentação (${acao}) já foi aplicada anteriormente. Nada foi alterado.`
+          : bloqueante.status === "INICIADA"
+            ? "Já existe uma movimentação em andamento para este pedido e ciclo. Verifique a área de reconciliação."
+            : "Este pedido e ciclo estão marcados como PRECISA_RECONCILIACAO. Resolva manualmente antes de repetir.",
+    };
+  }
+
+  // Se for DEVOLUCAO, precisamos garantir que existe uma BAIXA APLICADA no mesmo ciclo
+  if (acao === "DEVOLUCAO") {
+    const todosMovs = await listarMovimentosRaw();
+    const baixaId = movimentoId(pedidoId, ciclo, "BAIXA");
+    const baixaAplicada = todosMovs.find(m => m.movimentoId === baixaId && m.status === "APLICADA");
+    if (!baixaAplicada) {
+      return { ok: false, status: "FALHOU", movimentoId: movId, erro: "Impossível devolver: não existe uma baixa aplicada para este ciclo." };
+    }
+  }
+
+  // --- Validação completa ANTES de qualquer escrita no Notion ---
+  const { linhas, erros } = await validarEstoque(itens, delta);
+  if (erros.length > 0 && delta < 0) { // Na devolução (delta 1) permitimos mesmo se estoque estiver inconsistente no Notion
+    return {
+      ok: false,
+      status: "FALHOU",
+      movimentoId: movId,
+      erro: `Estoque insuficiente — nenhum produto foi alterado:\n${erros.join("\n")}`,
+      linhas,
+    };
+  }
+
+      movimentoId: movId,
+      erro:
+        bloqueante.status === "APLICADA"
           ? "Esta movimentação já foi aplicada anteriormente. Nada foi alterado."
           : bloqueante.status === "INICIADA"
             ? "Já existe uma movimentação em andamento para este pedido e ciclo. Verifique a área de reconciliação."
