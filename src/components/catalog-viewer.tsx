@@ -805,17 +805,17 @@ export function CatalogViewer({ perfumes }: CatalogViewerProps) {
                 </Link>
 
                 <div className="flex flex-1 flex-col gap-3 p-4 sm:gap-4 sm:p-6">
-                  <div>
-                    <h3 className="font-display text-base font-semibold sm:text-xl truncate">
-                      <Link to="/perfume/$id" params={{ id: p.id }} className="transition hover:text-gold">
-                        {p.nome}
-                      </Link>
-                    </h3>
+                  <div className="flex flex-col gap-0.5">
                     {p.marca && (
                       <p className="text-[10px] text-muted-foreground uppercase tracking-wider truncate">
                         {p.marca}
                       </p>
                     )}
+                    <h3 className="font-display text-base font-semibold sm:text-xl truncate">
+                      <Link to="/perfume/$id" params={{ id: p.id }} className="transition hover:text-gold">
+                        {p.nome}
+                      </Link>
+                    </h3>
                     <p className="mt-1 line-clamp-2 text-xs text-muted-foreground sm:text-sm">
                       {p.descricao || "Contratipo exclusivo"}
                     </p>

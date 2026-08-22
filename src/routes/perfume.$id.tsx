@@ -123,14 +123,14 @@ function PerfumeDetail() {
               </span>
             )}
           </div>
-          <h1 className="mt-3 font-display text-3xl font-semibold leading-tight sm:text-5xl md:text-6xl">
-            {p.nome}
-          </h1>
           {p.marca && (
-            <p className="mt-1 text-sm font-medium uppercase tracking-widest text-muted-foreground sm:text-base">
+            <p className="mt-3 text-sm font-medium uppercase tracking-widest text-muted-foreground sm:text-base">
               {p.marca}
             </p>
           )}
+          <h1 className="mt-1 font-display text-3xl font-semibold leading-tight sm:text-5xl md:text-6xl">
+            {p.nome}
+          </h1>
           {p.preco != null && (
             <p className="mt-4 font-display text-2xl font-semibold text-gold sm:text-3xl">
               {formatBRL(p.preco)}
