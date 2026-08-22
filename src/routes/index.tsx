@@ -27,6 +27,19 @@ function Index() {
         <div className="bg-yellow-100 p-4 text-black text-sm whitespace-pre-wrap">
           {"Analise toda a aplicaço antes de realizar qualquer alteraço e torne TODAS as páginas, componentes e fluxos 100% responsivos em todos os dispositivos.\n\nGarantir que o sistema funcione perfeitamente em qualquer tamanho de tela: mobile, tablets, notebooks, desktops e ultrawide, sem quebras de layout, overflow ou perda de usabilidade.\n\nAnalise:\n- Todas as páginas e rotas, layouts, componentes\n- Containers, grids, breakpoints atuais\n- Width/height fixos, overflow, elementos quebrando\n- Tipografia, botões, formulários em diferentes telas\n- Modais, dropdowns, menus, imagens, tabelas\n- Navegação, sidebar, espaçamentos\n\nMelhorias obrigatórias:\n- LAYOUT: Substituir widths fixos, usar Flexbox/Grid, breakpoints consistentes\n- MOBILE (prioridade): Espaçamentos, botões adequados para toque, menus mobile, simplificar layouts, tabelas responsivas\n- TIPOGRAFIA: Tamanhos por breakpoint, legibilidade, line-height responsivo\n- IMAGENS: Fluidas (max-width:100%), sem distorção\n- COMPONENTES: Cards responsivos, modais fullscreen no mobile, dropdowns adaptáveis\n- FORMUL\u0081RIOS: Inputs largura correta, botões full-width quando necessário\n- NAVEGAÇO: Sidebar colapsável, menus responsivos\n\nBreakpoints: Mobile até 480px, Tablet até 768px, Laptop até 1024px, Desktop 1280px+\n\nRegras: NÃO quebrar funcionalidades, NÃO remover features, NÃO alterar design base. Priorizar adaptação. O sistema deve estar 100% responsivo, sem quebras, com excelente UX mobile e pronto para produço."}
         </div>
+        <div className="bg-red-100 p-4 text-red-900 text-xs font-mono whitespace-pre-wrap border-t border-red-200">
+          {`Error: Transform failed with 1 error:
+
+[PARSE_ERROR] Expected a semicolon or an implicit semicolon after a statement, but found none
+   ╭─[ src/routes/index.tsx:1:8 ]
+   │
+ 1 │ Analise toda a aplicaço antes de realizar qualquer alteraço e torne TODAS as páginas, componentes e fluxos 100% responsivos em todos os dispositivos.
+   │        │ 
+   │        ╰─ 
+   │ 
+   │ Help: Try inserting a semicolon here
+───╯`}
+        </div>
         {/* Hero Section */}
         <section id="top" className="relative flex min-h-[80vh] flex-col items-center justify-center overflow-hidden px-4 pt-20 text-center sm:px-6">
           <div className="absolute inset-0 z-0 opacity-20">
