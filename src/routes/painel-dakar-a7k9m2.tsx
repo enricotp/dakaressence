@@ -23,14 +23,17 @@ import {
   removerFuncionario,
 } from "@/lib/users.functions";
 import {
- listarPedidos,
- atualizarRastreio,
-   atualizarStatusPedido,
-   processarSaidaEstoque,
+  listarPedidos,
+  atualizarRastreio,
+  atualizarStatusPedido,
+  processarSaidaEstoque,
+  previewBaixaEstoque,
+  aceitarVendaEBaixarEstoque,
   listarItensVendidos,
   type Pedido,
   type ItemVendido,
 } from "@/lib/orders.functions";
+
 import {
   getPerfumes,
   atualizarPerfume,
@@ -297,7 +300,9 @@ function PedidosTab() {
   const atualizar = useServerFn(atualizarStatusPedido);
   const salvarRastreio = useServerFn(atualizarRastreio);
   const processarEstoque = useServerFn(processarSaidaEstoque);
+  const getPreview = useServerFn(previewBaixaEstoque);
   const qc = useQueryClient();
+
 
   const [filtro, setFiltro] = useState<"todos" | "Pendente" | "Concluído" | "Cancelado">(
     "Pendente",
@@ -330,28 +335,45 @@ function PedidosTab() {
     return true;
   });
 
+  const [confirmacaoPedido, setConfirmacaoPedido] = useState<{ p: Pedido; data: any } | null>(null);
+
   async function handleProcessarEstoque(p: Pedido) {
-    if (!confirm(`Deseja processar a saída de estoque para o pedido ${p.id}?\nIsso irá subtrair os itens do Notion e marcar o pedido como Concluído.`)) {
-      return;
+    try {
+      toast.loading("Analisando estoque...");
+      const res = await getPreview({ data: { pedidoId: p.id, itensTexto: p.itens } });
+      toast.dismiss();
+      setConfirmacaoPedido({ p, data: res });
+    } catch (err) {
+      toast.dismiss();
+      toast.error("Erro ao analisar: " + (err instanceof Error ? err.message : "Erro desconhecido"));
     }
-    
+  }
+
+  async function executarBaixa(p: Pedido) {
     try {
       toast.loading("Processando estoque e concluindo pedido...");
-      await processarEstoque({
+      const res = await processarEstoque({
         data: {
           row: p.row,
           pedidoId: p.id,
-          itensTexto: p.itens
-        }
+          itensTexto: p.itens,
+        },
       });
-      qc.invalidateQueries({ queryKey: ["pedidos"] });
       toast.dismiss();
-      toast.success("Pedido processado e concluído com sucesso!");
+      if (res.ok) {
+        toast.success("Pedido processado e concluído!");
+        setConfirmacaoPedido(null);
+        qc.invalidateQueries({ queryKey: ["pedidos"] });
+        qc.invalidateQueries({ queryKey: ["perfumes"] });
+      } else {
+        toast.error("Falha: " + res.erro);
+      }
     } catch (err) {
       toast.dismiss();
-      toast.error("Erro ao processar: " + (err instanceof Error ? err.message : "Erro desconhecido"));
+      toast.error("Erro fatal: " + (err instanceof Error ? err.message : String(err)));
     }
   }
+
 
   async function mudarStatus(p: Pedido, status: "Concluído" | "Cancelado" | "Pendente") {
     await atualizar({
@@ -559,9 +581,137 @@ function PedidosTab() {
             ))}
         </ul>
       )}
+
+      {confirmacaoPedido && (
+        <ModalConfirmacaoEstoque
+          pedido={confirmacaoPedido.p}
+          data={confirmacaoPedido.data}
+          onClose={() => setConfirmacaoPedido(null)}
+          onConfirm={() => executarBaixa(confirmacaoPedido.p)}
+        />
+      )}
     </>
   );
 }
+
+function ModalConfirmacaoEstoque({
+  pedido,
+  data,
+  onClose,
+  onConfirm,
+}: {
+  pedido: Pedido;
+  data: any;
+  onClose: () => void;
+  onConfirm: () => void;
+}) {
+  const { resolucao, validacao } = data;
+  const temErros = validacao.erros.length > 0;
+  const temNaoResolvidos = resolucao.naoResolvidos.length > 0;
+
+  return (
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-background/80 backdrop-blur-sm p-4">
+      <div className="w-full max-w-2xl rounded-3xl border border-border/60 bg-card p-6 shadow-2xl sm:p-8">
+        <div className="flex items-center justify-between border-b border-border/40 pb-4">
+          <div>
+            <h3 className="font-display text-xl font-semibold">Confirmar Baixa de Estoque</h3>
+            <p className="text-xs text-muted-foreground uppercase tracking-widest mt-1">
+              Pedido {pedido.id} · {pedido.cliente}
+            </p>
+          </div>
+          <button onClick={onClose} className="text-muted-foreground hover:text-foreground">
+            <X className="h-6 w-6" />
+          </button>
+        </div>
+
+        <div className="mt-6 space-y-6">
+          {temNaoResolvidos && (
+            <div className="rounded-xl border border-amber-500/30 bg-amber-500/10 p-4">
+              <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400 flex items-center gap-2">
+                <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2.5">
+                  <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z" />
+                  <line x1="12" y1="9" x2="12" y2="13" />
+                  <line x1="12" y1="17" x2="12.01" y2="17" />
+                </svg>
+                Itens não identificados
+              </h4>
+              <ul className="mt-2 space-y-1 text-xs text-amber-200/80">
+                {resolucao.naoResolvidos.map((it: any, i: number) => (
+                  <li key={i}>• {it.qtd}x {it.texto}: {it.motivo}</li>
+                ))}
+              </ul>
+              <p className="mt-3 text-[10px] text-amber-400/70 italic">
+                * Estes itens não terão o estoque baixado automaticamente.
+              </p>
+            </div>
+          )}
+
+          <div className="overflow-hidden rounded-xl border border-border/60">
+            <table className="w-full text-left text-xs">
+              <thead className="bg-muted/50 text-muted-foreground">
+                <tr>
+                  <th className="px-3 py-2 font-medium">Produto</th>
+                  <th className="px-3 py-2 text-center font-medium">Qtd</th>
+                  <th className="px-3 py-2 text-right font-medium">Atual</th>
+                  <th className="px-3 py-2 text-right font-medium">Novo</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-border/40">
+                {validacao.linhas.map((l: any, i: number) => (
+                  <tr key={i} className={!l.suficiente ? "bg-red-500/5" : ""}>
+                    <td className="px-3 py-3">
+                      <div className="font-medium">{l.nome}</div>
+                      <div className="text-[10px] text-muted-foreground uppercase">
+                        {l.numero ? `Nº ${String(l.numero).padStart(3, "0")}` : "Nº —"}
+                      </div>
+                    </td>
+                    <td className="px-3 py-3 text-center">{l.solicitado}</td>
+                    <td className="px-3 py-3 text-right text-muted-foreground">{l.disponivel}</td>
+                    <td className={`px-3 py-3 text-right font-bold ${l.suficiente ? "text-emerald-400" : "text-red-400"}`}>
+                      {l.previsto}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {temErros && (
+            <div className="rounded-xl border border-red-500/30 bg-red-500/10 p-4">
+              <h4 className="text-xs font-bold uppercase tracking-wider text-red-400">Bloqueado por falta de estoque</h4>
+              <ul className="mt-2 space-y-1 text-xs text-red-200/80">
+                {validacao.erros.map((err: string, i: number) => (
+                  <li key={i}>• {err}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
+
+        <div className="mt-8 flex gap-3">
+          <button
+            onClick={onClose}
+            className="flex-1 rounded-full border border-border/60 py-3 text-sm font-semibold hover:bg-muted transition"
+          >
+            Cancelar
+          </button>
+          <button
+            onClick={onConfirm}
+            disabled={temErros}
+            className={`flex-1 rounded-full py-3 text-sm font-bold text-primary-foreground shadow-lg transition ${
+              temErros
+                ? "bg-foreground/5 text-muted-foreground grayscale cursor-not-allowed"
+                : "bg-gold hover:brightness-110 active:scale-95 shadow-gold/20"
+            }`}
+          >
+            {temErros ? "Estoque Insuficiente" : "Confirmar e Baixar"}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 
 function StatusBadge({ status }: { status: string }) {
   const map: Record<string, string> = {
