@@ -754,6 +754,12 @@ export function CatalogViewer({ perfumes }: CatalogViewerProps) {
                     width={800}
                     height={1000}
                     loading="lazy"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      if (target.src !== "/placeholder.svg") {
+                        target.src = "/placeholder.svg";
+                      }
+                    }}
                     className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
                   />
                   <span className="absolute left-2 top-2 flex max-w-[55%] items-center gap-1 rounded-full bg-background/85 px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.1em] text-gold backdrop-blur sm:left-4 sm:top-4 sm:max-w-none sm:gap-2 sm:px-3 sm:py-1.5 sm:text-sm sm:tracking-[0.15em]">

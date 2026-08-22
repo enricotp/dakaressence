@@ -126,15 +126,17 @@ function extractImage(page: NotionPage): string | null {
     if (page.cover.type === "external") return page.cover.external.url;
     if (page.cover.type === "file") return page.cover.file.url;
   }
+  // Priorizar campo URL explícito chamado "Imagem" ou "Image URL"
+  for (const [name, prop] of Object.entries(page.properties)) {
+    if (prop.type === "url" && prop.url && /imag/i.test(name)) return prop.url;
+  }
+  // Fallback para arquivos/arquivos anexados
   for (const prop of Object.values(page.properties)) {
     if (prop.type === "files" && prop.files && prop.files.length > 0) {
       const f = prop.files[0];
       if (f.type === "external") return f.external.url;
       if (f.type === "file") return f.file.url;
     }
-  }
-  for (const [name, prop] of Object.entries(page.properties)) {
-    if (prop.type === "url" && prop.url && /imag/i.test(name)) return prop.url;
   }
   return null;
 }
@@ -175,6 +177,7 @@ export const getPerfumes = createServerFn({ method: "GET" }).handler(
 
 
     return data.results.flatMap((page) => {
+      const imagem = extractImage(page);
       const nome =
         page.properties["Product Name"]?.title?.[0]?.plain_text ?? "Sem nome";
       const numero = page.properties["Número"]?.number ?? null;
@@ -235,7 +238,7 @@ export const getPerfumes = createServerFn({ method: "GET" }).handler(
         numero,
         emEstoque,
         status,
-        imagem: extractImage(page),
+        imagem,
         descricao,
         genero,
         marca,
