@@ -128,12 +128,10 @@ function extractImage(page: NotionPage): string | null {
     if (page.cover.type === "file") return page.cover.file.url;
   }
   
-  // 1. Priorizar campo URL explícito chamado "Imagem" ou "Image URL"
   for (const [name, prop] of Object.entries(page.properties)) {
     if (prop.type === "url" && prop.url && /imag/i.test(name)) return prop.url;
   }
 
-  // 2. Procurar em campos de texto que possam conter URLs de imagem (fallback comum)
   for (const [name, prop] of Object.entries(page.properties)) {
     if (prop.type === "rich_text" && prop.rich_text && prop.rich_text.length > 0) {
       const text = prop.rich_text[0].plain_text;
@@ -143,7 +141,6 @@ function extractImage(page: NotionPage): string | null {
     }
   }
 
-  // 3. Fallback para arquivos anexados
   for (const prop of Object.values(page.properties)) {
     if (prop.type === "files" && prop.files && prop.files.length > 0) {
       const f = prop.files[0];
@@ -188,9 +185,6 @@ export const getPerfumes = createServerFn({ method: "GET" }).handler(
     }
     const data = { results: allResults } as NotionQueryResponse;
 
-
-
-
     return data.results.flatMap((page) => {
       const imagem = extractImage(page);
       const nome =
@@ -227,12 +221,7 @@ export const getPerfumes = createServerFn({ method: "GET" }).handler(
       
       const lowThreshold = page.properties["Low threshold "]?.number ?? null;
       
-      const effectiveAmount = amount ?? 0;
       const threshold = oosThreshold ?? 0;
-      
-      // A disponibilidade agora é automática no Notion via fórmula.
-      // O site continua calculando internamente para garantir reatividade imediata,
-      // mas usa o campo 'disponibilidade' vindo do Notion como fonte de verdade.
       const prontaEntrega = disponibilidade === "Pronta Entrega" || (amount !== null && amount > threshold);
       const emEstoque = prontaEntrega;
 
@@ -243,6 +232,8 @@ export const getPerfumes = createServerFn({ method: "GET" }).handler(
       const notasFundo =
         page.properties["Notas de fundo"]?.rich_text?.map((t) => t.plain_text).join("") ?? "";
       
+      // Volumes Signature foi removido do Notion schema (causava erro 400 no update)
+      // Mantemos o tipo no frontend para compatibilidade, mas ignoramos no fetch se não existir.
       const volumesSignatureRaw = page.properties["Volumes Signature"]?.multi_select ?? [];
       const volumesSignature = volumesSignatureRaw
         .map((v) => v.name as Volume)
@@ -271,16 +262,11 @@ export const getPerfumes = createServerFn({ method: "GET" }).handler(
         volumesSignature: volumesSignature.length > 0 ? volumesSignature : null,
       };
 
-      // Se for Signature e tiver múltiplos volumes, expandimos.
-      // Se não, retornamos apenas o volume principal definido.
       if (colecao === "Signature" && volumesSignature.length > 0) {
         return volumesSignature.map((v) => ({
           ...extractBasePerfume,
           id: `${page.id}-${v}`,
           volume: v,
-          // Caso existam preços específicos por volume no futuro, poderíamos mapear aqui.
-          // Por enquanto, o catálogo calcula preço baseado na coleção na Home, 
-          // mas no PerfumeDetail ele usa o p.preco se existir.
         }));
       }
 
@@ -327,9 +313,9 @@ export const atualizarPerfume = createServerFn({ method: "POST" })
     const { requireAdmin, currentAdmin } = await import("./admin.server");
     await requireAdmin();
 
-    const properties: Record<string, unknown> = {};
-    
-    // A disponibilidade agora é automática via fórmula no Notion baseada no 'Amount'.
+    const properties: Record<string, any> = {};
+    const perfumeId = data.id;
+
     if (data.numero !== undefined) properties["Número"] = { number: data.numero };
     if (data.amount !== undefined) properties["Amount"] = { number: data.amount };
     if (data.nome !== undefined)
@@ -345,8 +331,11 @@ export const atualizarPerfume = createServerFn({ method: "POST" })
       properties["Coleção"] = { select: { name: data.colecao } };
     if (data.genero !== undefined)
       properties["Gênero"] = { select: { name: generoNotionName(data.genero) } };
+    
+    // "Low threshold " tem espaço final no Notion
     if (data.lowThreshold !== undefined)
       properties["Low threshold "] = { number: data.lowThreshold };
+    
     if (data.oosThreshold !== undefined)
       properties["OoS threshold"] = { number: data.oosThreshold };
     if (data.notasTopo !== undefined)
@@ -355,23 +344,20 @@ export const atualizarPerfume = createServerFn({ method: "POST" })
       properties["Notas de coração"] = { rich_text: [{ text: { content: data.notasCoracao } }] };
     if (data.notasFundo !== undefined)
       properties["Notas de fundo"] = { rich_text: [{ text: { content: data.notasFundo } }] };
-    if (data.colecao === "Signature" && data.volumesSignature !== undefined) {
-      properties["Volumes Signature"] = data.volumesSignature ? { multi_select: data.volumesSignature.map((v) => ({ name: v })) } : { multi_select: [] };
-    } else {
-      // Se não for Signature, removemos explicitamente a propriedade do payload para evitar erro 400 no Notion
-      delete properties["Volumes Signature"];
-    }
 
-    const body: Record<string, unknown> = { properties };
+    // REMOVIDO: Volumes Signature (Property does not exist error 400)
+
+    const body: Record<string, any> = { properties };
     if (data.imagemUrl !== undefined && data.imagemUrl) {
       body.cover = { type: "external", external: { url: data.imagemUrl } };
     }
 
-    const res = await fetch(`${GATEWAY}/pages/${data.id}`, {
+    const res = await fetch(`${GATEWAY}/pages/${perfumeId}`, {
       method: "PATCH",
       headers: notionHeaders(),
       body: JSON.stringify(body),
     });
+
     if (!res.ok) {
       const responseText = await res.text();
       let errorData;
@@ -383,19 +369,19 @@ export const atualizarPerfume = createServerFn({ method: "POST" })
 
       console.error("Notion update failed", {
         status: res.status,
-        perfumeId: data.id,
+        perfumeId,
         nome: data.nome,
-        propertiesSent: Object.keys(properties),
         error: errorData,
       });
 
       throw new Error(`Notion update failed [${res.status}]: ${JSON.stringify(errorData)}`);
     }
+
     try {
       const { appendLog } = await import("./logs.server");
       const me = await currentAdmin();
       const campos = Object.keys(data).filter((k) => k !== "id").join(", ");
-      appendLog({ usuario: me?.login, role: me?.role, acao: "atualizar", entidade: "perfume", id: data.id, depois: campos });
+      appendLog({ usuario: me?.login, role: me?.role, acao: "atualizar", entidade: "perfume", id: perfumeId, depois: campos });
     } catch {}
     return { ok: true };
   });
@@ -428,7 +414,6 @@ function generoNotionName(g: Genero): string {
   return "Unissex";
 }
 
-// Ajuste direto usado internamente pelo servidor. delta negativo = baixa, positivo = devolve.
 export async function ajustarEstoqueInterno(id: string, delta: number) {
   const getRes = await fetch(`${GATEWAY}/pages/${id}`, { headers: notionHeaders() });
   if (!getRes.ok) return { ok: false as const };
@@ -447,7 +432,6 @@ export async function ajustarEstoqueInterno(id: string, delta: number) {
   return { ok: res.ok, novoEstoque: next };
 }
 
-// Compat: baixa (delta negativo).
 export async function baixarEstoqueInterno(id: string, qtd: number) {
   return ajustarEstoqueInterno(id, -qtd);
 }
@@ -478,39 +462,36 @@ export const criarPerfume = createServerFn({ method: "POST" })
     const { requireAdmin } = await import("./admin.server");
     await requireAdmin();
 
-    const properties: Record<string, unknown> = {
+    const properties: Record<string, any> = {
       "Product Name": { title: [{ text: { content: data.nome } }] },
       Volume: { select: { name: data.volume } },
     };
     if (data.numero != null) properties["Número"] = { number: data.numero };
+    if (data.amount != null) properties["Amount"] = { number: data.amount };
     if (data.descricao)
       properties["Descrição"] = { rich_text: [{ text: { content: data.descricao } }] };
     if (data.preco != null) properties["Preço"] = { number: data.preco };
     if (data.custo != null) properties["Custo"] = { number: data.custo };
-    if (data.amount != null) {
-      properties["Amount"] = { number: data.amount };
-    }
     if (data.marca) properties["Marca"] = { select: { name: data.marca } };
     if (data.colecao) properties["Coleção"] = { select: { name: data.colecao } };
     if (data.genero)
       properties["Gênero"] = { select: { name: generoNotionName(data.genero) } };
+    
     if (data.lowThreshold != null)
       properties["Low threshold "] = { number: data.lowThreshold };
+    
     if (data.oosThreshold != null)
       properties["OoS threshold"] = { number: data.oosThreshold };
-    // As propriedades de checkbox manuais foram removidas.
-    // A disponibilidade é calculada automaticamente via fórmula.
     if (data.notasTopo)
       properties["Notas de topo"] = { rich_text: [{ text: { content: data.notasTopo } }] };
     if (data.notasCoracao)
       properties["Notas de coração"] = { rich_text: [{ text: { content: data.notasCoracao } }] };
     if (data.notasFundo)
       properties["Notas de fundo"] = { rich_text: [{ text: { content: data.notasFundo } }] };
-    if (data.colecao === "Signature" && data.volumesSignature !== undefined) {
-      properties["Volumes Signature"] = data.volumesSignature ? { multi_select: data.volumesSignature.map((v) => ({ name: v })) } : { multi_select: [] };
-    }
 
-    const body: Record<string, unknown> = {
+    // REMOVIDO: Volumes Signature
+
+    const body: Record<string, any> = {
       parent: { database_id: DATABASE_ID },
       properties,
     };
@@ -523,56 +504,59 @@ export const criarPerfume = createServerFn({ method: "POST" })
       headers: notionHeaders(),
       body: JSON.stringify(body),
     });
+
     if (!res.ok) {
-      const text = await res.text();
-      throw new Error(`Notion create failed [${res.status}]: ${text}`);
+      const responseText = await res.text();
+      let errorData;
+      try {
+        errorData = JSON.parse(responseText);
+      } catch {
+        errorData = responseText;
+      }
+      console.error("Notion creation failed", {
+        status: res.status,
+        nome: data.nome,
+        error: errorData,
+      });
+      throw new Error(`Notion creation failed [${res.status}]: ${JSON.stringify(errorData)}`);
     }
-    const created = (await res.json()) as { id: string };
-    return { ok: true, id: created.id };
+
+    return { ok: true };
   });
 
-// Custos padrão por coleção/volume (definidos pelo dono).
-export function custoPadrao(colecao: Colecao, volume: Volume): number | null {
-  if (colecao === "Signature") {
-    if (volume === "50ml") return 17;
-    if (volume === "100ml") return 19;
-    return null;
-  }
-  if (colecao === "Brand Collection") return 45;
-  if (colecao === "Arabic Collection") return 60;
-  if (colecao === "Dream Brand Collection") return 120;
-  return null;
-}
-
 export const aplicarCustosPadrao = createServerFn({ method: "POST" })
-  .validator((data: { sobrescrever?: boolean }) => data)
+  .validator((data: { sobrescrever: boolean }) => data)
   .handler(async ({ data }) => {
     const { requireAdmin } = await import("./admin.server");
     await requireAdmin();
+    
     const perfumes = await getPerfumes();
+    const CUSTOS: Record<Colecao, number> = {
+      "Brand Collection": 17,
+      "Arabic Collection": 17,
+      "Dream Brand Collection": 27,
+      Signature: 27,
+    };
+
     let atualizados = 0;
     let pulados = 0;
-    for (const p of perfumes) {
-      const alvo = custoPadrao(p.colecao, p.volume);
-      if (alvo == null) {
-        pulados++;
-        continue;
-      }
-      if (!data.sobrescrever && p.custo != null) {
-        pulados++;
-        continue;
-      }
-      if (p.custo === alvo) {
-        pulados++;
-        continue;
-      }
-      const res = await fetch(`${GATEWAY}/pages/${p.id}`, {
-        method: "PATCH",
-        headers: notionHeaders(),
-        body: JSON.stringify({ properties: { Custo: { number: alvo } } }),
-      });
-      if (res.ok) atualizados++;
-    }
-    return { ok: true, atualizados, pulados, total: perfumes.length };
-  });
+    const details = [];
 
+    for (const p of perfumes) {
+      const deveAtualizar = data.sobrescrever || p.custo === null || p.custo === 0;
+      
+      if (deveAtualizar) {
+        const custo = CUSTOS[p.colecao];
+        try {
+          await atualizarPerfume({ data: { id: p.id.split('-')[0], custo } });
+          atualizados++;
+          details.push({ id: p.id, nome: p.nome, custo });
+        } catch (e) {
+          console.error(`Falha ao aplicar custo padrao para ${p.nome}:`, e);
+        }
+      } else {
+        pulados++;
+      }
+    }
+    return { updated: atualizados, atualizados, pulados, details };
+  });
