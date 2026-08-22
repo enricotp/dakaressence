@@ -772,7 +772,7 @@ export function CatalogViewer({ perfumes }: CatalogViewerProps) {
                     </span>
                   </span>
                   {p.disponibilidade.toLowerCase() === "pronta entrega" && (
-                    <span className="absolute right-2 top-2 flex flex-col items-center rounded-xl bg-emerald-500 px-2.5 py-1 shadow-lg shadow-emerald-500/20 sm:right-4 sm:top-4 sm:px-4 sm:py-1.5">
+                    <span className="absolute left-2 bottom-2 flex flex-col items-center rounded-xl bg-emerald-500/90 px-2 py-1 shadow-lg backdrop-blur sm:left-auto sm:right-4 sm:top-4 sm:bottom-auto sm:px-4 sm:py-1.5">
                       <span className="text-[9px] font-bold uppercase tracking-[0.12em] text-black sm:text-[11px] sm:tracking-[0.18em]">
                         {p.amount === 1 ? "Última unidade" : "Pronta entrega"}
                       </span>

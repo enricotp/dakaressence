@@ -64,7 +64,7 @@ export function Header({ secaoAtiva: initialSecao }: HeaderProps) {
     <header className="sticky top-0 z-40 border-b border-border/60 bg-background/80 backdrop-blur">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-3 sm:px-6 sm:py-4">
         <Link to="/" hash="top" className="flex min-w-0 items-center" aria-label="Dakar Essence">
-          <img src={logoWhite} alt="Dakar Essence" className="h-12 w-auto sm:h-16 md:h-24" />
+          <img src={logoWhite} alt="Dakar Essence" className="h-10 w-auto sm:h-16 md:h-24" />
         </Link>
 
         <nav className="hidden md:flex items-center gap-4">
@@ -122,7 +122,7 @@ export function Header({ secaoAtiva: initialSecao }: HeaderProps) {
         <div className="flex shrink-0 items-center gap-2">
           <Link
             to="/rastrear"
-            className="inline-flex min-h-9 items-center gap-1.5 rounded-full border border-border/60 bg-card px-3 py-1.5 text-xs font-medium text-muted-foreground transition hover:border-gold hover:text-gold sm:text-sm"
+            className="inline-flex h-9 items-center gap-1.5 rounded-full border border-border/60 bg-card px-2.5 py-1.5 text-[10px] font-medium text-muted-foreground transition hover:border-gold hover:text-gold sm:px-3 sm:text-sm"
             aria-label="Rastrear pedido"
           >
             <svg

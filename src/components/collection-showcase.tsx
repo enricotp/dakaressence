@@ -239,7 +239,7 @@ function CollectionCard({ collection }: { collection: CollectionData }) {
           <button
             type="button"
             onClick={handleDiscover}
-            className="inline-flex h-12 items-center justify-center rounded-full bg-foreground px-6 text-sm font-semibold text-background transition hover:bg-gold hover:text-primary-foreground"
+            className="inline-flex min-h-12 w-full items-center justify-center rounded-full bg-foreground px-6 text-sm font-semibold text-background transition hover:bg-gold hover:text-primary-foreground sm:w-auto"
           >
             Descobrir Fragrâncias
           </button>

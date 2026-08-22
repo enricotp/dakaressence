@@ -113,12 +113,12 @@ function PerfumeDetail() {
               {p.colecao}
             </span>
             {p.disponibilidade === "Pronta Entrega" && (
-              <span className="rounded-full bg-emerald-500/15 px-2 py-0.5 text-[10px] uppercase tracking-wider text-emerald-400">
+              <span className="rounded-full bg-emerald-500/15 px-2 py-0.5 text-[9px] uppercase tracking-wider text-emerald-400 sm:text-[10px]">
                 Pronta entrega
               </span>
             )}
             {p.disponibilidade === "Sob Encomenda" && (
-              <span className="rounded-full bg-amber-500/15 px-2 py-0.5 text-[10px] uppercase tracking-wider text-amber-400">
+              <span className="rounded-full bg-amber-500/15 px-2 py-0.5 text-[9px] uppercase tracking-wider text-amber-400 sm:text-[10px]">
                 Sob encomenda
               </span>
             )}
