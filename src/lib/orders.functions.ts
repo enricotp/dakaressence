@@ -461,7 +461,6 @@ export const aceitarVendaEBaixarEstoque = createServerFn({ method: "POST" })
     return res;
   });
 
-  });
 
 export const processarSaidaEstoque = createServerFn({ method: "POST" })
   .validator((data: { row: number; pedidoId: string; itensTexto: string }) => data)
