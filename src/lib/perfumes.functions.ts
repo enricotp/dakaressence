@@ -126,11 +126,23 @@ function extractImage(page: NotionPage): string | null {
     if (page.cover.type === "external") return page.cover.external.url;
     if (page.cover.type === "file") return page.cover.file.url;
   }
-  // Priorizar campo URL explícito chamado "Imagem" ou "Image URL"
+  
+  // 1. Priorizar campo URL explícito chamado "Imagem" ou "Image URL"
   for (const [name, prop] of Object.entries(page.properties)) {
     if (prop.type === "url" && prop.url && /imag/i.test(name)) return prop.url;
   }
-  // Fallback para arquivos/arquivos anexados
+
+  // 2. Procurar em campos de texto que possam conter URLs de imagem (fallback comum)
+  for (const [name, prop] of Object.entries(page.properties)) {
+    if (prop.type === "rich_text" && prop.rich_text && prop.rich_text.length > 0) {
+      const text = prop.rich_text[0].plain_text;
+      if (text.startsWith("http") && (text.includes(".jpg") || text.includes(".png") || text.includes(".webp") || text.includes(".jpeg"))) {
+        return text;
+      }
+    }
+  }
+
+  // 3. Fallback para arquivos anexados
   for (const prop of Object.values(page.properties)) {
     if (prop.type === "files" && prop.files && prop.files.length > 0) {
       const f = prop.files[0];
@@ -179,12 +191,12 @@ export const getPerfumes = createServerFn({ method: "GET" }).handler(
     return data.results.flatMap((page) => {
       const imagem = extractImage(page);
       const nome =
-        page.properties["Product Name"]?.title?.[0]?.plain_text ?? "Sem nome";
+        (page.properties["Product Name"]?.title?.[0]?.plain_text ?? "Sem nome").trim();
       const numero = page.properties["Número"]?.number ?? null;
       const amount = page.properties["Amount"]?.number ?? null;
       const oosThreshold = page.properties["OoS threshold"]?.number ?? 0;
-      const status = page.properties["Available?"]?.formula?.string ?? "";
-      const disponibilidade = page.properties["Disponibilidade"]?.formula?.string ?? "";
+      const status = (page.properties["Available?"]?.formula?.string ?? "").trim();
+      const disponibilidade = (page.properties["Disponibilidade"]?.formula?.string ?? "").trim();
 
       const descricao =
         page.properties["Descrição"]?.rich_text?.map((t) => t.plain_text).join("") ?? "";
@@ -199,7 +211,7 @@ export const getPerfumes = createServerFn({ method: "GET" }).handler(
         : "50ml";
       
       const marca = page.properties["Marca"]?.select?.name ?? null;
-      const generoRaw = page.properties["Gênero"]?.select?.name?.toLowerCase() ?? "";
+      const generoRaw = (page.properties["Gênero"]?.select?.name ?? "").trim().toLowerCase();
       const genero: Genero =
         generoRaw === "feminino" || generoRaw === "masculino" || generoRaw === "unissex"
           ? (generoRaw as Genero)
@@ -213,11 +225,12 @@ export const getPerfumes = createServerFn({ method: "GET" }).handler(
       const lowThreshold = page.properties["Low threshold "]?.number ?? null;
       
       const effectiveAmount = amount ?? 0;
+      const threshold = oosThreshold ?? 0;
       
       // A disponibilidade agora é automática no Notion via fórmula.
       // O site continua calculando internamente para garantir reatividade imediata,
       // mas usa o campo 'disponibilidade' vindo do Notion como fonte de verdade.
-      const prontaEntrega = disponibilidade === "Pronta Entrega" || effectiveAmount > oosThreshold;
+      const prontaEntrega = disponibilidade === "Pronta Entrega" || (amount !== null && amount > threshold);
       const emEstoque = prontaEntrega;
 
       const notasTopo =
