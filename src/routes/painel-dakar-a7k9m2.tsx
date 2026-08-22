@@ -1797,7 +1797,7 @@ function EditForm({
         <Field label="Volumes disponíveis (Signature)">
           <div className="flex flex-wrap gap-2">
             {(["50ml", "100ml"] as Volume[]).map((v) => {
-              const selected = volumesSignature.includes(v);
+              const selected = volumesSignature?.includes(v) ?? false;
               return (
                 <button
                   key={v}
