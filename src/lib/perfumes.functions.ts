@@ -126,11 +126,23 @@ function extractImage(page: NotionPage): string | null {
     if (page.cover.type === "external") return page.cover.external.url;
     if (page.cover.type === "file") return page.cover.file.url;
   }
-  // Priorizar campo URL explícito chamado "Imagem" ou "Image URL"
+  
+  // 1. Priorizar campo URL explícito chamado "Imagem" ou "Image URL"
   for (const [name, prop] of Object.entries(page.properties)) {
     if (prop.type === "url" && prop.url && /imag/i.test(name)) return prop.url;
   }
-  // Fallback para arquivos/arquivos anexados
+
+  // 2. Procurar em campos de texto que possam conter URLs de imagem (fallback comum)
+  for (const [name, prop] of Object.entries(page.properties)) {
+    if (prop.type === "rich_text" && prop.rich_text && prop.rich_text.length > 0) {
+      const text = prop.rich_text[0].plain_text;
+      if (text.startsWith("http") && (text.includes(".jpg") || text.includes(".png") || text.includes(".webp") || text.includes(".jpeg"))) {
+        return text;
+      }
+    }
+  }
+
+  // 3. Fallback para arquivos anexados
   for (const prop of Object.values(page.properties)) {
     if (prop.type === "files" && prop.files && prop.files.length > 0) {
       const f = prop.files[0];
