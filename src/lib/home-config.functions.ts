@@ -93,6 +93,7 @@ export const updateHomeConfig = createServerFn({ method: "POST" })
     precos?: Partial<Record<Volume, number>>;
     tituloPrincipal?: string;
     textoPrincipal?: string;
+    imagens?: string[];
   }) => data)
   .handler(async ({ data }) => {
     const { requireAdmin, currentAdmin } = await import("./admin.server");
