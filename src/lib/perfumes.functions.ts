@@ -225,11 +225,12 @@ export const getPerfumes = createServerFn({ method: "GET" }).handler(
       const lowThreshold = page.properties["Low threshold "]?.number ?? null;
       
       const effectiveAmount = amount ?? 0;
+      const threshold = oosThreshold ?? 0;
       
       // A disponibilidade agora é automática no Notion via fórmula.
       // O site continua calculando internamente para garantir reatividade imediata,
       // mas usa o campo 'disponibilidade' vindo do Notion como fonte de verdade.
-      const prontaEntrega = disponibilidade === "Pronta Entrega" || effectiveAmount > oosThreshold;
+      const prontaEntrega = disponibilidade === "Pronta Entrega" || effectiveAmount > threshold;
       const emEstoque = prontaEntrega;
 
       const notasTopo =
