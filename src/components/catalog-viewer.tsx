@@ -322,15 +322,15 @@ export function CatalogViewer({ perfumes }: CatalogViewerProps) {
                 });
               }}
 
-              className={`inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-[10px] uppercase tracking-wider transition sm:px-4 sm:text-xs ${
+              className={`inline-flex items-center gap-2 rounded-full border px-2.5 py-1.5 text-[9px] uppercase tracking-wider transition sm:px-4 sm:text-xs ${
                 on
                   ? "border-gold bg-gold text-primary-foreground"
                   : "border-border/60 bg-card text-muted-foreground hover:text-foreground"
               }`}
             >
-              <span className="truncate max-w-[100px] sm:max-w-none">{c}</span>
+              <span className="truncate max-w-[80px] sm:max-w-none">{c}</span>
               {encomenda && (
-                <span className={`rounded-full px-1.5 py-0.5 text-[8px] normal-case tracking-normal sm:text-[9px] ${on ? "bg-primary-foreground/20 text-primary-foreground" : "bg-amber-500/15 text-amber-400"}`}>
+                <span className={`rounded-full px-1 py-0.5 text-[7px] normal-case tracking-normal sm:px-1.5 sm:text-[9px] ${on ? "bg-primary-foreground/20 text-primary-foreground" : "bg-amber-500/15 text-amber-400"}`}>
                   encomenda
                 </span>
               )}

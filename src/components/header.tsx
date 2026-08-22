@@ -164,7 +164,7 @@ export function Header({ secaoAtiva: initialSecao }: HeaderProps) {
                 scrollToSection(s.id, s.secao);
               }
             }}
-            className={`flex-1 min-h-11 inline-flex items-center justify-center rounded-full px-2 text-xs font-medium transition ${
+            className={`flex-1 min-h-10 inline-flex items-center justify-center rounded-full px-1.5 text-[10px] font-medium transition ${
               secaoAtiva === s.secao ? "bg-gold text-primary-foreground" : "text-muted-foreground"
             }`}
           >
@@ -173,7 +173,7 @@ export function Header({ secaoAtiva: initialSecao }: HeaderProps) {
         ))}
         <Link
           to="/catalogo"
-          className={`flex-1 min-h-11 inline-flex items-center justify-center rounded-full px-2 text-xs font-medium transition ${
+          className={`flex-1 min-h-10 inline-flex items-center justify-center rounded-full px-1.5 text-[10px] font-medium transition ${
             isCatalogo ? "bg-gold text-primary-foreground" : "text-muted-foreground border border-border/60"
           }`}
         >
