@@ -83,6 +83,31 @@ export function HomeConfigTab() {
     setHasChanges(prev => ({ ...prev, [key]: true }));
   };
 
+  const handleImageAction = (key: string, action: 'add' | 'remove' | 'moveUp' | 'moveDown' | 'change', index?: number, value?: string) => {
+    setFormState(prev => {
+      const item = prev[key];
+      const newImagens = [...(item.imagens || [])];
+
+      if (action === 'add') {
+        newImagens.push("");
+      } else if (action === 'remove' && index !== undefined) {
+        newImagens.splice(index, 1);
+      } else if (action === 'moveUp' && index !== undefined && index > 0) {
+        [newImagens[index], newImagens[index - 1]] = [newImagens[index - 1], newImagens[index]];
+      } else if (action === 'moveDown' && index !== undefined && index < newImagens.length - 1) {
+        [newImagens[index], newImagens[index + 1]] = [newImagens[index + 1], newImagens[index]];
+      } else if (action === 'change' && index !== undefined && value !== undefined) {
+        newImagens[index] = value.trim();
+      }
+
+      return {
+        ...prev,
+        [key]: { ...item, imagens: newImagens }
+      };
+    });
+    setHasChanges(prev => ({ ...prev, [key]: true }));
+  };
+
   if (isLoading) return <p className="text-muted-foreground">Carregando configurações...</p>;
   if (error) return <p className="text-destructive">Erro ao carregar configurações.</p>;
 
