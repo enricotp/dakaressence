@@ -1620,7 +1620,7 @@ function EditForm({
     notasTopo?: string;
     notasCoracao?: string;
     notasFundo?: string;
-    volumesSignature?: Volume[];
+    volumesSignature?: Volume[] | null;
   }) => Promise<void>;
   onCancel: () => void;
   marcasSugestoes?: string[];
