@@ -13,6 +13,7 @@ export type HomeConfig = {
   precos: Partial<Record<Volume, number>>;
   tituloPrincipal: string;
   textoPrincipal: string;
+  imagens: string[];
 };
 
 function notionHeaders() {
