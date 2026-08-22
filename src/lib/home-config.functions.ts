@@ -113,6 +113,9 @@ export const updateHomeConfig = createServerFn({ method: "POST" })
     if (data.textoPrincipal !== undefined) {
       properties["Texto Principal"] = { rich_text: [{ text: { content: data.textoPrincipal } }] };
     }
+    if (data.imagens !== undefined) {
+      properties["ImagensCarrossel"] = { rich_text: [{ text: { content: JSON.stringify(data.imagens) } }] };
+    }
 
     if (data.precos) {
       if (data.precos["25ml"] !== undefined) properties["Preço 25ml"] = { number: data.precos["25ml"] };
