@@ -1,27 +1,3 @@
-Analise toda a aplicaço antes de realizar qualquer alteraço e torne TODAS as páginas, componentes e fluxos 100% responsivos em todos os dispositivos.
-
-Garantir que o sistema funcione perfeitamente em qualquer tamanho de tela: mobile, tablets, notebooks, desktops e ultrawide, sem quebras de layout, overflow ou perda de usabilidade.
-
-Analise:
-- Todas as páginas e rotas, layouts, componentes
-- Containers, grids, breakpoints atuais
-- Width/height fixos, overflow, elementos quebrando
-- Tipografia, botões, formulários em diferentes telas
-- Modais, dropdowns, menus, imagens, tabelas
-- Navegação, sidebar, espaçamentos
-
-Melhorias obrigatórias:
-- LAYOUT: Substituir widths fixos, usar Flexbox/Grid, breakpoints consistentes
-- MOBILE (prioridade): Espaçamentos, botões adequados para toque, menus mobile, simplificar layouts, tabelas responsivas
-- TIPOGRAFIA: Tamanhos por breakpoint, legibilidade, line-height responsivo
-- IMAGENS: Fluidas (max-width:100%), sem distorção
-- COMPONENTES: Cards responsivos, modais fullscreen no mobile, dropdowns adaptáveis
-- FORMULRIOS: Inputs largura correta, botões full-width quando necessário
-- NAVEGAÇO: Sidebar colapsável, menus responsivos
-
-Breakpoints: Mobile até 480px, Tablet até 768px, Laptop até 1024px, Desktop 1280px+
-
-Regras: NÃO quebrar funcionalidades, NÃO remover features, NÃO alterar design base. Priorizar adaptação. O sistema deve estar 100% responsivo, sem quebras, com excelente UX mobile e pronto para produço.
 import { createFileRoute } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
