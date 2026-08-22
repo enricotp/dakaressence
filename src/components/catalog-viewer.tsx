@@ -451,8 +451,9 @@ export function CatalogViewer({ perfumes }: CatalogViewerProps) {
           </div>
         </div>
 
-        <div className="flex gap-2 items-center justify-center sm:items-end sm:justify-start sm:pb-[1px]">
-          <div className="flex flex-col">
+        <div className="flex w-full sm:w-auto gap-2 items-center justify-center sm:items-end sm:justify-start sm:pb-[1px]">
+          <div className="flex flex-col flex-1 sm:flex-none">
+
             <button
               type="button"
               onClick={() => setShowNoteSelector(!showNoteSelector)}
@@ -473,7 +474,7 @@ export function CatalogViewer({ perfumes }: CatalogViewerProps) {
             </button>
           </div>
 
-          <div className="flex flex-col">
+          <div className="flex flex-col flex-1 sm:flex-none">
             <button
               type="button"
               onClick={() => setSoFavoritos((v) => !v)}
