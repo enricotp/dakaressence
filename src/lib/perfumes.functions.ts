@@ -191,11 +191,11 @@ export const getPerfumes = createServerFn({ method: "GET" }).handler(
     return data.results.flatMap((page) => {
       const imagem = extractImage(page);
       const nome =
-        page.properties["Product Name"]?.title?.[0]?.plain_text ?? "Sem nome";
+        (page.properties["Product Name"]?.title?.[0]?.plain_text ?? "Sem nome").trim();
       const numero = page.properties["Número"]?.number ?? null;
       const amount = page.properties["Amount"]?.number ?? null;
       const oosThreshold = page.properties["OoS threshold"]?.number ?? 0;
-      const status = page.properties["Available?"]?.formula?.string ?? "";
+      const status = (page.properties["Available?"]?.formula?.string ?? "").trim();
       const disponibilidade = (page.properties["Disponibilidade"]?.formula?.string ?? "").trim();
 
       const descricao =
@@ -211,7 +211,7 @@ export const getPerfumes = createServerFn({ method: "GET" }).handler(
         : "50ml";
       
       const marca = page.properties["Marca"]?.select?.name ?? null;
-      const generoRaw = page.properties["Gênero"]?.select?.name?.toLowerCase() ?? "";
+      const generoRaw = (page.properties["Gênero"]?.select?.name ?? "").trim().toLowerCase();
       const genero: Genero =
         generoRaw === "feminino" || generoRaw === "masculino" || generoRaw === "unissex"
           ? (generoRaw as Genero)
