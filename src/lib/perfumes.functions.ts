@@ -230,7 +230,7 @@ export const getPerfumes = createServerFn({ method: "GET" }).handler(
       // A disponibilidade agora é automática no Notion via fórmula.
       // O site continua calculando internamente para garantir reatividade imediata,
       // mas usa o campo 'disponibilidade' vindo do Notion como fonte de verdade.
-      const prontaEntrega = disponibilidade === "Pronta Entrega" || effectiveAmount > threshold;
+      const prontaEntrega = disponibilidade === "Pronta Entrega" || (amount !== null && amount > threshold);
       const emEstoque = prontaEntrega;
 
       const notasTopo =
