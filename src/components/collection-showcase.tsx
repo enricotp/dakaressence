@@ -117,7 +117,7 @@ function CollectionCarousel({ images, collectionName }: { images: string[], coll
 
   return (
     <div 
-      className="relative aspect-square w-full shrink-0 overflow-hidden rounded-2xl border border-border/40 bg-muted/20 md:w-48 lg:w-56"
+      className="relative aspect-square w-full shrink-0 overflow-hidden rounded-2xl border border-border/40 bg-muted/20 md:w-56 lg:w-64"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
       onTouchStart={() => setIsPaused(true)}
