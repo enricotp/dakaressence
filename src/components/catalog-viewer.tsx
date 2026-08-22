@@ -749,7 +749,7 @@ export function CatalogViewer({ perfumes }: CatalogViewerProps) {
                     </div>
                   )}
                   <img
-                    src={imagem}
+                    src={imagem || "/placeholder.svg"}
                     alt={p.nome}
                     width={800}
                     height={1000}

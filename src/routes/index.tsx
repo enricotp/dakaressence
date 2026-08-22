@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 /**
- * Deixe o (confirme agora) nas tags, e o (Receba Hoje) um poucoo maiores e mais visíveis
+ * Por quê todos que estão com a tag de ultima unidade estão com a fotoquebrada?
  */
 import { logoWhite } from "@/lib/constants";
 import { useCart } from "@/lib/cart-context";
