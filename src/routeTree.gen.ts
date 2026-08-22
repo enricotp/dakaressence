@@ -13,7 +13,6 @@ import { Route as RastrearRouteImport } from './routes/rastrear'
 import { Route as PainelDakarA7k9m2RouteImport } from './routes/painel-dakar-a7k9m2'
 import { Route as CatalogoRouteImport } from './routes/catalogo'
 import { Route as CalculadoraRouteImport } from './routes/calculadora'
-import { Route as IndexRouteImport } from './routes/index'
 import { Route as PerfumeIdRouteImport } from './routes/perfume.$id'
 import { Route as PedidoIdRouteImport } from './routes/pedido.$id'
 
@@ -37,11 +36,6 @@ const CalculadoraRoute = CalculadoraRouteImport.update({
   path: '/calculadora',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const PerfumeIdRoute = PerfumeIdRouteImport.update({
   id: '/perfume/$id',
   path: '/perfume/$id',
@@ -54,7 +48,6 @@ const PedidoIdRoute = PedidoIdRouteImport.update({
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
   '/calculadora': typeof CalculadoraRoute
   '/catalogo': typeof CatalogoRoute
   '/painel-dakar-a7k9m2': typeof PainelDakarA7k9m2Route
@@ -63,7 +56,6 @@ export interface FileRoutesByFullPath {
   '/perfume/$id': typeof PerfumeIdRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
   '/calculadora': typeof CalculadoraRoute
   '/catalogo': typeof CatalogoRoute
   '/painel-dakar-a7k9m2': typeof PainelDakarA7k9m2Route
@@ -73,7 +65,6 @@ export interface FileRoutesByTo {
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
   '/calculadora': typeof CalculadoraRoute
   '/catalogo': typeof CatalogoRoute
   '/painel-dakar-a7k9m2': typeof PainelDakarA7k9m2Route
@@ -84,7 +75,6 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    | '/'
     | '/calculadora'
     | '/catalogo'
     | '/painel-dakar-a7k9m2'
@@ -93,7 +83,6 @@ export interface FileRouteTypes {
     | '/perfume/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
-    | '/'
     | '/calculadora'
     | '/catalogo'
     | '/painel-dakar-a7k9m2'
@@ -102,7 +91,6 @@ export interface FileRouteTypes {
     | '/perfume/$id'
   id:
     | '__root__'
-    | '/'
     | '/calculadora'
     | '/catalogo'
     | '/painel-dakar-a7k9m2'
@@ -112,7 +100,6 @@ export interface FileRouteTypes {
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
   CalculadoraRoute: typeof CalculadoraRoute
   CatalogoRoute: typeof CatalogoRoute
   PainelDakarA7k9m2Route: typeof PainelDakarA7k9m2Route
@@ -151,13 +138,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CalculadoraRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/perfume/$id': {
       id: '/perfume/$id'
       path: '/perfume/$id'
@@ -176,7 +156,6 @@ declare module '@tanstack/react-router' {
 }
 
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
   CalculadoraRoute: CalculadoraRoute,
   CatalogoRoute: CatalogoRoute,
   PainelDakarA7k9m2Route: PainelDakarA7k9m2Route,
