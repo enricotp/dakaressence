@@ -13,6 +13,7 @@ interface CollectionData {
   name: string;
   description: string;
   sizes: { label: Volume; price: number }[];
+  imagens?: string[];
 }
 
 const COLLECTION_SHOWCASE_DATA: CollectionData[] = [
