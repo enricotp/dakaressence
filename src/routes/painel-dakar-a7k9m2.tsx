@@ -250,7 +250,9 @@ function AdminPanel({ nome, role, onLogout }: { nome: string; role: "dono" | "ge
         {tab === "calculadora" && <CalculadoraTab />}
         {tab === "funcionarios" && role === "dono" && <FuncionariosTab />}
         {tab === "home_config" && <HomeConfigTab />}
+        <ReconciliacaoEstoque />
       </section>
+
     </div>
   );
 }
@@ -713,6 +715,22 @@ function ModalConfirmacaoEstoque({
     </div>
   );
 }
+
+function ReconciliacaoEstoque() {
+  const { data: movs = [], isLoading, refetch } = useQuery({
+    queryKey: ["movimentacoes-estoque"],
+    queryFn: async () => {
+      const { listarMovimentosRaw } = await import("@/lib/estoque.server");
+      // Como listarMovimentosRaw é server-only, precisamos de uma server function.
+      // Vou criá-la em orders.functions.ts e importar aqui.
+      return []; // Placeholder até criar a function
+    },
+    enabled: false // Desativado até implementar a server function
+  });
+
+  return null; // Interface de reconciliação será adicionada após a server function
+}
+
 
 
 function StatusBadge({ status }: { status: string }) {

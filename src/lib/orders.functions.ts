@@ -518,3 +518,12 @@ function parseItensTextoLocal(itens: string): Array<{ qtd: number; nome: string 
     })
     .filter((x): x is { qtd: number; nome: string } => x !== null && x.qtd > 0);
 }
+
+export const listarMovimentosEstoque = createServerFn({ method: "GET" })
+  .handler(async () => {
+    const { requireAdmin } = await import("./admin.server");
+    await requireAdmin();
+    const { listarMovimentosRaw } = await import("./estoque.server");
+    return listarMovimentosRaw();
+  });
+

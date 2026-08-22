@@ -215,6 +215,12 @@ export function CartDrawer() {
                   </div>
                 )
               )}
+              {Object.entries(cart).some(([id, qtd]) => qtd > 0 && perfumeById.get(id)?.p.amount === 1) && (
+                <div className="mb-4 rounded-lg border border-blue-500/40 bg-blue-500/10 px-3 py-2 text-[10px] text-blue-300">
+                  ⚠️ <b>Atenção:</b> Você selecionou a <b>última unidade</b> de um perfume. A disponibilidade será confirmada após o pedido.
+                </div>
+              )}
+
               <ul className="space-y-4">
               {Object.entries(cart).map(([id, qtd]) => {
                 const item = perfumeById.get(id);
