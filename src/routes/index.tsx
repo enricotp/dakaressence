@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 /**
- * Por quê todos que estão com a tag de ultima unidade estão com a fotoquebrada?
+ * Você não entendeu, veja quais estão dando a imagem estranha, e investigue,
  */
 import { logoWhite } from "@/lib/constants";
 import { useCart } from "@/lib/cart-context";
