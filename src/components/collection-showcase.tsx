@@ -227,7 +227,7 @@ function CollectionCard({ collection }: { collection: CollectionData }) {
           </div>
         </div>
 
-        <div className="flex items-end justify-between border-t border-border/40 pt-6">
+        <div className="flex flex-col gap-4 border-t border-border/40 pt-6 sm:flex-row sm:items-end sm:justify-between sm:gap-0">
           <div>
             <span className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground">
               Investimento
@@ -239,7 +239,7 @@ function CollectionCard({ collection }: { collection: CollectionData }) {
           <button
             type="button"
             onClick={handleDiscover}
-            className="inline-flex h-12 items-center justify-center rounded-full bg-foreground px-6 text-sm font-semibold text-background transition hover:bg-gold hover:text-primary-foreground"
+            className="inline-flex min-h-12 w-full items-center justify-center rounded-full bg-foreground px-6 text-sm font-semibold text-background transition hover:bg-gold hover:text-primary-foreground sm:w-auto"
           >
             Descobrir Fragrâncias
           </button>

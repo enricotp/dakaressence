@@ -263,8 +263,8 @@ export function CatalogViewer({ perfumes }: CatalogViewerProps) {
       </div>
 
       {/* Filtro por disponibilidade */}
-      <div className="mb-8 flex justify-center">
-        <div className="flex flex-wrap justify-center gap-2">
+      <div className="mb-8 flex justify-center px-2">
+        <div className="grid w-full grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:justify-center sm:w-auto">
           {(
             [
               { id: "todos", label: "Tudo" },
@@ -277,7 +277,9 @@ export function CatalogViewer({ perfumes }: CatalogViewerProps) {
               key={op.id}
               type="button"
               onClick={() => setDisponibilidade(op.id)}
-              className={`inline-flex flex-col items-center justify-center gap-0.5 rounded-2xl border px-4 py-2 text-xs text-center uppercase tracking-wider transition min-w-[140px] ${
+              className={`inline-flex flex-col items-center justify-center gap-0.5 rounded-2xl border px-3 py-2 text-xs text-center uppercase tracking-wider transition min-h-[54px] sm:min-w-[140px] ${
+                op.id === "todos" ? "col-span-2 sm:col-span-1" : ""
+              } ${
                 disponibilidade === op.id
                   ? "border-gold bg-gold text-primary-foreground"
                   : "border-border/60 bg-card text-muted-foreground hover:text-foreground"
@@ -296,7 +298,7 @@ export function CatalogViewer({ perfumes }: CatalogViewerProps) {
       </div>
 
       {/* Coleções */}
-      <div className="mb-8 flex flex-wrap justify-center gap-2">
+      <div className="mb-8 flex flex-wrap justify-center gap-2 px-2">
         {COLECOES.map((c) => {
           const on = colecoesAtivas[c];
           const encomenda = COLECAO_INFO[c].sobEncomenda;
@@ -320,15 +322,15 @@ export function CatalogViewer({ perfumes }: CatalogViewerProps) {
                 });
               }}
 
-              className={`inline-flex items-center gap-2 rounded-full border px-4 py-1.5 text-xs uppercase tracking-wider transition ${
+              className={`inline-flex items-center gap-2 rounded-full border px-2.5 py-1.5 text-[9px] uppercase tracking-wider transition sm:px-4 sm:text-xs ${
                 on
                   ? "border-gold bg-gold text-primary-foreground"
                   : "border-border/60 bg-card text-muted-foreground hover:text-foreground"
               }`}
             >
-              {c}
+              <span className="truncate max-w-[80px] sm:max-w-none">{c}</span>
               {encomenda && (
-                <span className={`rounded-full px-1.5 py-0.5 text-[9px] normal-case tracking-normal ${on ? "bg-primary-foreground/20 text-primary-foreground" : "bg-amber-500/15 text-amber-400"}`}>
+                <span className={`rounded-full px-1 py-0.5 text-[7px] normal-case tracking-normal sm:px-1.5 sm:text-[9px] ${on ? "bg-primary-foreground/20 text-primary-foreground" : "bg-amber-500/15 text-amber-400"}`}>
                   encomenda
                 </span>
               )}
@@ -772,7 +774,7 @@ export function CatalogViewer({ perfumes }: CatalogViewerProps) {
                     </span>
                   </span>
                   {p.disponibilidade.toLowerCase() === "pronta entrega" && (
-                    <span className="absolute right-2 top-2 flex flex-col items-center rounded-xl bg-emerald-500 px-2.5 py-1 shadow-lg shadow-emerald-500/20 sm:right-4 sm:top-4 sm:px-4 sm:py-1.5">
+                    <span className="absolute left-2 bottom-2 flex flex-col items-center rounded-xl bg-emerald-500/90 px-2 py-1 shadow-lg backdrop-blur sm:left-auto sm:right-4 sm:top-4 sm:bottom-auto sm:px-4 sm:py-1.5">
                       <span className="text-[9px] font-bold uppercase tracking-[0.12em] text-black sm:text-[11px] sm:tracking-[0.18em]">
                         {p.amount === 1 ? "Última unidade" : "Pronta entrega"}
                       </span>

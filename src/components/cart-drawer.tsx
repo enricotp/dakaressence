@@ -23,7 +23,7 @@ export function CartButton() {
       type="button"
       onClick={open}
       aria-label={`Abrir carrinho (${cartCount} itens)`}
-      className="relative inline-flex min-h-11 items-center gap-2 rounded-full border border-gold/40 bg-gold/10 px-3 py-2 text-xs font-medium uppercase tracking-wider text-gold transition hover:bg-gold hover:text-primary-foreground sm:px-4"
+      className="relative inline-flex h-9 items-center gap-2 rounded-full border border-gold/40 bg-gold/10 px-2.5 py-2 text-[10px] font-medium uppercase tracking-wider text-gold transition hover:bg-gold hover:text-primary-foreground sm:h-11 sm:px-4 sm:text-xs"
     >
       <span className="hidden sm:inline">Carrinho</span>
       <svg aria-hidden viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4 sm:hidden">
