@@ -32,7 +32,9 @@ import {
   previewBaixaEstoque,
   aceitarVendaEBaixarEstoque,
   listarItensVendidos,
+  listarMovimentosEstoque,
   type Pedido,
+
   type ItemVendido,
 } from "@/lib/orders.functions";
 
@@ -717,19 +719,75 @@ function ModalConfirmacaoEstoque({
 }
 
 function ReconciliacaoEstoque() {
-  const { data: movs = [], isLoading, refetch } = useQuery({
+  const listar = useServerFn(listarMovimentosEstoque);
+  const qc = useQueryClient();
+  const { data: movs = [], isLoading } = useQuery({
     queryKey: ["movimentacoes-estoque"],
-    queryFn: async () => {
-      const { listarMovimentosRaw } = await import("@/lib/estoque.server");
-      // Como listarMovimentosRaw é server-only, precisamos de uma server function.
-      // Vou criá-la em orders.functions.ts e importar aqui.
-      return []; // Placeholder até criar a function
-    },
-    enabled: false // Desativado até implementar a server function
+    queryFn: () => listar(),
+    refetchInterval: 60000,
   });
 
-  return null; // Interface de reconciliação será adicionada após a server function
+  const criticos = movs.filter(
+    (m: any) => m.status === "FALHOU" || m.status === "PRECISA_RECONCILIACAO" || m.status === "INICIADA",
+  );
+
+  if (criticos.length === 0) return null;
+
+  return (
+    <div className="mt-12 rounded-3xl border border-red-500/30 bg-red-500/5 p-6 sm:p-8">
+      <div className="flex items-center gap-3">
+        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-red-500/20 text-red-400">
+          <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="2.5">
+            <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z" />
+            <line x1="12" y1="9" x2="12" y2="13" />
+            <line x1="12" y1="17" x2="12.01" y2="17" />
+          </svg>
+        </div>
+        <div>
+          <h3 className="font-display text-xl font-semibold text-red-400">Reconciliação de Estoque</h3>
+          <p className="text-sm text-muted-foreground">
+            {criticos.length} movimento(s) precisam de atenção manual ou verificação.
+          </p>
+        </div>
+      </div>
+
+      <div className="mt-6 overflow-hidden rounded-2xl border border-red-500/20">
+        <table className="w-full text-left text-xs">
+          <thead className="bg-red-500/10 text-red-400">
+            <tr>
+              <th className="px-4 py-3 font-semibold uppercase tracking-wider">ID Movimento</th>
+              <th className="px-4 py-3 font-semibold uppercase tracking-wider">Pedido</th>
+              <th className="px-4 py-3 font-semibold uppercase tracking-wider">Status</th>
+              <th className="px-4 py-3 font-semibold uppercase tracking-wider">Erro</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-red-500/10">
+            {criticos.map((m: any) => (
+              <tr key={m.movimentoId} className="hover:bg-red-500/5">
+                <td className="px-4 py-4 font-mono text-[10px]">{m.movimentoId}</td>
+                <td className="px-4 py-4">{m.pedidoId}</td>
+                <td className="px-4 py-4">
+                  <span className={`rounded-full px-2 py-0.5 text-[9px] font-bold ${
+                    m.status === 'FALHOU' ? 'bg-red-500 text-white' : 'bg-amber-500 text-black'
+                  }`}>
+                    {m.status}
+                  </span>
+                </td>
+                <td className="px-4 py-4 text-muted-foreground max-w-xs truncate" title={m.erro}>
+                  {m.erro || "Sem detalhes"}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p className="mt-4 text-[10px] text-muted-foreground italic text-center">
+        * Movimentos travados podem indicar falha de conexão com Notion ou Google Sheets. Verifique a planilha principal.
+      </p>
+    </div>
+  );
 }
+
 
 
 
