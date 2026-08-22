@@ -765,13 +765,14 @@ export function CatalogViewer({ perfumes }: CatalogViewerProps) {
                   {p.disponibilidade === "Pronta Entrega" && (
                     <span className="absolute right-2 top-2 flex flex-col items-center rounded-xl bg-emerald-500/90 px-2 py-0.5 backdrop-blur sm:right-4 sm:top-4 sm:px-3 sm:py-1">
                       <span className="text-[8px] font-semibold uppercase tracking-[0.1em] text-black sm:text-[10px] sm:tracking-[0.15em]">
-                        Pronta entrega
+                        {p.amount === 1 ? "Última unidade" : "Pronta entrega"}
                       </span>
                       <span className="text-[7px] lowercase tracking-normal text-black/80 sm:text-[8px]">
-                        Receba hoje
+                        {p.amount === 1 ? "Confirme agora" : "Receba hoje"}
                       </span>
                     </span>
                   )}
+
                   {mostrarSobEncomenda && (
                     <span
                       className={`absolute left-2 bottom-2 flex flex-col items-center rounded-xl bg-amber-500/90 px-2 py-0.5 backdrop-blur sm:left-auto sm:right-4 sm:bottom-auto sm:px-3 sm:py-1 ${
