@@ -153,6 +153,34 @@ function extractImage(page: NotionPage): string | null {
   return null;
 }
 
+async function notionFetchWithRetry(
+  url: string,
+  init: RequestInit,
+  attempts = 3,
+): Promise<Response> {
+  let lastError: unknown;
+  for (let i = 0; i < attempts; i++) {
+    try {
+      const res = await fetch(url, {
+        ...init,
+        signal: AbortSignal.timeout(20_000),
+      });
+      if (res.status >= 500 && i < attempts - 1) {
+        await new Promise((r) => setTimeout(r, 500 * (i + 1)));
+        continue;
+      }
+      return res;
+    } catch (err) {
+      // "TypeError: terminated" / abort / socket reset -> tenta de novo
+      lastError = err;
+      await new Promise((r) => setTimeout(r, 500 * (i + 1)));
+    }
+  }
+  throw lastError instanceof Error
+    ? lastError
+    : new Error("Falha ao conectar ao Notion");
+}
+
 export const getPerfumes = createServerFn({ method: "GET" }).handler(
   async (): Promise<Perfume[]> => {
     const lovableKey = process.env.LOVABLE_API_KEY;
@@ -167,7 +195,7 @@ export const getPerfumes = createServerFn({ method: "GET" }).handler(
     while (hasMore) {
       const body: Record<string, unknown> = { page_size: 100 };
       if (startCursor) body.start_cursor = startCursor;
-      const res = await fetch(`${GATEWAY}/databases/${DATABASE_ID}/query`, {
+      const res = await notionFetchWithRetry(`${GATEWAY}/databases/${DATABASE_ID}/query`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${lovableKey}`,
@@ -186,6 +214,8 @@ export const getPerfumes = createServerFn({ method: "GET" }).handler(
       startCursor = pageData.next_cursor ?? undefined;
     }
     const data = { results: allResults } as NotionQueryResponse;
+
+
 
 
     return data.results.flatMap((page) => {
