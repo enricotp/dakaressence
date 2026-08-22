@@ -28,15 +28,16 @@ import {
   listarPedidos,
   atualizarRastreio,
   atualizarStatusPedido,
+  cancelarPedidoEDevolverEstoque,
   processarSaidaEstoque,
   previewBaixaEstoque,
   aceitarVendaEBaixarEstoque,
   listarItensVendidos,
   listarMovimentosEstoque,
   type Pedido,
-
   type ItemVendido,
 } from "@/lib/orders.functions";
+
 
 import {
   getPerfumes,
