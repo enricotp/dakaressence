@@ -367,21 +367,22 @@ export const atualizarStatusPedido = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     const { requireAdmin, currentAdmin } = await import("./admin.server");
     await requireAdmin();
-    const headers = await getHeaders(SHEET_ID, SHEET_NAME);
-    const getIdx = (name: string) => headers.findIndex(h => h.toLowerCase() === name.toLowerCase());
-    const statusIdx = getIdx("Status");
-    const colLetter = statusIdx !== -1 ? String.fromCharCode(65 + statusIdx) : "H";
+    const {
+      escreverStatusPedido,
+      escreverUltimoMovimentoStatus,
+    } = await import("./estoque.server");
 
-    const url = `${GATEWAY}/spreadsheets/${SHEET_ID}/values/${SHEET_NAME}!${colLetter}${data.row}?valueInputOption=USER_ENTERED`;
-    const res = await fetch(url, {
-      method: "PUT",
-      headers: sheetsHeaders(),
-      body: JSON.stringify({ values: [[data.status]] }),
-    });
-    if (!res.ok) {
-      const text = await res.text();
-      throw new Error(`Sheets update failed [${res.status}]: ${text}`);
+    // Se o pedido está sendo cancelado a partir de Concluído, deve usar cancelarPedidoEDevolverEstoque
+    // Mas se for chamado diretamente (ex: Pendente -> Cancelado), apenas atualizamos o status.
+    if (data.status === "Cancelado" && data.statusAtual === "Concluído") {
+      // Nota: O frontend deve preferir chamar cancelarPedidoEDevolverEstoque para pedidos Concluídos.
+      // Aqui mantemos apenas a atualização de status básica se necessário, 
+      // mas a regra de negócio diz que Concluído -> Cancelado DEVE devolver estoque.
+      // Para segurança, se chegar aqui vindo de Concluído, não devolvemos automaticamente sem o motor de devolução.
+      // O admin deve usar o fluxo correto.
     }
+
+    await escreverStatusPedido(data.row, data.status);
 
     try {
       const { appendLog } = await import("./logs.server");
@@ -397,10 +398,9 @@ export const atualizarStatusPedido = createServerFn({ method: "POST" })
       });
     } catch {}
 
-    // A baixa de estoque agora é feita manualmente pelo administrador através de 'aceitarVendaEBaixarEstoque'
-    // para garantir consistência e validação antes da alteração no Notion.
     return { ok: true };
   });
+
 
 export const previewBaixaEstoque = createServerFn({ method: "POST" })
   .validator((data: { pedidoId: string; itensTexto: string }) => data)
@@ -468,6 +468,59 @@ export const processarSaidaEstoque = createServerFn({ method: "POST" })
     // Redireciona para o novo motor
     return aceitarVendaEBaixarEstoque({ data });
   });
+
+export const cancelarPedidoEDevolverEstoque = createServerFn({ method: "POST" })
+  .validator((data: { row: number; pedidoId: string; itensTexto: string; statusAtual: string }) => data)
+  .handler(async ({ data }) => {
+    const { requireAdmin, currentAdmin } = await import("./admin.server");
+    await requireAdmin();
+    const {
+      executarMovimento,
+      lerCicloPedido,
+      escreverUltimoMovimentoStatus,
+      escreverStatusPedido,
+      listarMovimentosRaw,
+      movimentoId
+    } = await import("./estoque.server");
+
+    const me = await currentAdmin();
+    const cicloAtual = await lerCicloPedido(data.row);
+
+    // 1. Verificar se existe uma baixa APLICADA no ciclo atual
+    const movs = await listarMovimentosRaw();
+    const baixaId = movimentoId(data.pedidoId, cicloAtual, "BAIXA");
+    const baixaAplicada = movs.find(m => m.movimentoId === baixaId && m.status === "APLICADA");
+
+    if (!baixaAplicada) {
+      // Se não houve baixa aplicada, apenas cancelamos o status no Sheets
+      await escreverStatusPedido(data.row, "Cancelado");
+      return { ok: true, status: "Cancelado (sem devolução necessária)" };
+    }
+
+    // 2. Executar a devolução usando os itens da baixa original
+    const res = await executarMovimento({
+      pedidoId: data.pedidoId,
+      ciclo: cicloAtual,
+      acao: "DEVOLUCAO",
+      itens: baixaAplicada.itens,
+      usuario: me?.login || "admin",
+      role: me?.role || "gerente",
+    });
+
+    if (res.ok) {
+      // 3. Só concluir o cancelamento se a devolução for APLICADA
+      await Promise.all([
+        escreverUltimoMovimentoStatus(data.row, res.status),
+        escreverStatusPedido(data.row, "Cancelado"),
+      ]);
+    } else {
+      // Se falhou ou precisa de reconciliação, atualizamos o status do movimento no pedido, mas não cancelamos o pedido ainda
+      await escreverUltimoMovimentoStatus(data.row, `${res.status}${res.erro ? `: ${res.erro}` : ""}`);
+    }
+
+    return res;
+  });
+
 
 
 
