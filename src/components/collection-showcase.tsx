@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { type Colecao, type Volume } from "@/lib/perfumes.functions";
 import { formatBRL } from "@/lib/format";
 import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { getHomeConfig, type HomeConfig } from "@/lib/home-config.functions";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 
 interface CollectionData {
@@ -12,6 +13,7 @@ interface CollectionData {
   name: string;
   description: string;
   sizes: { label: Volume; price: number }[];
+  imagens?: string[];
 }
 
 const COLLECTION_SHOWCASE_DATA: CollectionData[] = [
@@ -72,6 +74,7 @@ export function CollectionShowcase() {
       name: notion.nome || base.name,
       description: notion.descricao || base.description,
       sizes,
+      imagens: notion.imagens || [],
     };
   });
 
@@ -96,6 +99,80 @@ export function CollectionShowcase() {
   );
 }
 
+function CollectionCarousel({ images, collectionName }: { images: string[], collectionName: string }) {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
+
+  useEffect(() => {
+    if (images.length <= 1 || isPaused) return;
+
+    const interval = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % images.length);
+    }, 4000);
+
+    return () => clearInterval(interval);
+  }, [images.length, isPaused]);
+
+  if (images.length === 0) return null;
+
+  return (
+    <div 
+      className="relative mb-8 aspect-square w-full overflow-hidden rounded-2xl border border-border/40 bg-muted/20"
+      onMouseEnter={() => setIsPaused(true)}
+      onMouseLeave={() => setIsPaused(false)}
+      onTouchStart={() => setIsPaused(true)}
+    >
+      <div 
+        className="flex h-full transition-transform duration-700 ease-in-out" 
+        style={{ transform: `translateX(-${currentIndex * 100}%)` }}
+      >
+        {images.map((src, i) => (
+          <div key={i} className="flex h-full w-full shrink-0 items-center justify-center p-4">
+            <img
+              src={src}
+              alt={`Exemplo visual da coleção ${collectionName} - ${i + 1}`}
+              className="h-full w-full object-contain"
+              loading="lazy"
+            />
+          </div>
+        ))}
+      </div>
+
+      {images.length > 1 && (
+        <>
+          <button
+            onClick={() => setCurrentIndex((prev) => (prev - 1 + images.length) % images.length)}
+            className="absolute left-2 top-1/2 -translate-y-1/2 rounded-full bg-background/60 p-2 text-foreground/80 shadow-sm backdrop-blur-sm transition-all hover:bg-background hover:text-foreground active:scale-95"
+            aria-label="Imagem anterior"
+          >
+            <ChevronLeft className="h-5 w-5" />
+          </button>
+          <button
+            onClick={() => setCurrentIndex((prev) => (prev + 1) % images.length)}
+            className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-background/60 p-2 text-foreground/80 shadow-sm backdrop-blur-sm transition-all hover:bg-background hover:text-foreground active:scale-95"
+            aria-label="Próxima imagem"
+          >
+            <ChevronRight className="h-5 w-5" />
+          </button>
+          
+          <div className="absolute bottom-3 left-1/2 flex -translate-x-1/2 gap-1.5">
+            {images.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => setCurrentIndex(i)}
+                className={`h-1.5 w-1.5 rounded-full transition-all ${
+                  i === currentIndex ? "w-4 bg-gold" : "bg-gold/30"
+                }`}
+                aria-label={`Ir para imagem ${i + 1}`}
+              />
+            ))}
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
 function CollectionCard({ collection }: { collection: CollectionData }) {
   const navigate = useNavigate();
   const [selectedSize, setSelectedSize] = useState<Volume>(collection.sizes[0].label);
@@ -114,6 +191,9 @@ function CollectionCard({ collection }: { collection: CollectionData }) {
 
   return (
     <div className="group relative flex flex-col rounded-3xl border border-border/60 bg-card p-6 transition-all hover:border-gold/30 hover:shadow-xl sm:p-8">
+      {collection.imagens && collection.imagens.length > 0 && (
+        <CollectionCarousel images={collection.imagens} collectionName={collection.name} />
+      )}
       <div className="mb-6">
         <h3 className="font-display text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
           {collection.name}

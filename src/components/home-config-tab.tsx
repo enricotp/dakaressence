@@ -5,6 +5,7 @@ import { getHomeConfig, updateHomeConfig, type HomeConfig } from "@/lib/home-con
 import { type Volume } from "@/lib/perfumes.functions";
 import { formatBRL } from "@/lib/format";
 import { toast } from "sonner";
+import { Plus, Trash2, ArrowUp, ArrowDown, Image as ImageIcon } from "lucide-react";
 
 export function HomeConfigTab() {
   const qc = useQueryClient();
@@ -41,6 +42,7 @@ export function HomeConfigTab() {
             precos: item.precos,
             tituloPrincipal: item.tituloPrincipal,
             textoPrincipal: item.textoPrincipal,
+            imagens: item.imagens,
           }
         });
         toast.dismiss(tid);
@@ -78,6 +80,31 @@ export function HomeConfigTab() {
         precos: { ...prev[key].precos, [volume]: numericValue }
       }
     }));
+    setHasChanges(prev => ({ ...prev, [key]: true }));
+  };
+
+  const handleImageAction = (key: string, action: 'add' | 'remove' | 'moveUp' | 'moveDown' | 'change', index?: number, value?: string) => {
+    setFormState(prev => {
+      const item = prev[key];
+      const newImagens = [...(item.imagens || [])];
+
+      if (action === 'add') {
+        newImagens.push("");
+      } else if (action === 'remove' && index !== undefined) {
+        newImagens.splice(index, 1);
+      } else if (action === 'moveUp' && index !== undefined && index > 0) {
+        [newImagens[index], newImagens[index - 1]] = [newImagens[index - 1], newImagens[index]];
+      } else if (action === 'moveDown' && index !== undefined && index < newImagens.length - 1) {
+        [newImagens[index], newImagens[index + 1]] = [newImagens[index + 1], newImagens[index]];
+      } else if (action === 'change' && index !== undefined && value !== undefined) {
+        newImagens[index] = value.trim();
+      }
+
+      return {
+        ...prev,
+        [key]: { ...item, imagens: newImagens }
+      };
+    });
     setHasChanges(prev => ({ ...prev, [key]: true }));
   };
 
@@ -157,6 +184,95 @@ export function HomeConfigTab() {
                   </button>
                   {hasChanges[key] && (
                     <span className="text-[9px] text-yellow-500 uppercase tracking-wider">Pendente</span>
+                  )}
+                </div>
+              </div>
+
+              {/* Carousel Images Section */}
+              <div className="space-y-4 border-t border-border/40 pt-6">
+                <div className="flex items-center justify-between">
+                  <label className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground font-semibold">Imagens do Carrossel</label>
+                  <button
+                    type="button"
+                    onClick={() => handleImageAction(key, 'add')}
+                    className="flex items-center gap-1.5 rounded-lg bg-gold/10 px-3 py-1.5 text-[10px] font-bold text-gold transition hover:bg-gold/20"
+                  >
+                    <Plus className="h-3 w-3" />
+                    Adicionar
+                  </button>
+                </div>
+
+                <div className="space-y-3">
+                  {(item.imagens || []).map((url, idx) => (
+                    <div key={idx} className="group relative space-y-2 rounded-xl border border-border/40 bg-background/30 p-3 transition-colors hover:border-gold/30">
+                      <div className="flex items-start gap-3">
+                        {/* Preview */}
+                        <div className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-border/60 bg-muted/50">
+                          {url ? (
+                            <img
+                              src={url}
+                              alt={`Preview ${idx + 1}`}
+                              className="h-full w-full object-contain"
+                              onError={(e) => {
+                                (e.target as HTMLImageElement).src = 'https://placehold.co/100x100?text=Error';
+                              }}
+                            />
+                          ) : (
+                            <ImageIcon className="h-6 w-6 text-muted-foreground/30" />
+                          )}
+                        </div>
+
+                        <div className="flex-1 space-y-2">
+                          <div className="flex items-center justify-between">
+                            <span className="text-[9px] font-bold text-muted-foreground uppercase">Posição {idx + 1}</span>
+                            <div className="flex items-center gap-1">
+                              <button
+                                type="button"
+                                onClick={() => handleImageAction(key, 'moveUp', idx)}
+                                disabled={idx === 0}
+                                className="rounded p-1 text-muted-foreground hover:bg-foreground/5 hover:text-foreground disabled:opacity-20"
+                              >
+                                <ArrowUp className="h-3 w-3" />
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => handleImageAction(key, 'moveDown', idx)}
+                                disabled={idx === (item.imagens?.length || 0) - 1}
+                                className="rounded p-1 text-muted-foreground hover:bg-foreground/5 hover:text-foreground disabled:opacity-20"
+                              >
+                                <ArrowDown className="h-3 w-3" />
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  if (url && !confirm("Deseja remover esta imagem permanentemente ao salvar?")) return;
+                                  handleImageAction(key, 'remove', idx);
+                                }}
+                                className="rounded p-1 text-destructive/60 hover:bg-destructive/10 hover:text-destructive"
+                              >
+                                <Trash2 className="h-3 w-3" />
+                              </button>
+                            </div>
+                          </div>
+                          <input
+                            type="text"
+                            placeholder="https://exemplo.com/imagem.webp"
+                            value={url}
+                            onChange={(e) => handleImageAction(key, 'change', idx, e.target.value)}
+                            className="w-full rounded-md border border-border/60 bg-background/50 px-3 py-1.5 text-[11px] focus:border-gold focus:outline-none"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+
+                  {(item.imagens || []).length === 0 && (
+                    <div className="flex flex-col items-center justify-center py-6 text-center">
+                      <div className="mb-2 flex h-10 w-10 items-center justify-center rounded-full bg-muted/30">
+                        <ImageIcon className="h-5 w-5 text-muted-foreground/40" />
+                      </div>
+                      <p className="text-[10px] text-muted-foreground">Nenhuma imagem configurada.</p>
+                    </div>
                   )}
                 </div>
               </div>
