@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { type Colecao, type Volume } from "@/lib/perfumes.functions";
 import { formatBRL } from "@/lib/format";
 import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { getHomeConfig, type HomeConfig } from "@/lib/home-config.functions";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 
 interface CollectionData {
