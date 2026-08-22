@@ -74,6 +74,7 @@ export function CollectionShowcase() {
       name: notion.nome || base.name,
       description: notion.descricao || base.description,
       sizes,
+      imagens: notion.imagens || [],
     };
   });
 
