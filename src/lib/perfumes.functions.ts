@@ -524,39 +524,3 @@ export const criarPerfume = createServerFn({ method: "POST" })
     return { ok: true };
   });
 
-export const aplicarCustosPadrao = createServerFn({ method: "POST" })
-  .validator((data: { sobrescrever: boolean }) => data)
-  .handler(async ({ data }) => {
-    const { requireAdmin } = await import("./admin.server");
-    await requireAdmin();
-    
-    const perfumes = await getPerfumes();
-    const CUSTOS: Record<Colecao, number> = {
-      "Brand Collection": 17,
-      "Arabic Collection": 17,
-      "Dream Brand Collection": 27,
-      Signature: 27,
-    };
-
-    let atualizados = 0;
-    let pulados = 0;
-    const details = [];
-
-    for (const p of perfumes) {
-      const deveAtualizar = data.sobrescrever || p.custo === null || p.custo === 0;
-      
-      if (deveAtualizar) {
-        const custo = CUSTOS[p.colecao];
-        try {
-          await atualizarPerfume({ data: { id: p.id.split('-')[0], custo } });
-          atualizados++;
-          details.push({ id: p.id, nome: p.nome, custo });
-        } catch (e) {
-          console.error(`Falha ao aplicar custo padrao para ${p.nome}:`, e);
-        }
-      } else {
-        pulados++;
-      }
-    }
-    return { updated: atualizados, atualizados, pulados, details };
-  });
