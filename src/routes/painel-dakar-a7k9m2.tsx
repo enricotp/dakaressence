@@ -44,7 +44,7 @@ import {
   atualizarPerfume,
   criarPerfume,
   excluirPerfume,
-  aplicarCustosPadrao,
+  
   formatarNumeroPerfume,
   COLECOES,
   COLECAO_INFO,
