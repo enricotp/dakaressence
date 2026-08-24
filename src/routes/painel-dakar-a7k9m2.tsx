@@ -1389,24 +1389,6 @@ function PerfumesTab() {
         </h2>
         <div className="flex flex-wrap gap-2">
           <button
-            onClick={async () => {
-              const sobrescrever = window.confirm(
-                "Aplicar custos padrão a TODOS os perfumes?\n\n" +
-                  "Signature 50ml = R$17 | 100ml = R$19\n" +
-                  "Brand Collection = R$45 | Arabic = R$60\n" +
-                  "Dream Brand = R$120\n\n" +
-                  "OK = sobrescrever custos existentes\n" +
-                  "Cancelar = apenas preencher os vazios",
-              );
-              const r = await aplicarCustos({ data: { sobrescrever } });
-              await qc.invalidateQueries({ queryKey: ["perfumes"] });
-              alert(`Custos aplicados: ${r.atualizados} atualizados, ${r.pulados} pulados.`);
-            }}
-            className="rounded-full border border-border/60 px-4 py-1.5 text-xs uppercase tracking-wider text-muted-foreground hover:border-gold hover:text-gold"
-          >
-            Aplicar custos padrão
-          </button>
-          <button
             onClick={() => setCriando((v) => !v)}
             className="inline-flex items-center gap-1.5 rounded-full bg-gold px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-primary-foreground transition hover:brightness-110"
           >
